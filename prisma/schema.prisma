@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model artist_metadata {
+  artist_id       String?
+  name            String?
+  genres          String?
+  popularity      BigInt?
+  followers       BigInt?
+  id              String?
+  main_genre      String?
+  secondary_genre String?
+
+  @@ignore
+}
+
+model customers {
+  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name      String @db.VarChar(255)
+  email     String @db.VarChar(255)
+  image_url String @db.VarChar(255)
+}
+
+model invoices {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  customer_id String   @db.Uuid
+  amount      Int
+  status      String   @db.VarChar(255)
+  date        DateTime @db.Date
+}
+
+model revenue {
+  month   String @unique @db.VarChar(4)
+  revenue Int
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model spotify_history {
+  id                   BigInt?
+  ts                   DateTime? @db.Timestamptz(6)
+  username             BigInt?
+  platform             String?
+  ms_played            BigInt?
+  conn_country         String?
+  ip_addr_decrypted    String?
+  user_agent_decrypted String?
+  song                 String?
+  artist               String?
+  album                String?
+  URI                  String?
+  reason_start         String?
+  reason_end           String?
+  shuffle              Boolean?
+  skipped              String?
+  offline              Boolean?
+  offline_timestamp    Float?
+  incognito_mode       Boolean?
+  month                Int?
+  year                 Int?
+  track_id             String?
+  artist_id            String?
+  percent_played       Float?
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model track_metadata {
+  track_id                     String?
+  track_duration               BigInt?
+  explicit                     Boolean?
+  popularity                   BigInt?
+  main_artist                  String?
+  main_artist_id               String?
+  artists                      String?
+  artist_id                    String?
+  album_id                     String?
+  album_release_date           String?
+  album_release_date_precision String?
+  album_type                   String?
+  album_uri                    String?
+  track_danceability           String?
+  track_energy                 String?
+  track_key                    String?
+  track_loudness               String?
+  track_mode                   String?
+  track_speechiness            String?
+  track_acousticness           String?
+  track_instrumentalness       String?
+  track_liveness               String?
+  track_valence                String?
+  track_tempo                  String?
+  track_duration_ms            String?
+  track_time_signature         String?
+  album_release_year           Float?
+  album_decade                 String?
+
+  @@ignore
+}
+
+model users {
+  id       String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name     String @db.VarChar(255)
+  email    String @unique
+  password String
+}
