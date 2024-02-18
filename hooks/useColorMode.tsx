@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useLocalStorage from './useLocalStorage';
 
 const useColorMode = () => {
-  const [colorMode, setColorMode] = useLocalStorage('color-theme', 'dark');
+  const [colorMode, setColorMode] = useState('dark');
 
   useEffect(() => {
     const className = 'dark';
