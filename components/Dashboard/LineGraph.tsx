@@ -1,3 +1,4 @@
+'use client';
 import { ApexOptions } from "apexcharts";
 import React, { useState } from "react";
 import DropdownDefault from "../Dropdowns/DropdownDefault";

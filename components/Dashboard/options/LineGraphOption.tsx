@@ -1,3 +1,4 @@
+'use client';
 import { ApexOptions } from "apexcharts";
 const LineGraphOption: ApexOptions = {
     legend: {
@@ -19,7 +20,7 @@ const LineGraphOption: ApexOptions = {
     ],
     chart: {
         fontFamily: "Satoshi, sans-serif",
-        height: 200,
+        // height: 310,
         toolbar: {
             show: false,
         },

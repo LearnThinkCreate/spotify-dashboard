@@ -1,3 +1,4 @@
+'use client';
 import { ApexOptions } from "apexcharts";
 import React, { useState } from "react";
 import DropdownDefault from "../Dropdowns/DropdownDefault";
@@ -9,19 +10,18 @@ const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 interface AreaGraphProps {
   data: GraphSeries;
   options: ApexOptions;
+  height?: number;
 }
 
-const AreaGraph: React.FC<AreaGraphProps> = ({ data, options }) => {
+const AreaGraph: React.FC<AreaGraphProps> = ({ data, options, height }) => {
 
   return (
-    <div className="-ml-5">
-      <ApexCharts
-        options={options}
-        series={data}
-        type="area"
-        height={200}
-      />
-    </div>
+    <ApexCharts
+    options={options}
+    series={data}
+    type="area"
+    height={height}
+  />
   );
 };
 

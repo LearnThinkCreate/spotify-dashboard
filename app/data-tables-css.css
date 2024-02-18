@@ -13,24 +13,25 @@
 	vertical-align: top;
 	padding: 20px;
 	word-wrap: break-word;
+	text-align: center;
 }
 
 .datatable-table > thead > tr > th {
 	vertical-align: bottom;
-	text-align: left;
+	text-align: center;
 	border-bottom: 1px solid #d9d9d9;
 	padding: 20px;
 }
 
 .datatable-table > tfoot > tr > th {
 	vertical-align: bottom;
-	text-align: left;
+	text-align: center;
 	border-top: 1px solid #d9d9d9;
 }
 
 .datatable-table th {
 	vertical-align: bottom;
-	text-align: left;
+	text-align: center;
 }
 
 .datatable-table th a {

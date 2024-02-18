@@ -1,6 +1,6 @@
 export type GraphData = {
-    x: number;
-    y: number;
+    x: number | string;
+    y: number | string;
 };
 
 export type GraphSeries = {
