@@ -13,6 +13,16 @@ CREATE TABLE "artist_metadata" (
 );
 
 -- CreateTable
+CREATE TABLE "artist_tracks" (
+    "id" SERIAL NOT NULL,
+    "track_id" TEXT,
+    "artist_id" TEXT,
+    "is_main_artist" BOOLEAN,
+
+    CONSTRAINT "artist_tracks_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "spotify_history" (
     "id" INTEGER NOT NULL,
     "ts" TIMESTAMP(6),
@@ -80,16 +90,61 @@ CREATE TABLE "track_metadata" (
 CREATE INDEX "idx_artist_metadata_main_genre" ON "artist_metadata"("main_genre");
 
 -- CreateIndex
+CREATE INDEX "idx_artist_metadata_secondary_genre" ON "artist_metadata"("secondary_genre");
+
+-- CreateIndex
 CREATE INDEX "iidx_artist_metadata_secondary_genre" ON "artist_metadata"("secondary_genre");
+
+-- CreateIndex
+CREATE INDEX "idx_artist_tracks_artist_id" ON "artist_tracks"("artist_id");
+
+-- CreateIndex
+CREATE INDEX "idx_artist_tracks_is_main_artist" ON "artist_tracks"("is_main_artist");
+
+-- CreateIndex
+CREATE INDEX "idx_artist_tracks_track_id" ON "artist_tracks"("track_id");
+
+-- CreateIndex
+CREATE INDEX "idx_spotify_history_album" ON "spotify_history"("album");
 
 -- CreateIndex
 CREATE INDEX "idx_spotify_history_artist_id" ON "spotify_history"("main_artist_id");
 
 -- CreateIndex
+CREATE INDEX "idx_spotify_history_main_artist_id" ON "spotify_history"("main_artist_id");
+
+-- CreateIndex
+CREATE INDEX "idx_spotify_history_month" ON "spotify_history"("month");
+
+-- CreateIndex
 CREATE INDEX "idx_spotify_history_track_id" ON "spotify_history"("track_id");
 
 -- CreateIndex
+CREATE INDEX "idx_spotify_history_year" ON "spotify_history"("year");
+
+-- CreateIndex
+CREATE INDEX "idx_track_metadata_album_decade" ON "track_metadata"("album_decade");
+
+-- CreateIndex
+CREATE INDEX "idx_track_metadata_album_id" ON "track_metadata"("album_id");
+
+-- CreateIndex
+CREATE INDEX "idx_track_metadata_album_release_year" ON "track_metadata"("album_release_year");
+
+-- CreateIndex
 CREATE INDEX "idx_track_metadata_artist_id" ON "track_metadata"("main_artist_id");
+
+-- CreateIndex
+CREATE INDEX "idx_track_metadata_main_artist_id" ON "track_metadata"("main_artist_id");
+
+-- CreateIndex
+CREATE INDEX "idx_track_metadata_track_duration" ON "track_metadata"("track_duration");
+
+-- AddForeignKey
+ALTER TABLE "artist_tracks" ADD CONSTRAINT "artist_tracks_artist_id_fkey" FOREIGN KEY ("artist_id") REFERENCES "artist_metadata"("artist_id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "artist_tracks" ADD CONSTRAINT "artist_tracks_track_id_fkey" FOREIGN KEY ("track_id") REFERENCES "track_metadata"("track_id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "spotify_history" ADD CONSTRAINT "spotify_history_main_artist_id_fkey" FOREIGN KEY ("main_artist_id") REFERENCES "artist_metadata"("artist_id") ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -99,3 +154,4 @@ ALTER TABLE "spotify_history" ADD CONSTRAINT "spotify_history_track_id_fkey" FOR
 
 -- AddForeignKey
 ALTER TABLE "track_metadata" ADD CONSTRAINT "track_metadata_main_artist_id_fkey" FOREIGN KEY ("main_artist_id") REFERENCES "artist_metadata"("artist_id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
