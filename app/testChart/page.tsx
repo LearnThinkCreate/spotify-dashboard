@@ -21,8 +21,8 @@ export default async function Page() {
   const rap_vs_non_rap_data = await getRapvsNonRapData();
 
   return (
-    console.log(main_graph_data[0]['data']),
-    console.log(secondary_genre_data),
+    // console.log(main_graph_data[0]['data']),
+    // console.log(secondary_genre_data),
     <>
       <Breadcrumb pageName="Test Chart" />
 
