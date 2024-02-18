@@ -94,7 +94,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             >
               <SidebarItem title="Basic Chart" path="/" pathname={pathname} onLinkClick={onLinkClick} />
               <SidebarItem title="Advanced Chart" path="/chart/advanced-chart" pathname={pathname} onLinkClick={onLinkClick} />
-              <SidebarItem title="Tables" path="/tables" pathname={pathname} onLinkClick={onLinkClick} />
+              {/* <SidebarItem title="Tables" path="/tables" pathname={pathname} onLinkClick={onLinkClick} /> */}
             </SidebarLinkGroup>
             <SidebarItem title="Test Chart" path="/testChart" pathname={pathname} onLinkClick={onLinkClick} />
 

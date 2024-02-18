@@ -1,23 +1,23 @@
-"use client";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import TableOne from "@/components/Tables/TableOne";
-import TableThree from "@/components/Tables/TableThree";
-import TableTwo from "@/components/Tables/TableTwo";
-import TableFour from "@/components/Tables/TableFour";
+// "use client";
+// import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+// import TableOne from "@/components/Tables/TableOne";
+// import TableThree from "@/components/Tables/TableThree";
+// import TableTwo from "@/components/Tables/TableTwo";
+// import TableFour from "@/components/Tables/TableFour";
 
-const TablesPage = () => {
-  return (
-    <>
-      <Breadcrumb pageName="Tables" />
+// const TablesPage = () => {
+//   return (
+//     <>
+//       <Breadcrumb pageName="Tables" />
 
-      <div className="flex flex-col gap-10">
-        <TableOne />
-        <TableTwo />
-        <TableThree />
-        <TableFour />
-      </div>
-    </>
-  );
-};
+//       <div className="flex flex-col gap-10">
+//         <TableOne />
+//         <TableTwo />
+//         <TableThree />
+//         <TableFour />
+//       </div>
+//     </>
+//   );
+// };
 
-export default TablesPage;
+// export default TablesPage;
