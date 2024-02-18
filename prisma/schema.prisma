@@ -16,11 +16,13 @@ model artist_metadata {
   id              String?
   main_genre      String?
   secondary_genre String?
+  artist_tracks   artist_tracks[]
   spotify_history spotify_history[]
   track_metadata  track_metadata[]
 
   @@index([main_genre], map: "idx_artist_metadata_main_genre")
   @@index([secondary_genre], map: "iidx_artist_metadata_secondary_genre")
+  @@index([secondary_genre], map: "idx_artist_metadata_secondary_genre")
 }
 
 model spotify_history {
@@ -54,6 +56,10 @@ model spotify_history {
   @@id([id, year])
   @@index([main_artist_id], map: "idx_spotify_history_artist_id")
   @@index([track_id], map: "idx_spotify_history_track_id")
+  @@index([album], map: "idx_spotify_history_album")
+  @@index([main_artist_id], map: "idx_spotify_history_main_artist_id")
+  @@index([month], map: "idx_spotify_history_month")
+  @@index([year], map: "idx_spotify_history_year")
 }
 
 model track_metadata {
@@ -85,8 +91,27 @@ model track_metadata {
   track_time_signature         Int?
   album_release_year           Int?
   album_decade                 String?
+  artist_tracks                artist_tracks[]
   spotify_history              spotify_history[]
   artist_metadata              artist_metadata?  @relation(fields: [main_artist_id], references: [artist_id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([main_artist_id], map: "idx_track_metadata_artist_id")
+  @@index([album_decade], map: "idx_track_metadata_album_decade")
+  @@index([album_id], map: "idx_track_metadata_album_id")
+  @@index([album_release_year], map: "idx_track_metadata_album_release_year")
+  @@index([main_artist_id], map: "idx_track_metadata_main_artist_id")
+  @@index([track_duration], map: "idx_track_metadata_track_duration")
+}
+
+model artist_tracks {
+  id              Int              @id @default(autoincrement())
+  track_id        String?
+  artist_id       String?
+  is_main_artist  Boolean?
+  artist_metadata artist_metadata? @relation(fields: [artist_id], references: [artist_id], onDelete: NoAction, onUpdate: NoAction)
+  track_metadata  track_metadata?  @relation(fields: [track_id], references: [track_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([artist_id], map: "idx_artist_tracks_artist_id")
+  @@index([is_main_artist], map: "idx_artist_tracks_is_main_artist")
+  @@index([track_id], map: "idx_artist_tracks_track_id")
 }
