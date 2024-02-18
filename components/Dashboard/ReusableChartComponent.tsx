@@ -68,8 +68,6 @@ const ChartComponent: React.FC<ChartProps> = ({
         height,
       },
     };
-
-    console.log(series[0])
   
     return (
       <div className={`bg-white border border-stroke dark:bg-boxdark dark:border-strokedark rounded-sm shadow-default ${className}`}>
