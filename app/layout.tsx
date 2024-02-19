@@ -7,6 +7,7 @@ import Loader from "@/components/common/Loader";
 
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import useColorMode from "@/hooks/useColorMode";
 
 export default function RootLayout({
   children,
@@ -22,6 +23,7 @@ export default function RootLayout({
   }, []);
 
   return (
+    useColorMode(),
     <html suppressHydrationWarning lang="en">
       <body>
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
@@ -30,24 +32,24 @@ export default function RootLayout({
           ) : (
             <div className="flex h-screen overflow-hidden">
               {/* <!-- ===== Sidebar Start ===== --> */}
-              <Sidebar
+              {/* <Sidebar
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpen}
-              />
+              /> */}
               {/* <!-- ===== Sidebar End ===== --> */}
 
               {/* <!-- ===== Content Area Start ===== --> */}
               <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
                 {/* <!-- ===== Header Start ===== --> */}
-                <Header
+                {/* <Header
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
-                />
+                /> */}
                 {/* <!-- ===== Header End ===== --> */}
 
                 {/* <!-- ===== Main Content Start ===== --> */}
                 <main>
-                  <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+                  <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-8">
                     {children}
                   </div>
                 </main>
