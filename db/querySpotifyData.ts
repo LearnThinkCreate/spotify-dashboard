@@ -1,4 +1,4 @@
-import { query } from "./index";
+import query from "./index";
 import {
   createQueryFilters,
   formatQueryReturn,
@@ -9,11 +9,7 @@ import {
 export interface querySpotifyDataParams {
   fields: string[];
   returnType?: validReturnTypes;
-  filters?: {
-    field: string;
-    value: string;
-    operator: string;
-  }[];
+  filters?: string[];
   groupings?: string[];
   orderBy?: string[];
   limit?: number;
@@ -33,7 +29,7 @@ export default async function querySpotifyData({
                 SELECT
                     ${fields.join(", ")}
                 FROM spotify_data_overview
-                ${createQueryFilters({ filters })}
+                ${filters.length > 0 ? `WHERE ${createQueryFilters({ filters })}` : ""}
                 GROUP BY ${groupings.join(", ")}
                 ${orderBy.length > 0 ? `ORDER BY ${orderBy.join(", ")}` : ""}
                 ${limit ? `LIMIT ${limit}` : ""}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
     Column,
     useTable,
@@ -9,6 +9,7 @@ import {
     usePagination,
 } from "react-table";
 import '@/app/data-tables-css.css';
+import { formatColumnValues } from "@/db/utils";
 
 interface TableColumn {
     Header: string; // Key in the data object
@@ -16,19 +17,71 @@ interface TableColumn {
 }
 
 interface DataTableProps {
-    data: any[];
-    columns: TableColumn[];
+    data?: any[];
+    columns?: TableColumn[];
     defaultPageSize?: number;
+    defaultDropdownValue?: string;
+    classNames?: string;
 }
 
-function ReusableDataTable({ data, columns, defaultPageSize = 10, }: DataTableProps) {
-    const memoizedColumns = useMemo(() => columns, []);
-    const memoizedData = useMemo(() => data, []);
+function ReusableDataTable({
+    data,
+    columns,
+    defaultPageSize = 10,
+    defaultDropdownValue,
+    classNames,
+}: DataTableProps
+) {
+    const [selectedValue, setSelectedValue] = useState(defaultDropdownValue || (dropdownOptions ? dropdownOptions[0].value : null));
+    const [tableData, setTableData] = useState([]);
+    const [tableColumns, setTableColumns] = useState([]);
+
+    function handleDropdownChange(e: React.ChangeEvent<HTMLSelectElement>) {
+        const value = e.target.value;
+        setSelectedValue(value);
+    }
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams();
+
+        const timeDuration = 'hours';
+        const timeSelection = 'hours_played';
+        const groupings = getDropdownGroupings(selectedValue);
+
+        const sqlQuery = `
+            SELECT
+                ${selectedValue},
+                ROUND(SUM(${timeSelection})::numeric, 2) AS ${timeSelection}
+            FROM spotify_data_overview
+            WHERE (${selectedValue} IS NOT NULL AND ${selectedValue} != '') 
+            GROUP BY ${groupings.join(', ')}
+            ORDER BY ${timeSelection} DESC
+            LIMIT 50
+        `;
+
+        queryParams.append('query', sqlQuery); 
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`/api/query?${queryParams}`);
+                const data = await response.json();
+                data.rows.forEach((row) => {
+                    row[selectedValue] = row[selectedValue] ? row[selectedValue].replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()) : 'Unknown';
+                });
+                setTableData(data.rows);
+                setTableColumns(formatColumnValues({ data }));
+
+            } catch (error) {
+                console.error("Failed to fetch data:", error);
+            }
+        }
+        fetchData();
+    }, [selectedValue]);
 
     const tableInstance = useTable(
         {
-            columns: memoizedColumns,
-            data: memoizedData,
+            columns: tableColumns,
+            data: tableData,
             initialState: { pageSize: defaultPageSize }
         },
         useFilters,
@@ -58,18 +111,15 @@ function ReusableDataTable({ data, columns, defaultPageSize = 10, }: DataTablePr
 
     return (
         // Background color and border color are set based on the theme
-        <section className="data-table-common data-table-two rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark  py-4">
-            
+        <div className={
+            `data-table-common data-table-two rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark py-4 ${classNames}`}>
+
             {/* 
                 Table header / Search bar 
                 Contains the search bar and the dropdown for the number of rows to display
-                Flexbos with justify-between to align the elements
-
-                how do I move the search bar to the center? Provide a solution below
-
             */}
-            <div className="flex items-center justify-center border-b border-stroke px-8 pb-4 align-middle">
-                
+            <div className="flex items-center justify-between border-b border-stroke px-8 pb-4 align-middle gap-2 sm:gap-10">
+
                 <div className="w-full max-w-md">
                     <input
                         type="text"
@@ -83,101 +133,106 @@ function ReusableDataTable({ data, columns, defaultPageSize = 10, }: DataTablePr
                         className="border border-stroke focus:border-primary outline-none rounded-md w-full px-5 py-2.5"
                     />
                 </div>
-                
-                {/* 
-                    Dropdown for the number of rows to display
-                    Flexbox with items-center to align the elements
-                */}
-                {/* <div className="flex items-center font-medium">
-                    <select
-                        value={pageSize}
-                        onChange={(e) => setPageSize(Number(e.target.value))}
-                    >
-                        {[5, 10, 25, 50].map((size) => (
-                            <option key={size} value={size}>
-                                Show {size}
-                            </option>
-                        ))}
-                    </select>
-                </div> */}
+
+                {dropdownOptions && (
+                    <div className="flex ">
+                        <div className="relative z-20 inline-block">
+                            <select
+                                value={selectedValue}
+                                onChange={handleDropdownChange}
+                                className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 font-medium outline-none text-xs sm:text-lg"
+                            >
+                                {dropdownOptions.map(option => (
+                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                ))}
+                            </select>
+                            <span className="absolute top-1/2 right-1 z-10 -translate-y-1/2">
+                                <svg
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 18 18"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M8.99995 12.8249C8.8312 12.8249 8.69058 12.7687 8.54995 12.6562L2.0812 6.2999C1.82808 6.04678 1.82808 5.65303 2.0812 5.3999C2.33433 5.14678 2.72808 5.14678 2.9812 5.3999L8.99995 11.278L15.0187 5.34365C15.2718 5.09053 15.6656 5.09053 15.9187 5.34365C16.1718 5.59678 16.1718 5.99053 15.9187 6.24365L9.44995 12.5999C9.30933 12.7405 9.1687 12.8249 8.99995 12.8249Z"
+                                        fill="#64748B"
+                                    />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* 
-            Class names are set based on the theme
-            Table is set to 100% width
-            Border collapse is set to collapse
-            Break words are set to break
-            Table is set to auto overflow
-            Padding is set to 4px
-            Overflow is set to auto for medium screens and above
-            Table is set to fixed for medium screens and above
-            Padding is set to 8px for medium screens and above
+                Table body 
+                Contains the table itself
             */}
-
-            <table 
-            {...getTableProps()}
-            className="datatable-table w-full border-collapse break-words table-auto overflow-hidden px-4 md:overflow-auto md:table-fixed md:px-8"
+            <table
+                {...getTableProps()}
+                className="datatable-table w-full border-collapse break-words table-auto overflow-hidden px-4 md:overflow-auto md:table-fixed md:px-8"
             >
                 <thead>
                     {headerGroups.map((headerGroup) => {
                         const { key, ...restHeaderGroupProps } = headerGroup.getHeaderGroupProps();
                         return (
                             <tr key={key} {...restHeaderGroupProps}>
-                            {headerGroup.headers.map((column) => {
-                                const { key: headerKey, ...restHeaderProps } = column.getHeaderProps(column.getSortByToggleProps());
-                                return (
-                                    <th key={headerKey} {...restHeaderProps}>
+                                {headerGroup.headers.map((column) => {
+                                    const { key: headerKey, ...restHeaderProps } = column.getHeaderProps(column.getSortByToggleProps());
+                                    return (
+                                        <th key={headerKey} {...restHeaderProps}>
 
-                                        {/* 
+                                            {/* 
                                         Flexbox with items-center to align the elements
                                         Column header text
                                         If the column is sorted, display the sort icon
                                     */}
-                                        <div className="flex items-center justify-center">
-                                            <span>{column.render("Header")}</span>
-                                            {/* 
+                                            <div className="flex items-center justify-center">
+                                                <span>{column.render("Header")}</span>
+                                                {/* 
                                         Add space between the column header text and the sort icon
                                         */}
-                                            <div className="inline-flex flex-col space-y-[2px] ml-2">
-                                                {/*  Up arrow */}
-                                                <span className="inline-block">
-                                                    <svg
-                                                        className="fill-current"
-                                                        width="10"
-                                                        height="5"
-                                                        viewBox="0 0 10 5"
-                                                        fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                    >
-                                                        <path d="M5 0L0 5H10L5 0Z" fill="" />
-                                                    </svg>
-                                                </span>
-                                                {/*  Down arrow */}
-                                                <span className="inline-block">
-                                                    <svg
-                                                        className="fill-current"
-                                                        width="10"
-                                                        height="5"
-                                                        viewBox="0 0 10 5"
-                                                        fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                    >
-                                                        <path
-                                                            d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
-                                                            fill=""
-                                                        />
-                                                    </svg>
-                                                </span>
+                                                <div className="inline-flex flex-col space-y-[2px] ml-2">
+                                                    {/*  Up arrow */}
+                                                    <span className="inline-block">
+                                                        <svg
+                                                            className="fill-current"
+                                                            width="10"
+                                                            height="5"
+                                                            viewBox="0 0 10 5"
+                                                            fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                                        </svg>
+                                                    </span>
+                                                    {/*  Down arrow */}
+                                                    <span className="inline-block">
+                                                        <svg
+                                                            className="fill-current"
+                                                            width="10"
+                                                            height="5"
+                                                            viewBox="0 0 10 5"
+                                                            fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path
+                                                                d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                                                fill=""
+                                                            />
+                                                        </svg>
+                                                    </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </th>
-                                );
-                            })}
-                        </tr>
-                    );
-})}
+                                        </th>
+                                    );
+                                })}
+                            </tr>
+                        );
+                    })}
                 </thead>
-                
+
                 <tbody {...getTableBodyProps()}>
                     {page.map((row) => {
                         prepareRow(row);
@@ -191,7 +246,7 @@ function ReusableDataTable({ data, columns, defaultPageSize = 10, }: DataTablePr
                                             {cell.render("Cell")}
                                         </td>
                                     );
-                    })}
+                                })}
                             </tr>
                         );
                     })}
@@ -272,8 +327,40 @@ function ReusableDataTable({ data, columns, defaultPageSize = 10, }: DataTablePr
 
 
 
-        </section>
+        </div>
     );
 }
 
 export default ReusableDataTable;
+
+
+const CATEGORIES = [
+    {
+        category: 'artist', groupings: ['artist', 'artist_id']
+    },
+    {
+        category: 'main_genre', groupings: ['main_genre']
+    },
+    {
+        category: 'secondary_genre', groupings: ['secondary_genre']
+    },
+    {
+        category: 'song', groupings: ['song', 'track_id']
+    }
+]
+
+const getDropdownLabel = (value: string) => {
+    const words = value.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1));
+    return words.join(' ');
+}
+
+export const dropdownOptions = CATEGORIES.map((cat) => {
+    return { value: cat.category, label: getDropdownLabel(cat.category) };
+});
+
+
+function getDropdownGroupings(category: string) {
+    const grouping = CATEGORIES.find((cat) => cat.category === category).groupings;
+    return grouping
+}
+

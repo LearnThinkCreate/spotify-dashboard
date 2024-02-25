@@ -1,4 +1,5 @@
 import pg from "pg";
+// import { unstable_noStore as noStore } from 'next/cache';
 var types = require("pg").types;
 require("dotenv").config();
 
@@ -8,6 +9,8 @@ const pool = new Pool({
   connectionString: process.env.POSTGRES_URL,
 });
 
-export const query = (text: string, values?: any[]): Promise<pg.Result> => {
+const query = (text: string, values?: any[]): Promise<pg.Result> => {
   return pool.query(text, values);
 };
+
+export default query;

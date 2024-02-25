@@ -1,9 +1,11 @@
-import { query } from "./index";
+import query from "./index";
 import { querySpotifyDataParams } from "./querySpotifyData";
 import { createQueryFilters, formatQueryReturn } from "./utils";
 
 interface aggregateQualifyingDataParams extends querySpotifyDataParams {
-  minYears: number;
+  minYears?: number;
+  timeSelection?: string;
+  dateGrouping?: "year" | "month" | "day";
 }
 
 export default async function qualifyingAnnualData({
@@ -12,21 +14,36 @@ export default async function qualifyingAnnualData({
   limit = 6,
   minYears = null,
   filters = [],
+  timeSelection = "hours_played",
+  dateGrouping = "year",
 }: aggregateQualifyingDataParams): Promise<any> {
   // Only include categories with minYears of data
   const categoryYearCte = `
                     CategoryYearCount AS (
                         SELECT
                             ${fields.join(", ")},
-                            COUNT(DISTINCT year) as year_count
+                            COUNT(DISTINCT ${dateGrouping}) as year_count
                         FROM spotify_data_overview
                         WHERE
                             ${fields.join(", ")} IS NOT NULL
                             AND ${fields.join(", ")} <> '' 
                             ${createQueryFilters({ filters })}
                         GROUP BY ${fields.join(", ")}
-                        HAVING COUNT(DISTINCT year) >= ${minYears}
+                        HAVING COUNT(DISTINCT ${dateGrouping}) >= ${minYears}
                     ),`;
+
+  let totalHoursPlayedFilters;
+  if (minYears) {
+    totalHoursPlayedFilters = `
+                        WHERE 
+                            ${fields.join(", ")} IN (SELECT ${fields.join(
+      ", "
+    )} FROM CategoryYearCount)
+                            ${createQueryFilters({ filters })}`;
+  } else {
+    totalHoursPlayedFilters =
+      filters.length > 0 ? `WHERE ${createQueryFilters({ filters })}` : "";
+  }
 
   const result = await query(`
                     WITH
@@ -34,44 +51,28 @@ export default async function qualifyingAnnualData({
                     TotalHoursPlayed AS (
                         SELECT
                             ${fields.join(", ")},
-                            SUM(ms_played) / 3600000 as total_hours_played
+                            SUM(${timeSelection}) as total_hours_played
                         FROM spotify_data_overview
-                        ${
-                          minYears
-                            ? `WHERE 
-                                    ${fields.join(
-                                      ", "
-                                    )} IN (SELECT ${fields.join(
-                                ", "
-                              )} FROM CategoryYearCount)
-                                    ${
-                                      filters.length > 0
-                                        ? "AND" +
-                                          createQueryFilters({ filters })
-                                        : ""
-                                    }
-                                    `
-                            : createQueryFilters({ filters })
-                        }
+                        ${totalHoursPlayedFilters}
                         GROUP BY ${fields.join(", ")}
 
         ORDER BY total_hours_played DESC
                         LIMIT ${limit}
                     ), CategoryHistory AS (
                         SELECT
-                            year,
+                            ${dateGrouping},
                             ${fields.join(", ")},
-                            SUM(ms_played) / 3600000 as hours_played
+                            SUM(${timeSelection}) as ${timeSelection}
                         FROM spotify_data_overview
                         WHERE ${fields.join(", ")} IN (SELECT ${fields.join(
     ", "
   )} FROM TotalHoursPlayed)
-                        ${createQueryFilters({ filters })}
-                        GROUP BY year, ${fields.join(", ")}
+  ${filters.length > 0 ? `AND ${createQueryFilters({ filters })}` : ""}
+                        GROUP BY ${dateGrouping}, ${fields.join(", ")}
                     )
                     SELECT *
                     FROM CategoryHistory
-                    ORDER BY year, hours_played DESC;
+                    ORDER BY ${dateGrouping}, ${timeSelection} DESC;
                 `);
 
   return formatQueryReturn({
@@ -79,8 +80,8 @@ export default async function qualifyingAnnualData({
     returnType,
     graphColumns: {
       category: fields[0],
-      x_axis: "year",
-      y_axis: "hours_played",
+      x_axis: dateGrouping,
+      y_axis: timeSelection,
     },
   });
 }
