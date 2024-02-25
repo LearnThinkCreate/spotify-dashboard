@@ -13,7 +13,7 @@ const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 export default function LineChart({
     className = '',
     type = 'line',
-    // series, 
+    series, 
     // title,
     height,
     // yaxisTitle = 'Hours',
@@ -24,16 +24,13 @@ export default function LineChart({
 }: BaseChartProps) {
 
     const [dropdownValue, setDropdownValue] = useState(defaultDropdownValue);
-    const [spotifyData, setSpotifyData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [spotifyData, setSpotifyData] = useState(series);
 
     const yaxisTitle = 'Hours Played';
 
     const handleDropdownChange = (value: string) => {
         setDropdownValue(value);
-    };
 
-    useEffect(() => {
         const queryParams = new URLSearchParams();
 
         const filters = '';
@@ -42,7 +39,9 @@ export default function LineChart({
         const timeSelection = 'hours_played';
         const dateGrouping = 'year';
 
-        queryParams.append('fields', dropdownValue);
+        queryParams.append('returnType', 'graph');
+
+        queryParams.append('fields', value);
         queryParams.append('returnType', 'graph');
         queryParams.append('limit', limit.toString());
         queryParams.append('minYears', minYears.toString());
@@ -51,15 +50,16 @@ export default function LineChart({
         queryParams.append('filters', filters);
 
 
+
         const fetchData = async () => {
             const res = await fetch(`/api/qualifyingAnnualData?${queryParams.toString()}`);
             const data = await res.json();
             setSpotifyData(data);
-            setLoading(false);
         };
 
         fetchData();
-    }, [dropdownValue]);
+
+    };
 
 
     const LineGraphOption: ApexOptions = {
@@ -172,31 +172,22 @@ export default function LineChart({
         },
     };
 
-    if (loading) {
-        return (
-            <div className={`${className}`}>
-                <Loading />
-            </div>
-        );
-    
-    } else {
-        return (
-            <ChartWrap 
-                title={`Top ${10} ${getDropdownLabel(dropdownValue)}s`} 
-                classNames={className} 
-                dropdownOptions={dropdownOptions} 
-                onDropdownChange={handleDropdownChange} 
-                defaultDropdownValue={defaultDropdownValue}
-            >
-                <ApexCharts 
-                    options={LineGraphOption} 
-                    series={spotifyData} 
-                    type={type} 
-                    height={height ? height : ''} 
-                />
-            </ChartWrap> 
-        );
-    }
+    return (
+        <ChartWrap 
+            title={`Top ${10} ${getDropdownLabel(dropdownValue)}s`} 
+            classNames={className} 
+            dropdownOptions={dropdownOptions} 
+            onDropdownChange={handleDropdownChange} 
+            defaultDropdownValue={defaultDropdownValue}
+        >
+            <ApexCharts 
+                options={LineGraphOption} 
+                series={spotifyData} 
+                type={type} 
+                height={height ? height : ''} 
+            />
+        </ChartWrap> 
+    );
 }
 
 const CATEGORIES = [

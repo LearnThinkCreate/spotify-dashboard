@@ -90,7 +90,6 @@ ${filters.length > 0 ? `AND ${createQueryFilters({ filters })}` : ""}
   ORDER BY ${dateGrouping}, ${timeSelection} DESC;
 `
 
-
   try {
     const result = await query(queryString);
 
