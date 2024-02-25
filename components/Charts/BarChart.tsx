@@ -63,6 +63,7 @@ export default function BarChart({
             try {
                 const response = await fetch(`/api/querySpotifyData?${queryParams}`);
                 const data = await response.json();
+                console.log(data);
                 setSpotifyData(data);
                 setLoading(false);
             } catch (error) {

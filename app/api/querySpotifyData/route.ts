@@ -22,7 +22,6 @@ export async function GET(request: NextRequest) {
   const returnType = url.searchParams.get('returnType') as validReturnTypes | undefined;
   const graphColumns = url.searchParams.get('graphColumns') ? JSON.parse(url.searchParams.get('graphColumns')) : {};
 
-
   const queryString = `
                 SELECT
                     ${fields.join(", ")}
@@ -32,6 +31,7 @@ export async function GET(request: NextRequest) {
                 ${orderBy.length > 0 ? `ORDER BY ${orderBy.join(", ")}` : ""}
                 ${limit ? `LIMIT ${limit}` : ""}
                 `;
+
 
   try {
     const result = await query(queryString);
