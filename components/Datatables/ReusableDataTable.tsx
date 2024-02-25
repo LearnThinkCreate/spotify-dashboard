@@ -33,27 +33,25 @@ function ReusableDataTable({
 }: DataTableProps
 ) {
     const [selectedValue, setSelectedValue] = useState(defaultDropdownValue || (dropdownOptions ? dropdownOptions[0].value : null));
-    const [tableData, setTableData] = useState([]);
-    const [tableColumns, setTableColumns] = useState([]);
+    const [tableData, setTableData] = useState(data);
+    const [tableColumns, setTableColumns] = useState(columns);
 
     function handleDropdownChange(e: React.ChangeEvent<HTMLSelectElement>) {
         const value = e.target.value;
         setSelectedValue(value);
-    }
 
-    useEffect(() => {
         const queryParams = new URLSearchParams();
 
         const timeDuration = 'hours';
         const timeSelection = 'hours_played';
-        const groupings = getDropdownGroupings(selectedValue);
+        const groupings = getDropdownGroupings(value);
 
         const sqlQuery = `
             SELECT
-                ${selectedValue},
+                ${value},
                 ROUND(SUM(${timeSelection})::numeric, 2) AS ${timeSelection}
             FROM spotify_data_overview
-            WHERE (${selectedValue} IS NOT NULL AND ${selectedValue} != '') 
+            WHERE (${value} IS NOT NULL AND ${value} != '') 
             GROUP BY ${groupings.join(', ')}
             ORDER BY ${timeSelection} DESC
             LIMIT 50
@@ -66,7 +64,7 @@ function ReusableDataTable({
                 const response = await fetch(`/api/query?${queryParams}`);
                 const data = await response.json();
                 data.rows.forEach((row) => {
-                    row[selectedValue] = row[selectedValue] ? row[selectedValue].replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()) : 'Unknown';
+                    row[value] = row[value] ? row[value].replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()) : 'Unknown';
                 });
                 setTableData(data.rows);
                 setTableColumns(formatColumnValues({ data }));
@@ -76,7 +74,8 @@ function ReusableDataTable({
             }
         }
         fetchData();
-    }, [selectedValue]);
+    }
+
 
     const tableInstance = useTable(
         {

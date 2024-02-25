@@ -6,73 +6,65 @@ import dynamic from 'next/dynamic';
 import { BaseChartProps } from './definitions';
 import { pastel_colors } from './utils';
 import ChartWrap from './ChartWrap';
-import Loading from '@/components/common/Loader';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 export default function BarChart({
     className = '',
+    series,
     height,
     chartId = '',
-    // defaultDropdownValue = null,
+    defaultDropdownValue = null,
 }: BaseChartProps) {
 
-    const [dropdownValue, setDropdownValue] = useState('song');
-    const [spotifyData, setSpotifyData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [dropdownValue, setDropdownValue] = useState(defaultDropdownValue);
+    const [spotifyData, setSpotifyData] = useState(series);
 
     const yaxisTitle = 'Hours Played';
 
     const handleDropdownChange = (value: string) => {
         setDropdownValue(value);
-    };
 
-    useEffect(() => {
+        const queryParams = new URLSearchParams();
+
+        const filters = [
+            // dateFilters.dateFilter ? dateFilters.dateFilter : '',
+            `${value} IS NOT NULL`,
+            `${value} != ''`,
+        ]
+        const fields = [value, 'SUM(hours_played) AS hours_played'];
+        const groupings = getDropdownGroupings(value);
+        const limit = 10;
+        
+
+        // Appending each field individually
+        fields.forEach(field => {
+            queryParams.append('fields', field);
+        });
+        filters.forEach(filter => {
+            queryParams.append('filters', filter);
+        });
+        groupings.forEach(grouping => {
+            queryParams.append('groupings', grouping);
+        });
+        queryParams.append('orderBy', 'hours_played DESC');
+        queryParams.append('limit', limit.toString());
+        queryParams.append('returnType', 'graph');
+        queryParams.append('graphColumns', JSON.stringify({
+            category: "",
+            x_axis: value,
+            y_axis: "hours_played",
+        }));
+
         const fetchData = async () => {
-            const queryParams = new URLSearchParams();
-
-            const filters = [
-                // dateFilters.dateFilter ? dateFilters.dateFilter : '',
-                `${dropdownValue} IS NOT NULL`,
-                `${dropdownValue} != ''`,
-            ]
-            const fields = [dropdownValue, 'SUM(hours_played) AS hours_played'];
-            const groupings = getDropdownGroupings(dropdownValue);
-            const limit = 10;
-            
-
-            // Appending each field individually
-            fields.forEach(field => {
-                queryParams.append('fields', field);
-            });
-            filters.forEach(filter => {
-                queryParams.append('filters', filter);
-            });
-            groupings.forEach(grouping => {
-                queryParams.append('groupings', grouping);
-            });
-            queryParams.append('orderBy', 'hours_played DESC');
-            queryParams.append('limit', limit.toString());
-            queryParams.append('returnType', 'graph');
-            queryParams.append('graphColumns', JSON.stringify({
-                category: "",
-                x_axis: dropdownValue,
-                y_axis: "hours_played",
-            }));
-
-            try {
-                const response = await fetch(`/api/querySpotifyData?${queryParams}`);
-                const data = await response.json();
-                console.log(data);
-                setSpotifyData(data);
-                setLoading(false);
-            } catch (error) {
-                console.error("Failed to fetch data:", error);
-            }
+            const response = await fetch(`/api/querySpotifyData?${queryParams}`);
+            const data = await response.json();
+            setSpotifyData(data);
         };
 
         fetchData();
-    }, [dropdownValue]);
+    };
+
 
     const BarGraphOption: ApexOptions = {
         colors: pastel_colors,
@@ -87,14 +79,14 @@ export default function BarChart({
             events: {
                 click: function (chart, w, e) {
                     // console.log(chart, w, e)
-                    console.log('chart ' + chart);
-                    console.log(chart);
-                    console.log('');
-                    console.log('w ' + w);
-                    console.log(w);
-                    console.log('');
-                    console.log('e ' + e);
-                    console.log(e);
+                    // console.log('chart ' + chart);
+                    // console.log(chart);
+                    // console.log('');
+                    // console.log('w ' + w);
+                    // console.log(w);
+                    // console.log('');
+                    // console.log('e ' + e);
+                    // console.log(e);
 
                 }
             },
@@ -184,31 +176,24 @@ export default function BarChart({
 
 
 
-    if (loading) {
-        <div className={`${className}`}>
-            <Loading />
-        </div>
-
-    } else {
-        return (
-            <ChartWrap
-                title={`Top 10 ${getDropdownLabel(dropdownValue)}s`}
-                classNames={className}
-                dropdownOptions={dropdownOptions}
-                onDropdownChange={handleDropdownChange}
-                defaultDropdownValue={'song'}
-            >
-                {spotifyData &&
-                    <ApexCharts
-                        options={BarGraphOption}
-                        series={spotifyData}
-                        type="bar"
-                        height={height ? height : ''}
-                    />
-                }
-            </ChartWrap>
-        );
-    }
+    return (
+        <ChartWrap
+            title={`Top 10 ${getDropdownLabel(dropdownValue)}s`}
+            classNames={className}
+            dropdownOptions={dropdownOptions}
+            onDropdownChange={handleDropdownChange}
+            defaultDropdownValue={'song'}
+        >
+            {spotifyData &&
+                <ApexCharts
+                    options={BarGraphOption}
+                    series={spotifyData}
+                    type="bar"
+                    height={height ? height : ''}
+                />
+            }
+        </ChartWrap>
+    );
 
     // return (
     //     <ChartWrap

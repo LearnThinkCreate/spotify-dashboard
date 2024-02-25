@@ -1,43 +1,47 @@
-import React from "react";
 import { Suspense } from "react";
-import BarChart from "@/components/Charts/BarChart";
-import LineChart from "@/components/Charts/LineChart";
-import ReusableDataTable from "@/components/Datatables/ReusableDataTable";
+import LineChartWrapper from "@/ui/LineChartWrapper";
+import BarChartWrapper from "@/ui/BarChartWrapper";
+import DataTableWrapper from "@/ui/DataTableWrapper";
 
-const Dashboard: React.FC = () => {
+export default async function Dashboard() {
 
   return (
-    <div className="grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5">
-      
-      <ReusableDataTable
-        data={[]}
-        columns={[]}
-        defaultPageSize={5}
-        classNames="col-span-12 xl:col-span-5"
-      />
 
-      <LineChart
-          className="col-span-12 xl:col-span-7"
-          height={450}
-          chartId="test1"
-          defaultDropdownValue="song"
-        />
-
-
-      <BarChart
-        className="col-span-12 xl:col-span-7"
-        height={300}
-        chartId="test"
-      />
-
-
-      <LineChart
-        className="col-span-12 xl:col-span-5"
-        height={300}
-        chartId="test"
-      />
-    </div>
+    <>
+      <div className="grid grid-cols-3 gap-4">
+        <div className="">
+          <Suspense fallback={<div>Loading...</div>}>
+            <DataTableWrapper defaultDropdownValue="main_genre" />
+          </Suspense>
+        </div>
+        <div className="col-span-2 ...">
+          <Suspense fallback={<div>Loading...</div>}>
+            <LineChartWrapper
+              height={430}
+              chartId="test"
+              defaultDropdownValue="main_genre"
+            />
+          </Suspense>
+        </div>
+        <div >
+          <Suspense fallback={<div>Loading...</div>}>
+            <BarChartWrapper
+              height={450}
+              chartId="test"
+              defaultDropdownValue="artist"
+            />
+          </Suspense>
+        </div>
+        <div className="col-span-2 ...">
+          <Suspense fallback={<div>Loading...</div>}>
+            <LineChartWrapper
+              height={450}
+              chartId="test"
+              defaultDropdownValue="artist"
+            />
+          </Suspense>
+        </div>
+      </div>
+    </>
   )
 }
-
-export default Dashboard;
