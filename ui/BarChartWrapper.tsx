@@ -4,11 +4,13 @@ import BarChart from "@/components/Charts/BarChart";
 export default async function BarChartWrapper({
     height,
     chartId,
-    defaultDropdownValue = 'song'
+    defaultDropdownValue = 'song',
+    classNames,
 }: {
     height?: number,
     chartId?: string,
-    defaultDropdownValue?: string
+    defaultDropdownValue?: string,
+    classNames?: string
 }) {
 
     const initialData = await querySpotifyData({
@@ -31,6 +33,7 @@ export default async function BarChartWrapper({
             chartId={chartId}
             defaultDropdownValue={defaultDropdownValue}
             series={initialData}
+            className={classNames}
         />
     )
 

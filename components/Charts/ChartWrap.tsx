@@ -32,7 +32,7 @@ const ChartWrap: React.FC<ChartWrapProps> = ({
     };
 
     return (
-        <div className={`bg-white border border-stroke dark:bg-boxdark dark:border-strokedark rounded-sm shadow-default px-5 pt-7.5 pb-5 sm:px-7.5 ${classNames}`}>
+        <div className={`bg-white border border-stroke dark:bg-boxdark dark:border-strokedark rounded-sm shadow-default px-3 pt-7.5 pb-5 sm:px-4 ${classNames}`}>
             <div className={` ${dropdownOptions ? 'flex flex-row gap-2 items-center justify-between mb-6' : 'flex items-center justify-center'}`}>
                 {title && <div className={`${dropdownOptions ? 'flex ' : 'flex items-center justify-center'}`}><h2 className="text-sm sm:text-xl font-bold">{title}</h2></div>}
                 {dropdownOptions && (
@@ -65,8 +65,12 @@ const ChartWrap: React.FC<ChartWrapProps> = ({
                     </div>
                 )}
             </div>
-            <div>
+            <div className="grid grid-cols-1 justify-center">
+            <div className="">
+                {/* <span className="block w-full align-middle"> */}
                 {children}
+                {/* </span> */}
+            </div>
             </div>
         </div>
     );

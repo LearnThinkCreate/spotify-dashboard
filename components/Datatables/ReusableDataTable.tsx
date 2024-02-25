@@ -344,7 +344,7 @@ const CATEGORIES = [
         category: 'secondary_genre', groupings: ['secondary_genre']
     },
     {
-        category: 'song', groupings: ['song', 'track_id']
+        category: 'song', groupings: ['song']
     }
 ]
 
