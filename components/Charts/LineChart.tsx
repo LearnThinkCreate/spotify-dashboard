@@ -71,7 +71,6 @@ export default function LineChart({
         const res = await fetch(`/api/qualifyingAnnualData?${queryParams.toString()}`);
         const data = await res.json();
         setSpotifyData(data);
-        console.log("data", data);  
     };
 
     const handleDropdownChange = (value: string) => {
