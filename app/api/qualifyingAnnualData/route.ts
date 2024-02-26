@@ -103,6 +103,7 @@ ${filters.length > 0 ? `AND ${createQueryFilters({ filters })}` : ""}
       },
     });
 
+
     return new NextResponse(JSON.stringify(formatedResult), {
       status: 200,
       headers: {

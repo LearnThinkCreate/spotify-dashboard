@@ -1,38 +1,58 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
 import { BaseChartProps } from './definitions';
 import { pastel_colors } from './utils';
 import ChartWrap from './ChartWrap';
+import { usePathname, useSearchParams } from 'next/navigation'
+import { generateDateFilters } from '@/db/utils';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 export default function BarChart({
     className = '',
-    series,
+    // series,
     height,
     chartId = '',
     defaultDropdownValue = null,
+    initialYaxisTitle = 'Hours Played'
 }: BaseChartProps) {
 
     const [dropdownValue, setDropdownValue] = useState(defaultDropdownValue);
-    const [spotifyData, setSpotifyData] = useState(series);
+    const [spotifyData, setSpotifyData] = useState();
+    const [yaxisTitle, setYaxisTitle] = useState(initialYaxisTitle);
 
-    const yaxisTitle = 'Hours Played';
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
-    const handleDropdownChange = (value: string) => {
-        setDropdownValue(value);
+    const [year, setYear] = useState(null);
+    const [month, setMonth] = useState(null);
 
+    const fetchData = async (
+        value: string, 
+        yearFilter: number | any = year,
+        monthFilter: number | any = month
+        ) => {
         const queryParams = new URLSearchParams();
-
+        const dateFilters = generateDateFilters(monthFilter, yearFilter);
+        const timeDuration = dateFilters ? dateFilters.sum_units : "hours";
+        const timeSelection = timeDuration === "hours" ? "hours_played" : "minutes_played";
+        
+        setYaxisTitle(timeDuration === 'hours' ? 'Hours Played' : 'Minutes Played');
+        
         const filters = [
             // dateFilters.dateFilter ? dateFilters.dateFilter : '',
             `${value} IS NOT NULL`,
             `${value} != ''`,
-        ]
-        const fields = [value, 'SUM(hours_played) AS hours_played'];
+        ];
+
+        if (dateFilters.dateFilter) {
+            filters.push(dateFilters.dateFilter);
+        }
+
+        const fields = [value, `SUM(${timeSelection}) AS ${timeSelection}`];
         const groupings = getDropdownGroupings(value);
         const limit = 10;
         
@@ -47,22 +67,31 @@ export default function BarChart({
         groupings.forEach(grouping => {
             queryParams.append('groupings', grouping);
         });
-        queryParams.append('orderBy', 'hours_played DESC');
+        queryParams.append('orderBy', `${timeSelection} DESC`);
         queryParams.append('limit', limit.toString());
         queryParams.append('returnType', 'graph');
         queryParams.append('graphColumns', JSON.stringify({
             category: "",
             x_axis: value,
-            y_axis: "hours_played",
+            y_axis: `${timeSelection}`,
         }));
 
-        const fetchData = async () => {
-            const response = await fetch(`/api/querySpotifyData?${queryParams}`);
-            const data = await response.json();
-            setSpotifyData(data);
-        };
+        const response = await fetch(`/api/querySpotifyData?${queryParams}`);
+        const data = await response.json();
+        setSpotifyData(data);
+    }
 
-        fetchData();
+    useEffect(() => {
+        const currentYear = searchParams.get("year") ? Number(searchParams.get("year")) : null;
+        const currentMonth = searchParams.get("month") ? Number(searchParams.get("month")) : null;
+        setYear(currentYear);
+        setMonth(currentMonth);
+        fetchData(defaultDropdownValue, currentYear, currentMonth);
+    }, [pathname, searchParams])
+
+    const handleDropdownChange = (value: string) => {
+        setDropdownValue(value);
+        fetchData(value);
     };
 
 
@@ -182,37 +211,18 @@ export default function BarChart({
             classNames={className}
             dropdownOptions={dropdownOptions}
             onDropdownChange={handleDropdownChange}
-            defaultDropdownValue={'song'}
+            defaultDropdownValue={defaultDropdownValue}
         >
             {spotifyData &&
                 <ApexCharts
                     options={BarGraphOption}
-                    series={spotifyData}
+                    series={spotifyData ? spotifyData : []}
                     type="bar"
                     height={height ? height : ''}
                 />
             }
         </ChartWrap>
     );
-
-    // return (
-    //     <ChartWrap
-    //         title={title}
-    //         classNames={className}
-    //         dropdownOptions={dropdownOptions}
-    //         onDropdownChange={handleDropdownChange}
-    //         defaultDropdownValue={'song'}
-    //     >
-    //         {spotifyData &&
-    //             <ApexCharts
-    //                 options={BarGraphOption}
-    //                 series={spotifyData ? spotifyData : series}
-    //                 type="bar"
-    //                 height={height ? height : ''}
-    //             />
-    //         }
-    //     </ChartWrap>
-    // );
 }
 
 
@@ -227,7 +237,7 @@ const CATEGORIES = [
         category: 'secondary_genre', groupings: ['secondary_genre']
     },
     {
-        category: 'song', groupings: ['song', 'track_id']
+        category: 'song', groupings: ['song']
     },
     {
         category: 'album', groupings: ['album']

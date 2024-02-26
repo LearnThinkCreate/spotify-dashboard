@@ -20,7 +20,7 @@ export interface BaseChartProps {
   height?: number;
   baseOptions?: ApexOptions;
   additionalOptions?: ApexOptions;
-  yaxisTitle?: string;
+  initialYaxisTitle?: string;
   chartId?: string;
   dropdownOptions?: Array<{ value: string; label: string }>;
   onDropdownChange?: (value: string) => void;

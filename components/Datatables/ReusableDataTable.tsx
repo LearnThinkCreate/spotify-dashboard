@@ -10,6 +10,9 @@ import {
 } from "react-table";
 import '@/app/data-tables-css.css';
 import { formatColumnValues } from "@/db/utils";
+import Dropdown from "@/components/Dropdowns/Dropdown";
+import { usePathname, useSearchParams } from 'next/navigation'
+import { generateDateFilters } from '@/db/utils';
 
 interface TableColumn {
     Header: string; // Key in the data object
@@ -25,25 +28,34 @@ interface DataTableProps {
 }
 
 function ReusableDataTable({
-    data,
+    // data,
     columns,
-    defaultPageSize = 10,
+    defaultPageSize = 5,
     defaultDropdownValue,
     classNames,
 }: DataTableProps
 ) {
     const [selectedValue, setSelectedValue] = useState(defaultDropdownValue || (dropdownOptions ? dropdownOptions[0].value : null));
-    const [tableData, setTableData] = useState(data);
-    const [tableColumns, setTableColumns] = useState(columns);
+    const [tableData, setTableData] = useState([]);
+    const [tableColumns, setTableColumns] = useState([]);
 
-    function handleDropdownChange(e: React.ChangeEvent<HTMLSelectElement>) {
-        const value = e.target.value;
-        setSelectedValue(value);
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
+    const [year, setYear] = useState(null);
+    const [month, setMonth] = useState(null);
+
+    const fetchData = async (
+        value: string,
+        yearFilter: number | any = year,
+        monthFilter: number | any = month
+    ) => {
+        
         const queryParams = new URLSearchParams();
 
-        const timeDuration = 'hours';
-        const timeSelection = 'hours_played';
+        const dateFilters = generateDateFilters(monthFilter, yearFilter);
+        const timeDuration = dateFilters ? dateFilters.sum_units : "hours";
+        const timeSelection = timeDuration === "hours" ? "hours_played" : "minutes_played";
         const groupings = getDropdownGroupings(value);
 
         const sqlQuery = `
@@ -51,30 +63,42 @@ function ReusableDataTable({
                 ${value},
                 ROUND(SUM(${timeSelection})::numeric, 2) AS ${timeSelection}
             FROM spotify_data_overview
-            WHERE (${value} IS NOT NULL AND ${value} != '') 
+            WHERE (${value} IS NOT NULL AND ${value} != '' ${
+            dateFilters.dateFilter ? `AND ${dateFilters.dateFilter}` : ''
+            }) 
             GROUP BY ${groupings.join(', ')}
             ORDER BY ${timeSelection} DESC
             LIMIT 50
         `;
 
-        queryParams.append('query', sqlQuery); 
+        queryParams.append('query', sqlQuery);
 
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`/api/query?${queryParams}`);
-                const data = await response.json();
-                data.rows.forEach((row) => {
-                    row[value] = row[value] ? row[value].replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()) : 'Unknown';
-                });
-                setTableData(data.rows);
-                setTableColumns(formatColumnValues({ data }));
-
-            } catch (error) {
-                console.error("Failed to fetch data:", error);
-            }
+        try {
+            const response = await fetch(`/api/query?${queryParams}`);
+            const data = await response.json();
+            data.rows.forEach((row) => {
+                row[value] = row[value] ? row[value].replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()) : 'Unknown';
+            });
+            setTableData(data.rows);
+            setTableColumns(formatColumnValues({ data }));
+        } catch (error) {
+            console.error("Failed to fetch data:", error);
         }
-        fetchData();
     }
+
+    function handleDropdownChange(e: React.ChangeEvent<HTMLSelectElement>) {
+        const value = e.target.value;
+        setSelectedValue(value);
+        fetchData(value);
+    }
+
+    useEffect(() => {
+        const currentYear = searchParams.get("year") ? Number(searchParams.get("year")) : null;
+        const currentMonth = searchParams.get("month") ? Number(searchParams.get("month")) : null;
+        setYear(currentYear);
+        setMonth(currentMonth);
+        fetchData(defaultDropdownValue, currentYear, currentMonth);
+    }, [pathname, searchParams])
 
 
     const tableInstance = useTable(
@@ -134,33 +158,11 @@ function ReusableDataTable({
                 </div>
 
                 {dropdownOptions && (
-                    <div className="flex ">
-                        <div className="relative z-20 inline-block">
-                            <select
-                                value={selectedValue}
-                                onChange={handleDropdownChange}
-                                className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 font-medium outline-none text-xs sm:text-lg"
-                            >
-                                {dropdownOptions.map(option => (
-                                    <option key={option.value} value={option.value}>{option.label}</option>
-                                ))}
-                            </select>
-                            <span className="absolute top-1/2 right-1 z-10 -translate-y-1/2">
-                                <svg
-                                    width="18"
-                                    height="18"
-                                    viewBox="0 0 18 18"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M8.99995 12.8249C8.8312 12.8249 8.69058 12.7687 8.54995 12.6562L2.0812 6.2999C1.82808 6.04678 1.82808 5.65303 2.0812 5.3999C2.33433 5.14678 2.72808 5.14678 2.9812 5.3999L8.99995 11.278L15.0187 5.34365C15.2718 5.09053 15.6656 5.09053 15.9187 5.34365C16.1718 5.59678 16.1718 5.99053 15.9187 6.24365L9.44995 12.5999C9.30933 12.7405 9.1687 12.8249 8.99995 12.8249Z"
-                                        fill="#64748B"
-                                    />
-                                </svg>
-                            </span>
-                        </div>
-                    </div>
+                    <Dropdown
+                        dropdownOptions={dropdownOptions}
+                        selectedValue={selectedValue}
+                        onDropdownChange={handleDropdownChange}
+                    />
                 )}
             </div>
 

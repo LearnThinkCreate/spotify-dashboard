@@ -47,7 +47,7 @@ export default async function CategoryBarChart({
     return (
         <BarChart
             className={classNames}
-            series={data}
+            // series={data}
             title={title ? title : `Top ${limit} ${category}s`}
             height={height}
             chartId={chartId}

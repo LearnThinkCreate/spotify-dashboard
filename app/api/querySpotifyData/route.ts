@@ -32,7 +32,6 @@ export async function GET(request: NextRequest) {
                 ${limit ? `LIMIT ${limit}` : ""}
                 `;
 
-
   try {
     const result = await query(queryString);
     const data = formatQueryReturn({ data: result, returnType, graphColumns });

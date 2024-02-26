@@ -3,8 +3,8 @@ import Dashboard from "@/ui/Dashboard";
 
 
 
-export default async function Page() {
-
+export default async function Page(
+) {
   return (
     <>
       <Breadcrumb pageName="Spotify History" />

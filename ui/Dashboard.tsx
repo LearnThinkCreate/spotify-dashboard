@@ -1,59 +1,74 @@
 import { Suspense } from "react";
-import LineChartWrapper from "@/ui/LineChartWrapper";
-import BarChartWrapper from "@/ui/BarChartWrapper";
-import DataTableWrapper from "@/ui/DataTableWrapper";
+import PageFilters from "@/ui/PageFilters";
+import BarChart from "@/components/Charts/BarChart";
+import LineChart from "@/components/Charts/LineChart";
+import ReusableDataTable from "@/components/Datatables/ReusableDataTable";
+import AudioFeatureChart from "@/components/Charts/AudioFeatureChart";
 
-export default async function Dashboard() {
 
+export default async function Dashboard(
+) {
   return (
-
     <>
       <div className="grid grid-cols-12 gap-4 justify-stretch">
-        <div className="col-span-12 xl:col-span-4">
-          {/* <Suspense fallback={<div>Loading...</div>}> */}
-          <DataTableWrapper defaultDropdownValue="main_genre" />
-          {/* </Suspense> */}
+        <div className="col-span-2 flex">
+          <PageFilters />
         </div>
-        <div className="col-span-12 xl:col-span-8">
-          {/* <Suspense fallback={<div>Loading...</div>}> */}
-          <LineChartWrapper
-            height={430}
+        <div className="col-span-10 xl:col-span-4 ">
+          <Suspense fallback={<div>Loading...</div>}>
+          <ReusableDataTable defaultDropdownValue="main_genre" classNames="h-full" />
+          </Suspense>
+        </div>
+        <div className="col-span-12 xl:col-span-6">
+          <Suspense fallback={<div>Loading...</div>}>
+          <BarChart
             chartId="test"
-            defaultDropdownValue="main_genre"
+            defaultDropdownValue="song"
+            height={350}
           />
-          {/* </Suspense> */}
+          </Suspense>
         </div>
 
+        <div className="col-span-12 xl:col-span-4">
+          <Suspense fallback={<div>Loading...</div>}>
+          <BarChart
+            chartId="test"
+            defaultDropdownValue="artist"
+            height={250}
+          />
+          </Suspense>
+        </div>
 
 
         <div
           //  className="col-start-1 col-end-3"
-          className="col-span-12 xl:col-span-5"
+          className="col-span-12 xl:col-span-4"
         >
-          {/* <Suspense fallback={<div>Loading...</div>}> */}
-          {/* <div className="flex flex-grow"> */}
-          <BarChartWrapper
-
+          <Suspense fallback={<div>Loading...</div>}>
+          <LineChart
             chartId="test"
-            defaultDropdownValue="song"
-            classNames=""
+            defaultDropdownValue="genre_category"
+            height={250}
           />
-          {/* </div> */}
-          {/* </Suspense> */}
+          </Suspense>
         </div>
 
         <div
           //  className="container col-start-3 col-end-4"
-          className="col-span-12 xl:col-span-7"
+          className="col-span-12 xl:col-span-4"
         >
-          {/* <Suspense fallback={<div>Loading...</div>}> */}
-          <LineChartWrapper
-
+          <Suspense fallback={<div>Loading...</div>}>
+          <AudioFeatureChart
+            type="area"
             chartId="test"
-            defaultDropdownValue="artist"
+            height={250}
+            className="h-full flex flex-col"
           />
-          {/* </Suspense> */}
+          </Suspense>
         </div>
+
+
+
       </div>
     </>
   )

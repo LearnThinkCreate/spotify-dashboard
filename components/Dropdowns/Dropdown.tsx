@@ -6,13 +6,15 @@ interface DropdownProps {
     dropdownOptions: Array<{ value: string; label: string }>;
     selectedValue: string;
     onDropdownChange: (e:  React.ChangeEvent<HTMLSelectElement>) => void;
+    name?: string;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ dropdownOptions, selectedValue, onDropdownChange }) => {
+const Dropdown: React.FC<DropdownProps> = ({ dropdownOptions, selectedValue, onDropdownChange, name }) => {
     return (
-        <div className="flex ">
+        <div className="">
             <div className="relative z-20 inline-block">
                 <select
+                    name={name}
                     value={selectedValue}
                     onChange={onDropdownChange}
                     className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 font-medium outline-none text-xs sm:text-lg"

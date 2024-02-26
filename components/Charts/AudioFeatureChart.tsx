@@ -8,24 +8,17 @@ import dynamic from 'next/dynamic';
 import ChartWrap from './ChartWrap';
 import { usePathname, useSearchParams } from 'next/navigation'
 import { generateDateFilters } from '@/db/utils';
+import { GraphSeries } from '@/db/utils'; 
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-export default function LineChart({
-    className = '',
-    type = 'line',
-    // series,
-    // title,
-    height,
-    // yaxisTitle = 'Hours',
+export default function AudioFeatureChart({
     chartId = '',
-    // dropdownOptions = null,
-    // onDropdownChange = null,
-    defaultDropdownValue = 'main_genre',
+    className = '',
+    type = 'area',
+    height,
 }: BaseChartProps) {
-
-    const [dropdownValue, setDropdownValue] = useState(defaultDropdownValue);
-    const [spotifyData, setSpotifyData] = useState();
+    const [spotifyData, setSpotifyData] = useState(null);
     const [yaxisTitle, setYaxisTitle] = useState('');
 
     const pathname = usePathname();
@@ -35,19 +28,14 @@ export default function LineChart({
     const [month, setMonth] = useState(null);
 
     const fetchData = async (
-        value: string,
-        yearFilter: number | any = year,
-        monthFilter: number | any = month
+        monthFilter: number | any = month,
+        yearFilter: number | any = year
     ) => {
         const queryParams = new URLSearchParams();
         const dateFilters = generateDateFilters(monthFilter, yearFilter);
         const timeDuration = dateFilters ? dateFilters.sum_units : "hours";
-        const timeSelection = timeDuration === "hours" ? "hours_played" : "minutes_played";
 
         setYaxisTitle(timeDuration === 'hours' ? 'Hours Played' : 'Minutes Played');
-
-        const limit = 10;
-        const minYears = !(yearFilter || monthFilter) ? '8' : null;
 
         let dateGrouping;
         if (monthFilter && yearFilter) {
@@ -58,25 +46,49 @@ export default function LineChart({
             dateGrouping = 'year';
         }
 
-        queryParams.append('returnType', 'graph');
+        const queryString = `
+            select
+            ${dateGrouping},
+            ROUND(AVG(energy)::numeric, 3) as energy,
+            ROUND(AVG(valence)::numeric, 3) as valence,
+            ROUND(AVG(speechiness)::numeric, 3) as speechiness,
+            ROUND(AVG(instrumentalness)::numeric, 3) as instrumentalness,
+            ROUND(AVG(liveness)::numeric, 3) as liveness
+            from spotify_data_overview
+            ${dateFilters.dateFilter ? `WHERE ${dateFilters.dateFilter}` : ''}
+            GROUP BY ${dateGrouping}
+            Order by ${dateGrouping} desc;
+        `;
 
-        queryParams.append('fields', value);
-        queryParams.append('returnType', 'graph');
-        queryParams.append('limit', limit.toString());
-        queryParams.append('minYears', minYears);
-        queryParams.append('timeSelection', timeSelection);
-        queryParams.append('dateGrouping', dateGrouping);
-        queryParams.append('filters', dateFilters.dateFilter ? dateFilters.dateFilter : '');
+        queryParams.append('query', queryString);
 
-        const res = await fetch(`/api/qualifyingAnnualData?${queryParams.toString()}`);
-        const data = await res.json();
-        setSpotifyData(data);
-        console.log("data", data);  
-    };
+        console.log("queryString", queryString);
 
-    const handleDropdownChange = (value: string) => {
-        setDropdownValue(value);
-        fetchData(value);
+        try {
+            const response = await fetch(`/api/query?${queryParams}`);
+            const data = await response.json();
+            console.log("data", data);
+
+            const graph = []
+            const fields = ['energy', 'valence', 'speechiness', 'instrumentalness', 'liveness'];
+          
+            fields.forEach((field) => {
+              const series = {
+                name: field,
+                data: []
+              }
+              data.rows.forEach((row) => {
+                series.data.push([row[dateGrouping], row[field]]);
+              })
+              graph.push(series);
+            });
+            setSpotifyData(graph);
+            console.log("graph", graph);
+
+        } catch (error) {
+            console.error("Failed to fetch data:", error);
+        }
+
     };
 
     useEffect(() => {
@@ -84,9 +96,8 @@ export default function LineChart({
         const currentMonth = searchParams.get("month") ? Number(searchParams.get("month")) : null;
         setYear(currentYear);
         setMonth(currentMonth);
-        fetchData(defaultDropdownValue, currentYear, currentMonth);
+        fetchData(currentMonth, currentYear);
     }, [pathname, searchParams])
-
 
     const LineGraphOption: ApexOptions = {
         legend: {
@@ -200,11 +211,8 @@ export default function LineChart({
 
     return (
         <ChartWrap
-            title={`Top ${10} ${getDropdownLabel(dropdownValue)}s`}
+            title={`Audio Features`}
             classNames={className}
-            dropdownOptions={dropdownOptions}
-            onDropdownChange={handleDropdownChange}
-            defaultDropdownValue={defaultDropdownValue}
         >
             {
                 spotifyData && (
@@ -218,27 +226,5 @@ export default function LineChart({
             }
         </ChartWrap>
     );
+
 }
-
-const CATEGORIES = [
-    "main_genre",
-    "secondary_genre",
-    "artist",
-    "album",
-    "song",
-    "genre_category",
-]
-
-// Get the label for the dropdown value
-export const getDropdownLabel = (value: string) => {
-    const words = value.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1));
-    return words.join(' ');
-};
-
-// Create Dropdown options for the CategoryLineGraph, Split underscore and Capitalize the first letter of each category
-export const dropdownOptions = CATEGORIES.map((category) => {
-    return {
-        value: category,
-        label: getDropdownLabel(category),
-    };
-});

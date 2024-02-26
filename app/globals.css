@@ -243,21 +243,21 @@ span.flatpickr-weekday,
   @apply after:hidden before:hidden;
 }
 .datatable-table > thead > tr:first-child > th {
-  @apply font-medium border-transparent pr-2.5 pt-9 pb-2.5;
+  @apply font-medium border-transparent pr-2.5 pt-6 pb-2.5;
 }
 .data-table-common .datatable-table > tbody > tr > td:first-child,
 .data-table-common .datatable-table > thead > tr > th:first-child {
-  @apply pl-8;
+  @apply pl-6;
 }
 .data-table-common .datatable-table > tbody > tr > td:last-child,
 .data-table-common .datatable-table > thead > tr > th:last-child {
-  @apply pr-8;
+  @apply pr-6;
 }
 .data-table-common .datatable-table > thead > tr:last-child > th {
-  @apply !border-b border-stroke dark:border-strokedark pb-6;
+  @apply !border-b border-stroke dark:border-strokedark pb-3;
 }
 .data-table-common .datatable-table > thead > tr:last-child > th input {
-  @apply h-[34px] w-full rounded border border-stroke bg-transparent px-3 text-sm outline-none focus:border-primary dark:border-strokedark dark:bg-meta-4 dark:focus:border-primary;
+  @apply h-[28px] w-full rounded border border-stroke bg-transparent px-3 text-sm font-medium outline-none focus:border-primary dark:border-strokedark dark:bg-meta-4 dark:focus:border-primary;
 }
 .data-table-common .datatable-table > tbody > tr {
   @apply hover:bg-primary hover:bg-opacity-5;
@@ -266,7 +266,7 @@ span.flatpickr-weekday,
   @apply text-primary dark:text-white;
 }
 .data-table-common .datatable-table > tbody > tr> td {
-  @apply py-5 border-b border-stroke dark:border-strokedark font-medium;
+  @apply py-4 border-b border-stroke dark:border-strokedark text-sm;
 }
 .data-table-one .datatable-bottom {
   @apply sm:flex-row-reverse sm:items-center sm:justify-between gap-4 flex-col flex sm:space-x-4 sm:gap-0 after:hidden py-7 px-8;

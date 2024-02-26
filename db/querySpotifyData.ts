@@ -34,7 +34,6 @@ export default async function querySpotifyData({
                 ${orderBy.length > 0 ? `ORDER BY ${orderBy.join(", ")}` : ""}
                 ${limit ? `LIMIT ${limit}` : ""}
                 `;
-  console.log(queryString);
   const result = await query(queryString);
 
   // return result;
