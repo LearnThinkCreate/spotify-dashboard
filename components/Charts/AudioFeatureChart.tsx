@@ -8,7 +8,6 @@ import dynamic from 'next/dynamic';
 import ChartWrap from './ChartWrap';
 import { usePathname, useSearchParams } from 'next/navigation'
 import { generateDateFilters } from '@/db/utils';
-import { GraphSeries } from '@/db/utils'; 
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -51,26 +50,24 @@ export default function AudioFeatureChart({
             ${dateGrouping},
             ROUND(AVG(energy)::numeric, 3) as energy,
             ROUND(AVG(valence)::numeric, 3) as valence,
-            ROUND(AVG(speechiness)::numeric, 3) as speechiness,
             ROUND(AVG(instrumentalness)::numeric, 3) as instrumentalness,
-            ROUND(AVG(liveness)::numeric, 3) as liveness
+            ROUND(AVG(mode)::numeric, 3) as mode
             from spotify_data_overview
             ${dateFilters.dateFilter ? `WHERE ${dateFilters.dateFilter}` : ''}
             GROUP BY ${dateGrouping}
             Order by ${dateGrouping} desc;
         `;
 
-        queryParams.append('query', queryString);
+        console.log(queryString);
 
-        console.log("queryString", queryString);
+        queryParams.append('query', queryString);
 
         try {
             const response = await fetch(`/api/query?${queryParams}`);
             const data = await response.json();
-            console.log("data", data);
 
             const graph = []
-            const fields = ['energy', 'valence', 'speechiness', 'instrumentalness', 'liveness'];
+            const fields = ['energy', 'valence', 'instrumentalness', 'mode'];
           
             fields.forEach((field) => {
               const series = {
@@ -78,12 +75,12 @@ export default function AudioFeatureChart({
                 data: []
               }
               data.rows.forEach((row) => {
-                series.data.push([row[dateGrouping], row[field]]);
+                series.data.push([Number(row[dateGrouping]), row[field]]);
               })
               graph.push(series);
             });
             setSpotifyData(graph);
-            console.log("graph", graph);
+            console.log(graph);
 
         } catch (error) {
             console.error("Failed to fetch data:", error);

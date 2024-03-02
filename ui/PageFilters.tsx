@@ -41,14 +41,14 @@ export default function PageFilters({
             }
         }
 
-        replace(`${pathname}?${params.toString()}`);
+        replace(`${pathname}?${params.toString()}`, { scroll: false });
     }
 
 
     return (
-        <div className="flex-col grow">
-            <div className="h-1/2 flex justify-between">
-                <h2 className="">Year Filter</h2>
+        <div className="grid grid-cols-2 gap-4 grow xl:grid-cols-none xl:flex-col ">
+            <div className="border rounded-lg p-1 flex justify-between items-center xl:border-none xl:p-0 xl:h-1/2">
+                <h2 className="text-xs sm:text-lg">Year Filter</h2>
                 <Dropdown
                     dropdownOptions={yearDropdownOptions}
                     selectedValue={year ? year : "all"}
@@ -56,8 +56,8 @@ export default function PageFilters({
                     name="year"
                 />
             </div>
-            <div className="h-1/2 flex justify-between">
-                <h2 className="">Month Filter</h2>
+            <div className="border xl:border-none rounded-lg p-1 xl:p-0 flex justify-between items-center xl:h-1/2">
+                <h2 className="text-xs sm:text-lg">Month Filter</h2>
                 <Dropdown
                     dropdownOptions={monthDropdownOptions}
                     selectedValue={month ? month : "all"}
@@ -66,6 +66,7 @@ export default function PageFilters({
                 />
             </div>
         </div>
+  
     );
 
 

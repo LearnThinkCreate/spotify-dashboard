@@ -10,11 +10,17 @@ export default async function Dashboard(
 ) {
   return (
     <>
-      <div className="grid grid-cols-12 gap-4 justify-stretch">
-        <div className="col-span-2 flex">
+      <div className="relative flex flex-col">
+      <div className="sticky top-0 left-0 right-0 z-999 py-10 bg-black xl:hidden" >
+      <div className="rounded-lg mx-2 items-center">
           <PageFilters />
         </div>
-        <div className="col-span-10 xl:col-span-4 ">
+      </div>
+      <div className="grid grid-cols-12 gap-4 justify-stretch pt-4 xl:pt-0">
+        <div className="hidden xl:col-span-2 xl:flex">
+          <PageFilters />
+        </div>
+        <div className="col-span-12 xl:col-span-4 ">
           <Suspense fallback={<div>Loading...</div>}>
           <ReusableDataTable defaultDropdownValue="main_genre" classNames="h-full" />
           </Suspense>
@@ -69,6 +75,7 @@ export default async function Dashboard(
 
 
 
+      </div>
       </div>
     </>
   )

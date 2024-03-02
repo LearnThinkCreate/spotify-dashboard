@@ -84,9 +84,10 @@ export default function BarChart({
     useEffect(() => {
         const currentYear = searchParams.get("year") ? Number(searchParams.get("year")) : null;
         const currentMonth = searchParams.get("month") ? Number(searchParams.get("month")) : null;
+        const value = dropdownValue ? dropdownValue : defaultDropdownValue;
         setYear(currentYear);
         setMonth(currentMonth);
-        fetchData(defaultDropdownValue, currentYear, currentMonth);
+        fetchData(value, currentYear, currentMonth);
     }, [pathname, searchParams])
 
     const handleDropdownChange = (value: string) => {

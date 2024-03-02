@@ -17,10 +17,10 @@ const Dropdown: React.FC<DropdownProps> = ({ dropdownOptions, selectedValue, onD
                     name={name}
                     value={selectedValue}
                     onChange={onDropdownChange}
-                    className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 font-medium outline-none text-xs sm:text-lg"
+                    className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 outline-none text-xs sm:text-lg"
                 >
                     {dropdownOptions.map(option => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
+                        <option key={option.value} value={option.value} className="text-xs sm:text-large">{option.label}</option>
                     ))}
                 </select>
                 <span className="absolute top-1/2 right-1 z-10 -translate-y-1/2">

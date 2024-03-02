@@ -151,8 +151,8 @@ export function generateDateFilters(month, year): {
   if (month != null && year == null) {
     let dateFilters = [];
     for (let yr = minYearDate; yr <= currentYear; yr++) {
-      const startOfMonth = new Date(year, month - 1, 1);
-      const endOfMonth = new Date(year, month, 1);
+      const startOfMonth = new Date(yr, month - 1, 1);
+      const endOfMonth = new Date(yr, month, 1);
       dateFilters.push(getDateFilterString(startOfMonth, endOfMonth));
     }
     return { sum_units: 'hours', dateFilter: `(${dateFilters.join(' OR ')})` };
