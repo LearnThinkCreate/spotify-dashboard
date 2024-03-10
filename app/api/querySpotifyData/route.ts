@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
                     ${fields.join(", ")}
                 FROM spotify_data_overview
                 ${filters.length > 0 ? `WHERE ${createQueryFilters({ filters })}` : ""}
-                GROUP BY ${groupings.join(", ")}
+                ${groupings.length > 0 ? `GROUP BY ${groupings.join(", ")}` : ""}
                 ${orderBy.length > 0 ? `ORDER BY ${orderBy.join(", ")}` : ""}
                 ${limit ? `LIMIT ${limit}` : ""}
                 `;

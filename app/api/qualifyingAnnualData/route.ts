@@ -40,8 +40,6 @@ export async function GET(request: NextRequest) {
             COUNT(DISTINCT ${dateGrouping}) as year_count
         FROM spotify_data_overview
         WHERE
-            ${fields.join(", ")} IS NOT NULL
-            AND ${fields.join(", ")} <> '' 
             ${createQueryFilters({ filters })}
         GROUP BY ${fields.join(", ")}
         HAVING COUNT(DISTINCT ${dateGrouping}) >= ${minYears}
@@ -54,7 +52,7 @@ export async function GET(request: NextRequest) {
             ${fields.join(", ")} IN (SELECT ${fields.join(
       ", "
     )} FROM CategoryYearCount)
-            ${createQueryFilters({ filters })}`;
+            ${filters.length > 0 ? `AND ${createQueryFilters({ filters })}` : ""}`
   } else {
     totalHoursPlayedFilters =
       filters.length > 0 ? `WHERE ${createQueryFilters({ filters })}` : "";
@@ -87,7 +85,7 @@ ${filters.length > 0 ? `AND ${createQueryFilters({ filters })}` : ""}
   )
   SELECT *
   FROM CategoryHistory
-  ORDER BY ${dateGrouping}, ${timeSelection} DESC;
+  ORDER BY ${dateGrouping}, ${fields.join(', ')} DESC;
 `
 
   try {

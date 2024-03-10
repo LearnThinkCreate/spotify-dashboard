@@ -55,10 +55,9 @@ export default function AudioFeatureChart({
             from spotify_data_overview
             ${dateFilters.dateFilter ? `WHERE ${dateFilters.dateFilter}` : ''}
             GROUP BY ${dateGrouping}
-            Order by ${dateGrouping} desc;
+            Order by ${dateGrouping};
         `;
-
-        console.log(queryString);
+        
 
         queryParams.append('query', queryString);
 
@@ -75,12 +74,11 @@ export default function AudioFeatureChart({
                 data: []
               }
               data.rows.forEach((row) => {
-                series.data.push([Number(row[dateGrouping]), row[field]]);
+                series.data.push([row[dateGrouping], row[field]]);
               })
               graph.push(series);
             });
             setSpotifyData(graph);
-            console.log(graph);
 
         } catch (error) {
             console.error("Failed to fetch data:", error);
@@ -161,6 +159,7 @@ export default function AudioFeatureChart({
             enabled: false,
         },
         xaxis: {
+            type: 'datetime',
             axisBorder: {
                 show: false,
             },

@@ -43,6 +43,7 @@ export default function LineChart({
         const dateFilters = generateDateFilters(monthFilter, yearFilter);
         const timeDuration = dateFilters ? dateFilters.sum_units : "hours";
         const timeSelection = timeDuration === "hours" ? "hours_played" : "minutes_played";
+        const defaultFilters = [`${value} IS NOT NULL`, `${value} != ''`];
 
         setYaxisTitle(timeDuration === 'hours' ? 'Hours Played' : 'Minutes Played');
 
@@ -58,6 +59,11 @@ export default function LineChart({
             dateGrouping = 'year';
         }
 
+        let filters = defaultFilters;
+        if (dateFilters.dateFilter !== null) {
+            filters.push(dateFilters.dateFilter);
+        }
+
         queryParams.append('returnType', 'graph');
 
         queryParams.append('fields', value);
@@ -66,7 +72,9 @@ export default function LineChart({
         queryParams.append('minYears', minYears);
         queryParams.append('timeSelection', timeSelection);
         queryParams.append('dateGrouping', dateGrouping);
-        queryParams.append('filters', dateFilters.dateFilter ? dateFilters.dateFilter : '');
+        filters.forEach((filter) => {
+            queryParams.append('filters', filter);
+        });
 
         const res = await fetch(`/api/qualifyingAnnualData?${queryParams.toString()}`);
         const data = await res.json();
@@ -153,6 +161,7 @@ export default function LineChart({
             enabled: false,
         },
         xaxis: {
+            type: "datetime",
             axisBorder: {
                 show: false,
             },
@@ -161,7 +170,6 @@ export default function LineChart({
             },
         },
         yaxis: {
-            logarithmic: false,
             title: {
                 style: {
                     fontSize: "10px",

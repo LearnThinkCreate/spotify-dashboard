@@ -3,7 +3,7 @@ import {
   createQueryFilters,
   formatQueryReturn,
   validReturnTypes,
-  GraphColumns
+  GraphColumns,
 } from "./utils";
 
 export interface querySpotifyDataParams {
@@ -27,10 +27,14 @@ export default async function querySpotifyData({
 }: querySpotifyDataParams): Promise<any> {
   const queryString = `
                 SELECT
-                    ${fields.join(", ")}
+                    ${fields.length > 0 ? fields.join(", ") : ""}
                 FROM spotify_data_overview
-                ${filters.length > 0 ? `WHERE ${createQueryFilters({ filters })}` : ""}
-                GROUP BY ${groupings.join(", ")}
+                ${
+                  filters.length > 0
+                    ? `WHERE ${createQueryFilters({ filters })}`
+                    : ""
+                }
+                ${groupings.length > 0 ? `GROUP BY ${groupings.join(", ")}` : ""}
                 ${orderBy.length > 0 ? `ORDER BY ${orderBy.join(", ")}` : ""}
                 ${limit ? `LIMIT ${limit}` : ""}
                 `;
