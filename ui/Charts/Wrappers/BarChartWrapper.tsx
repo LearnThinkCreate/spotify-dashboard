@@ -1,6 +1,6 @@
-import { searchSpotifyData } from "@/db/querySpotifyData";
-import query from "@/db/index";
-import { formatQueryReturn } from "@/db/utils";
+import { searchSpotifyData } from "@/lib/db/querySpotifyData";
+import query from "@/lib/db/index";
+import { formatQueryReturn } from "@/lib/db/utils";
 import BarChart from "@/ui/Charts/BarChart";
 import { generateDateFilters } from "@/ui/utils";
 

@@ -8,8 +8,8 @@ import dynamic from 'next/dynamic';
 import ChartWrap from './ChartWrap';
 import { usePathname, useSearchParams } from 'next/navigation'
 import { generateDateFilters } from "@/ui/utils";
-import { searchAggregateData } from '@/db/qualifyingAnnualData';
-import { formatQueryReturn } from '@/db/utils';
+import { searchAggregateData } from '@/lib/db/qualifyingAnnualData';
+import { formatQueryReturn } from '@/lib/db/utils';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 

@@ -9,7 +9,7 @@ import {
     usePagination,
 } from "react-table";
 import '@/app/data-tables-css.css';
-import { formatColumnValues } from "@/db/utils";
+import { formatColumnValues } from "@/lib/db/utils";
 import Dropdown from "@/ui/Dropdowns/Dropdown";
 import { usePathname, useSearchParams } from 'next/navigation'
 import { generateDateFilters } from '@/ui/utils';

@@ -8,8 +8,8 @@ import { pastel_colors } from "./utils";
 import ChartWrap from "./ChartWrap";
 import { usePathname, useSearchParams } from "next/navigation";
 import { generateDateFilters } from "@/ui/utils";
-import { searchSpotifyData } from "@/db/querySpotifyData";
-import { formatQueryReturn } from "@/db/utils";
+import { searchSpotifyData } from "@/lib/db/querySpotifyData";
+import { formatQueryReturn } from "@/lib/db/utils";
 
 const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 

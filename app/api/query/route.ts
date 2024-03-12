@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import query from '@/db/index';
+import query from '@/lib/db/index';
 
 export async function GET(request: NextRequest) {
     const queryString = new URL(request.url).searchParams.get('query');

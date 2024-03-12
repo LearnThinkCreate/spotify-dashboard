@@ -46,8 +46,8 @@ export default function PageFilters({
 
 
     return (
-        <div className="grid grid-cols-2 gap-4 grow xl:grid-cols-none xl:flex-col ">
-            <div className="border rounded-lg p-1 flex justify-between items-center xl:border-none xl:p-0 xl:h-1/2">
+        <div className="grid grid-cols-4 gap-4 grow ">
+            <div className="grid-cols-1 border rounded-lg p-1 flex justify-between items-center ">
                 <h2 className="text-xs sm:text-lg">Year Filter</h2>
                 <Dropdown
                     dropdownOptions={yearDropdownOptions}
@@ -56,7 +56,7 @@ export default function PageFilters({
                     name="year"
                 />
             </div>
-            <div className="border xl:border-none rounded-lg p-1 xl:p-0 flex justify-between items-center xl:h-1/2">
+            <div className="grid-cols-1 border rounded-lg p-1 flex justify-between items-center ">
                 <h2 className="text-xs sm:text-lg">Month Filter</h2>
                 <Dropdown
                     dropdownOptions={monthDropdownOptions}

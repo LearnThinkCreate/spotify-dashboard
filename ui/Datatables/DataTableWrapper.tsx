@@ -1,4 +1,4 @@
-import { searchSpotifyData } from "@/db/querySpotifyData";
+import { searchSpotifyData } from "@/lib/db/querySpotifyData";
 import ReusableDataTable from "@/ui/Datatables/ReusableDataTable";
 
 export default async function DataTableWrapper({
