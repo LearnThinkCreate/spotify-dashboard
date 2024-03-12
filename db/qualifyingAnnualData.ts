@@ -1,87 +1,78 @@
-import query from "./index";
-import { querySpotifyDataParams } from "./querySpotifyData";
-import { createQueryFilters, formatQueryReturn } from "./utils";
+import { createQueryFilters } from "./utils";
 
-interface aggregateQualifyingDataParams extends querySpotifyDataParams {
+
+interface aggregateQualifyingDataParams {
+  fields: string[];
+  filters?: string[];
+  limit?: number;
   minYears?: number;
   timeSelection?: string;
-  dateGrouping?: "year" | "month" | "day";
+  dateGrouping?: string;
 }
 
-export default async function qualifyingAnnualData({
+export function searchAggregateData({
   fields,
-  returnType = "graph",
-  limit = 6,
-  minYears = null,
   filters = [],
   timeSelection = "hours_played",
   dateGrouping = "year",
-}: aggregateQualifyingDataParams): Promise<any> {
-  // Only include categories with minYears of data
+  limit,
+  minYears,
+}: aggregateQualifyingDataParams): string {
+
   const categoryYearCte = `
-                    CategoryYearCount AS (
-                        SELECT
-                            ${fields.join(", ")},
-                            COUNT(DISTINCT ${dateGrouping}) as year_count
-                        FROM spotify_data_overview
-                        WHERE
-                            ${fields.join(", ")} IS NOT NULL
-                            AND ${fields.join(", ")} <> '' 
-                            ${createQueryFilters({ filters })}
-                        GROUP BY ${fields.join(", ")}
-                        HAVING COUNT(DISTINCT ${dateGrouping}) >= ${minYears}
-                    ),`;
+    CategoryYearCount AS (
+        SELECT
+            ${fields.join(", ")},
+            COUNT(DISTINCT ${dateGrouping}) as year_count
+        FROM spotify_data_overview
+        WHERE
+            ${createQueryFilters({ filters })}
+        GROUP BY ${fields.join(", ")}
+        HAVING COUNT(DISTINCT ${dateGrouping}) >= ${minYears}
+    ),`;
 
   let totalHoursPlayedFilters;
   if (minYears) {
     totalHoursPlayedFilters = `
-                        WHERE 
-                            ${fields.join(", ")} IN (SELECT ${fields.join(
+        WHERE 
+            ${fields.join(", ")} IN (SELECT ${fields.join(
       ", "
     )} FROM CategoryYearCount)
-                            ${createQueryFilters({ filters })}`;
+            ${filters.length > 0 ? `AND ${createQueryFilters({ filters })}` : ""}`
   } else {
     totalHoursPlayedFilters =
       filters.length > 0 ? `WHERE ${createQueryFilters({ filters })}` : "";
   }
 
-  const result = await query(`
-                    WITH
-                    ${minYears ? categoryYearCte : ""}
-                    TotalHoursPlayed AS (
-                        SELECT
-                            ${fields.join(", ")},
-                            SUM(${timeSelection}) as total_hours_played
-                        FROM spotify_data_overview
-                        ${totalHoursPlayedFilters}
-                        GROUP BY ${fields.join(", ")}
+  const queryString = `
+  WITH
+  ${minYears ? categoryYearCte : ""}
+  TotalHoursPlayed AS (
+      SELECT
+          ${fields.join(", ")},
+          SUM(${timeSelection}) as total_hours_played
+      FROM spotify_data_overview
+      ${totalHoursPlayedFilters}
+      GROUP BY ${fields.join(", ")}
 
-        ORDER BY total_hours_played DESC
-                        LIMIT ${limit}
-                    ), CategoryHistory AS (
-                        SELECT
-                            ${dateGrouping},
-                            ${fields.join(", ")},
-                            SUM(${timeSelection}) as ${timeSelection}
-                        FROM spotify_data_overview
-                        WHERE ${fields.join(", ")} IN (SELECT ${fields.join(
-    ", "
-  )} FROM TotalHoursPlayed)
-  ${filters.length > 0 ? `AND ${createQueryFilters({ filters })}` : ""}
-                        GROUP BY ${dateGrouping}, ${fields.join(", ")}
-                    )
-                    SELECT *
-                    FROM CategoryHistory
-                    ORDER BY ${dateGrouping}, ${timeSelection} DESC;
-                `);
+      ORDER BY total_hours_played DESC
+      LIMIT ${limit}
+  ), CategoryHistory AS (
+      SELECT
+          ${dateGrouping},
+          ${fields.join(", ")},
+          SUM(${timeSelection}) as ${timeSelection}
+      FROM spotify_data_overview
+      WHERE ${fields.join(", ")} IN (SELECT ${fields.join(
+  ", "
+)} FROM TotalHoursPlayed)
+${filters.length > 0 ? `AND ${createQueryFilters({ filters })}` : ""}
+      GROUP BY ${dateGrouping}, ${fields.join(", ")}
+  )
+  SELECT *
+  FROM CategoryHistory
+  ORDER BY ${dateGrouping}, ${fields.join(', ')} DESC;
+`
 
-  return formatQueryReturn({
-    data: result,
-    returnType,
-    graphColumns: {
-      category: fields[0],
-      x_axis: dateGrouping,
-      y_axis: timeSelection,
-    },
-  });
+  return queryString;
 }

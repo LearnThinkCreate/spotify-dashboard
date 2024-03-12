@@ -7,7 +7,7 @@ import { pastel_colors } from './utils';
 import dynamic from 'next/dynamic';
 import ChartWrap from './ChartWrap';
 import { usePathname, useSearchParams } from 'next/navigation'
-import { generateDateFilters } from '@/db/utils';
+import { generateDateFilters } from '@/ui/utils';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 

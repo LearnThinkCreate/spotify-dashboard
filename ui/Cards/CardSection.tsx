@@ -1,8 +1,10 @@
 import React, { ReactNode } from 'react';
-import querySpotifyData from '@/db/querySpotifyData';
-import { generateDateFilters } from '@/db/utils';
+import { searchSpotifyData } from '@/db/querySpotifyData';
+import query from '@/db/index';
+import { formatQueryReturn } from '@/db/utils';
+import { generateDateFilters } from '@/ui/utils';
 import CardDataStats from './CardDataSeries';
-import getGenreIcon from "./genre_icons";
+import getGenreIcon from "../genre_icons";
 
 export default async function CardSection({
     searchParams
@@ -24,7 +26,7 @@ export default async function CardSection({
     const timeDuration = dateFilters ? dateFilters.sum_units : "hours";
     let timeSelection = timeDuration === "hours" ? "hours_played" : "minutes_played";
 
-    function getCardData(category: string) {
+    async function getCardData(category: string) {
         let defaultFilters = [];
         if (category !== '') {
             defaultFilters.push(`${category} IS NOT NULL`);
@@ -39,12 +41,18 @@ export default async function CardSection({
             fields.unshift(category);
         }
 
-        return querySpotifyData({
+        const queryString =  searchSpotifyData({
             fields: fields,
             filters: defaultFilters.length > 0 ? defaultFilters : [],
             groupings: category === '' ? undefined : [category],
             orderBy: [`${timeSelection} DESC`],
             limit: 1,
+        });
+
+        const data = await query(queryString);
+
+        return formatQueryReturn({
+            data: data,
             returnType: 'graph',
             graphColumns: {
                 category: "",
@@ -52,6 +60,7 @@ export default async function CardSection({
                 y_axis: timeSelection,
             }
         });
+        
     }
 
     const cardData = await Promise.all(

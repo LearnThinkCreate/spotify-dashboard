@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import Dropdown from '@/components/Dropdowns/Dropdown';
+import Dropdown from '@/ui/Dropdowns/Dropdown';
 
 interface ChartWrapProps {
     title: string;

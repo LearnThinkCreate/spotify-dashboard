@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ApexOptions } from 'apexcharts';
 import { BaseChartProps } from './definitions';
 import { pastel_colors } from './utils';
 import dynamic from 'next/dynamic';
 import ChartWrap from './ChartWrap';
 import { usePathname, useSearchParams } from 'next/navigation'
-import { generateDateFilters } from '@/db/utils';
+import { generateDateFilters } from "@/ui/utils";
+import { searchAggregateData } from '@/db/qualifyingAnnualData';
+import { formatQueryReturn } from '@/db/utils';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -23,7 +25,6 @@ export default function LineChart({
     // onDropdownChange = null,
     defaultDropdownValue = 'main_genre',
 }: BaseChartProps) {
-
     const [dropdownValue, setDropdownValue] = useState(defaultDropdownValue);
     const [spotifyData, setSpotifyData] = useState();
     const [yaxisTitle, setYaxisTitle] = useState('');
@@ -41,14 +42,13 @@ export default function LineChart({
     ) => {
         const queryParams = new URLSearchParams();
         const dateFilters = generateDateFilters(monthFilter, yearFilter);
-        const timeDuration = dateFilters ? dateFilters.sum_units : "hours";
-        const timeSelection = timeDuration === "hours" ? "hours_played" : "minutes_played";
+        const timeSelection = dateFilters.sum_units === "hours" ? "hours_played" : "minutes_played";
         const defaultFilters = [`${value} IS NOT NULL`, `${value} != ''`];
 
-        setYaxisTitle(timeDuration === 'hours' ? 'Hours Played' : 'Minutes Played');
+        setYaxisTitle(dateFilters.sum_units === 'hours' ? 'Hours Played' : 'Minutes Played');
 
         const limit = 10;
-        const minYears = !(yearFilter || monthFilter) ? '8' : null;
+        const minYears = !(yearFilter || monthFilter) ? 8 : null;
 
         let dateGrouping;
         if (monthFilter && yearFilter) {
@@ -64,21 +64,24 @@ export default function LineChart({
             filters.push(dateFilters.dateFilter);
         }
 
-        queryParams.append('returnType', 'graph');
-
-        queryParams.append('fields', value);
-        queryParams.append('returnType', 'graph');
-        queryParams.append('limit', limit.toString());
-        queryParams.append('minYears', minYears);
-        queryParams.append('timeSelection', timeSelection);
-        queryParams.append('dateGrouping', dateGrouping);
-        filters.forEach((filter) => {
-            queryParams.append('filters', filter);
+        const queryString = searchAggregateData({
+            fields: [value],
+            filters,
+            timeSelection,
+            dateGrouping,
+            limit,
+            minYears,
         });
-
-        const res = await fetch(`/api/qualifyingAnnualData?${queryParams.toString()}`);
-        const data = await res.json();
-        setSpotifyData(data);
+        console.log('queryString', queryString);
+        queryParams.append('query', queryString);
+        const response = await fetch(`/api/query?${queryParams}`);
+        const data = await response.json();
+        const formattedData = formatQueryReturn({
+            data,
+            returnType: 'graph',
+            graphColumns: { category: value, x_axis: dateGrouping, y_axis: `${timeSelection}` },
+        });
+        setSpotifyData(formattedData);
     };
 
     const handleDropdownChange = (value: string) => {

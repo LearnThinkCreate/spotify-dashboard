@@ -1,6 +1,8 @@
-import querySpotifyData from "@/db/querySpotifyData";
-import BarChart from "@/components/Charts/BarChart";
-import { generateDateFilters } from "@/db/utils";
+import { searchSpotifyData } from "@/db/querySpotifyData";
+import query from "@/db/index";
+import { formatQueryReturn } from "@/db/utils";
+import BarChart from "@/ui/Charts/BarChart";
+import { generateDateFilters } from "@/ui/utils";
 
 export default async function BarChartWrapper({
     height,
@@ -15,20 +17,13 @@ export default async function BarChartWrapper({
     classNames?: string,
     searchParams?: any
 }) {
-    console.log('Wrapper Params', searchParams)
-    console.log('Type of Wrapper Params', typeof searchParams)
 
     const year = searchParams["year"] ? Number(searchParams["year"]) : null;
     const month = searchParams["month"] ? Number(searchParams["month"]) : null;
 
-    console.log('Year', year, 'Month', month);
-
     const dateFilters = generateDateFilters(month, year);
 
-    console.log('Date Filters', dateFilters);
-
-    const timeDuration = dateFilters ? dateFilters.sum_units : "hours";
-    let timeSelection = timeDuration === "hours" ? "hours_played" : "minutes_played";
+    let timeSelection = dateFilters.sum_units === "hours" ? "hours_played" : "minutes_played";
 
     let defaultFilters = [
         `${defaultDropdownValue} IS NOT NULL`, 
@@ -40,31 +35,33 @@ export default async function BarChartWrapper({
         console.log('Default Filters', defaultFilters);
     }
 
-
-    const initialData = await querySpotifyData({
-        fields:[ defaultDropdownValue, `SUM(${timeSelection}) AS ${timeSelection}` ],
+    const initialQuery = searchSpotifyData({
+        fields: [defaultDropdownValue, `SUM(${timeSelection}) AS ${timeSelection}`],
         filters: defaultFilters,
         groupings: [defaultDropdownValue],
-        orderBy: [`${timeSelection} DESC`],
         limit: 10,
+    });
+
+    const initialData = await query(initialQuery);
+    
+    const formattedData = formatQueryReturn({
+        data: initialData,
         returnType: 'graph',
         graphColumns: {
-            category: "",
+            category: defaultDropdownValue,
             x_axis: defaultDropdownValue,
             y_axis: timeSelection,
         }
     });
-
-    console.log('Initial Data', initialData[0]['data']);
 
     return (
         <BarChart
             height={height}
             chartId={chartId}
             defaultDropdownValue={defaultDropdownValue}
-            series={initialData}
+            series={formattedData}
             className={classNames}
-            initialYaxisTitle={timeDuration === 'hours' ? 'Hours Played' : 'Minutes Played'}
+            initialYaxisTitle={dateFilters.sum_units === 'hours' ? 'Hours Played' : 'Minutes Played'}
         />
     )
 

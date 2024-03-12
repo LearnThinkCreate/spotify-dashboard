@@ -3,10 +3,10 @@ import "./globals.css";
 import "./data-tables-css.css";
 import "./satoshi.css";
 import { useState, useEffect } from "react";
-import Loader from "@/components/common/Loader";
+import Loader from "@/ui/Loader";
 
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
+import Sidebar from "@/ui/Sidebar";
+import Header from "@/ui/Header";
 import useColorMode from "@/hooks/useColorMode";
 
 export default function RootLayout({

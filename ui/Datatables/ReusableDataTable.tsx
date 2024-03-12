@@ -10,9 +10,9 @@ import {
 } from "react-table";
 import '@/app/data-tables-css.css';
 import { formatColumnValues } from "@/db/utils";
-import Dropdown from "@/components/Dropdowns/Dropdown";
+import Dropdown from "@/ui/Dropdowns/Dropdown";
 import { usePathname, useSearchParams } from 'next/navigation'
-import { generateDateFilters } from '@/db/utils';
+import { generateDateFilters } from '@/ui/utils';
 
 interface TableColumn {
     Header: string; // Key in the data object

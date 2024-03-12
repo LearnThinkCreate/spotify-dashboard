@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Dropdown from "@/components/Dropdowns/Dropdown";
+import Dropdown from "@/ui/Dropdowns/Dropdown";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export default function PageFilters({

@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import PageFilters from "@/ui/PageFilters";
-import BarChart from "@/components/Charts/BarChart";
-import LineChart from "@/components/Charts/LineChart";
-import ReusableDataTable from "@/components/Datatables/ReusableDataTable";
-import AudioFeatureChart from "@/components/Charts/AudioFeatureChart";
-import CardSection from "./CardSection";
+import PageFilters from "@/ui/Dropdowns/PageFilters";
+import BarChart from "@/ui/Charts/BarChart";
+import LineChart from "@/ui/Charts/LineChart";
+import ReusableDataTable from "@/ui/Datatables/ReusableDataTable";
+import AudioFeatureChart from "@/ui/Charts/AudioFeatureChart";
+import CardSection from "./Cards/CardSection";
 
 
 export default async function Dashboard(
