@@ -4,7 +4,7 @@ import * as React from "react";
 import { CheckIcon } from "@radix-ui/react-icons";
 import { useTheme } from "next-themes";
 import { useConfig } from "@/hooks/use-config";
-import { themes, Theme } from "@/components/themes";
+import { themes } from "@/components/themes";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -17,8 +17,9 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/ui/page-header"
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export function EraFilter() {
+export const EraFilter: React.FC = () => {
   const [config, setConfig] = useConfig();
   const { resolvedTheme: mode } = useTheme();
   const [mounted, setMounted] = React.useState(false);
@@ -47,11 +48,20 @@ export function EraFilter() {
                 <Tooltip key={theme.name}>
                   <TooltipTrigger asChild>
                     <button
-                      onClick={() =>
+                      onClick={() => {
+                        console.log('era', theme.era);
+                        if (isActive) {
+                          setConfig({
+                            ...config,
+                            theme: 'zinc',
+                          })
+                          return;
+                        }
                         setConfig({
                           ...config,
                           theme: theme.name,
                         })
+                      }
                       }
                       className={cn(
                         "flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs",

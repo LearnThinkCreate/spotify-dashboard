@@ -38,8 +38,6 @@ export default async function Page({
   const genreOptions = await getGenreOptions(searchParams.genreQuery);
   // const genreBadges = getGenreBadges({main_genre: searchParams.main_genre, secondary_genre: searchParams.secondary_genre});
   const searchKey = `${searchParams.categoryValue || ''}-${genreFilters}`
-  console.log('searchKey', searchKey);
-  console.log(searchParams.status)
 
   return (
     <>

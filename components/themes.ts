@@ -1,5 +1,6 @@
 export const themes = [
     {
+        era: "hs",
         name: "red",
         label: "Red",
         activeColor: {
@@ -53,6 +54,7 @@ export const themes = [
         },
       },
       {
+        era: "college",
         name: "yellow",
         label: "Yellow",
         activeColor: {
@@ -106,6 +108,7 @@ export const themes = [
         },
       },
       {
+        era: "adult",
         name: "green",
         label: "Green",
         activeColor: {
@@ -158,6 +161,7 @@ export const themes = [
         },
       },
       {
+        era: "",
         name: "zinc",
         label: "Zinc",
         activeColor: {
