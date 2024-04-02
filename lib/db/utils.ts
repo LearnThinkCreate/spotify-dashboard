@@ -1,120 +1,76 @@
-import pg from "pg";
 
-export type acceptableTableTypes = "data-table" | "table-two";
 
-export type GraphData = {
-  x: number | string;
-  y: number | string;
+export const generateDateFilters = () => {}
+
+export const formatQueryFilters = ({ filters, joinOperator }) => {}
+
+export const formatParams = ({ params }: {
+    params: string[]
+}) => {
+    if (params.length === 0) {
+        return '';
+    }
+    return params.join(', ')
+}
+
+export const formatAggParams = ({ aggFunc, params }: {
+    aggFunc: string,
+    params: string[]
+}) => {
+    return params.length === 0 
+    ? '' : 
+    params.map(param => `${aggFunc}( ${param} ) as ${param}`).join(', ')
 };
 
-export type GraphSeries = {
-  name: string;
-  data: GraphData[];
-}[];
+export const insertCte = () => {}
 
-export type validReturnTypes = "graph" | "data-table" | "table-two" | "";
-
-export type GraphColumns = {
-  category: string;
-  x_axis: string | number;
-  y_axis: string | number;
+export const basicBarQuery = ({
+  category = "artist",
+  limit = 5,
+  offset = 0,
+  filter = "",
+}: {
+  category?: string;
+  limit?: number;
+  offset: number;
+  filter: string;
+}) => {
+  return `
+    select 
+        ${category}, sum(hours_played) as hours_played
+    from 
+        spotify_data_overview
+    ${filter ? `where ${filter}` : ""}
+    group by 
+        ${category}
+    order by 
+        hours_played desc
+    limit 
+        ${limit}
+    offset 
+        ${offset}
+    `;
 };
-type QueryFilter = {
-  field: string;
-  value: string;
-  operator: string;
-};
 
-export function addItemToGraph(graph, category, x_axis, y_axis) {
-  const existingItem = graph.find((item) => item.name === category);
-  if (existingItem) {
-    existingItem.data.push({ x: x_axis, y: y_axis });
-  } else {
-    graph.push({
-      name: category,
-      data: [{ x: x_axis, y: y_axis }],
-    });
-  }
-}
-
-interface formatColumnValuesParams {
-  data: pg.Result;
-  tableType?: acceptableTableTypes;
-}
-
-export function formatColumnValues({
-  data,
-  tableType="data-table",
-}: formatColumnValuesParams) {
-  let tableColumn = [];
-
-  function formatColumnTitle(title) {
-    return title
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  }
-
-  if (tableType === "data-table") {
-    tableColumn = data.fields.map((field) => ({
-      Header: formatColumnTitle(field.name),
-      accessor: field.name,
-    }));
-  } else if (tableType === "table-two") {
-    tableColumn = data.fields.map((field) => ({
-      label: formatColumnTitle(field.name),
-      key: field.name,
-    }));
-  }
-
-  return tableColumn;
-}
-
-interface formatQueryReturnParams {
-  data: any;
-  returnType: validReturnTypes;
-  graphColumns?: GraphColumns;
-}
-export function formatQueryReturn({
-  data,
-  returnType = "",
-  graphColumns: { category, x_axis, y_axis } = {
-    category: "",
-    x_axis: "",
-    y_axis: "",
-  },
-}: formatQueryReturnParams) {
-  if (returnType === "graph") {
-    const graph: GraphSeries = [];
-
-    data.rows.forEach((item: any) => {
-      addItemToGraph(graph, item[category], item[x_axis], Number(item[y_axis]).toFixed(0));
-    });
-
-    return graph;
-  } else if (returnType === "") {
-    return data;
-  } else if (["data-table", "table-two"].includes(returnType)) {
-    const table_columns = formatColumnValues({
-      data: data,
-      tableType: returnType,
-    });
-
-    return {
-      data: data.rows,
-      columns: table_columns,
-    };
-  }
-}
-
-interface createQueryFiltersParams {
-  filters: string[];
-  joinOperator?: string;
-}
-export function createQueryFilters({ filters, joinOperator='AND' }: createQueryFiltersParams) {
-  if (filters.length > 0) {
-    return `${filters.join(` ${joinOperator} `)}`;
-  } else {
-    return "";
-  }
+export const basicLineQuery = ({
+    category = 'energy',
+    dateGroup = 'year',
+    table = 'spotify_data_overview',
+    filter = '',
+}: {
+    category?: string,
+    dateGroup?: string,
+    table?: string,
+    filter?: string
+}) => {
+    return `
+    select 
+        SUM(${category} * hours_played) / SUM(hours_played) as average_value,
+        sum(hours_played) as hours_played, ${dateGroup}
+    from
+        ${table}
+    ${filter ? `where ${filter}` : ''}
+    group by 
+        ${dateGroup}
+    `;
 }
