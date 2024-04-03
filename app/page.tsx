@@ -9,7 +9,7 @@ import CoreCards from "@/components/graphics/CoreCards/cards";
 
 
 export default async function Page() {
-  // const topArtist = await getTopArtist({ offset: 0, filters: { main_genre: 'rock'} });
+  // const topArtist = await getTopArtist({ offset: 0, filter: { main_genre: 'rock'} });
   // const topAlbum = await topAlbumQuery({ offset: 0  })
   // console.log(topAlbum);
   return (

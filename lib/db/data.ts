@@ -2,9 +2,15 @@ import query from "@/lib/db";
 import prisma from "@/lib/db/prisma";
 import { Prisma } from "@prisma/client";
 
+interface PrismaFuncParams {
+  filter?: Prisma.spotify_data_overviewWhereInput;
+  offset?: number;
+
+}
+
 export const topSongQuery = async ({
   filter = {},
-}: { filter?: Prisma.spotify_data_overviewWhereInput } = {}) => {
+}: PrismaFuncParams = {}) => {
   // Step 1: Aggregate data to find the top song with the applied filter
   const topSongData = await prisma.spotify_data_overview.groupBy({
     by: ["track_id", "song"],
@@ -48,8 +54,8 @@ export const topSongQuery = async ({
 
 export const getTopArtist = async ({
   offset = 0,
-  filters = {},
-}: { offset?: number; filters?: Prisma.spotify_data_overviewWhereInput } = {}) => {
+  filter = {},
+}: PrismaFuncParams = {}) => {
   // Step 1: Aggregate data to find the top artist
   const topArtistData = await prisma.spotify_data_overview.groupBy({
     by: ["artist_id", "artist"],
@@ -61,7 +67,7 @@ export const getTopArtist = async ({
         hours_played: "desc",
       },
     },
-    where: filters,
+    where: filter,
     take: 1,
     skip: offset,
   });
@@ -96,9 +102,7 @@ export const getTopArtist = async ({
 export const topAlbumQuery = async ({
   offset = 0,
   filter = {},
-}: { 
-  offset?: number;
-  filter?: Prisma.spotify_data_overviewWhereInput } = {}) => {
+}: PrismaFuncParams = {}) => {
   // Step 1: Aggregate data to find the top album with the applied filter
   const topAlbumData = await prisma.spotify_data_overview.groupBy({
     by: ["album_id", "album"],
