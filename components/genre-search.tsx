@@ -61,7 +61,7 @@ export function DropdownMenuDemo({ genres }: { genres: { genre: string, genre_ty
     }
     params.delete(genreType, status.genre);
     replace(`${pathname}?${params.toString()}`);
-    return;
+    // return;
   }
 
   const handleSearch = useDebouncedCallback((term: string) => {
@@ -86,12 +86,12 @@ export function DropdownMenuDemo({ genres }: { genres: { genre: string, genre_ty
     return (
       <Popover open={open} onOpenChange={handleOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="w-[150px] justify-start">
+          <Button variant="outline" className="w-[150px] justify-start bg-card">
             + Set status
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0" align="start">
-          <StatusList setOpen={setOpen} setSelectedStatus={addNewstatus} handleSearch={handleSearch} genres={genres} />
+          <StatusList setOpen={setOpen} onSelect={addNewstatus} handleSearch={handleSearch} genres={genres} />
         </PopoverContent>
       </Popover>
     )
@@ -100,13 +100,13 @@ export function DropdownMenuDemo({ genres }: { genres: { genre: string, genre_ty
   return (
     <Drawer open={open} onOpenChange={handleOpen}>
       <DrawerTrigger asChild>
-        <Button variant="outline" className="w-[150px] justify-start">
-          {selectedStatus.length > 0 ? <>{selectedStatus[selectedStatus.length - 1]?.genre}</> : <>+ Set status</>}
+        <Button variant="outline" className="w-[150px] justify-start bg-card">
+        + Set status
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <div className="mt-4 border-t">
-          <StatusList setOpen={setOpen} setSelectedStatus={addNewstatus} genres={genres} />
+          <StatusList setOpen={setOpen} onSelect={addNewstatus} genres={genres} handleSearch={handleSearch} />
         </div>
       </DrawerContent>
     </Drawer>
@@ -115,13 +115,13 @@ export function DropdownMenuDemo({ genres }: { genres: { genre: string, genre_ty
 
 function StatusList({
   setOpen,
-  setSelectedStatus,
+  onSelect,
   search,
   handleSearch,
   genres
 }: {
   setOpen: (open: boolean) => void
-  setSelectedStatus: (params: { status: Genre | null, genreType: string }) => void;
+  onSelect: (params: { status: Genre | null, genreType: string }) => void;
   search?: string;
   handleSearch?: (term: string) => void;
   genres: { genre: string, genre_type: string }[];
@@ -136,7 +136,8 @@ function StatusList({
         key={genre.genre}
         value={genre.genre}
         onSelect={(value) => {
-          setSelectedStatus({
+          console.log(value)
+          onSelect({
             status: genres.find((genre) => genre.genre === value) || null,
             genreType: genre.genre_type
           })

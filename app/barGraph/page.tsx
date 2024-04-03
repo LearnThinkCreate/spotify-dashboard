@@ -17,6 +17,7 @@ import { basicBarQuery } from "@/lib/db/utils";
 import { DropdownMenuDemo } from "@/components/genre-search";
 import { Badge } from "@/components/ui/badge";
 import { GenreBadges } from "@/components/genre-badges";
+import { themes, Theme } from "@/components/themes";
 
 export default async function Page({
   searchParams
@@ -26,18 +27,21 @@ export default async function Page({
     ? BarGraphOptions.find(option => option.value === searchParams.categoryValue) 
     : BarGraphOptions[0]
     );
-  
+
+  const era = themes.find(theme => theme.era === (searchParams.era || '')) || themes[0];
   const genreFilters = getGenreFilters({main_genre: searchParams.main_genre, secondary_genre: searchParams.secondary_genre});
+  const filterString = `${getEraFilters(era)} ${getEraFilters(era) && genreFilters ? 'AND' : ''} ${genreFilters}`.trim();
+
   const data = await query(basicBarQuery({
     category: option.value,
     limit: 10,
     offset: 0,
-    filter: genreFilters
+    filter: filterString
   }));
 
   const genreOptions = await getGenreOptions(searchParams.genreQuery);
   // const genreBadges = getGenreBadges({main_genre: searchParams.main_genre, secondary_genre: searchParams.secondary_genre});
-  const searchKey = `${searchParams.categoryValue || ''}-${genreFilters}`
+  const searchKey = `${searchParams.categoryValue || ''}-${filterString}`
 
   return (
     <>
@@ -126,4 +130,11 @@ const getGenreBadges = ({ main_genre, secondary_genre }) => {
   const secondaryGenreBadges = formatFilterParam(secondary_genre).map(genre => <Badge variant="secondary" key={genre}>{genre}</Badge>);
 
   return mainGenreBadges.concat(secondaryGenreBadges);
+}
+
+const getEraFilters = (era: Theme) => {
+  const filters = [];
+  if (era.minDate) filters.push(`ts >= '${era.minDate}'`);
+  if (era.maxDate) filters.push(`ts < '${era.maxDate}'`);
+  return filters.join(' AND ');
 }

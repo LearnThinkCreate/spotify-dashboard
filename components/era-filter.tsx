@@ -4,40 +4,48 @@ import * as React from "react";
 import { CheckIcon } from "@radix-ui/react-icons";
 import { useTheme } from "next-themes";
 import { useConfig } from "@/hooks/use-config";
-import { themes } from "@/components/themes";
+import { themes, Theme } from "@/components/themes";
 import { cn } from "@/lib/utils";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
 import {
   // PageActions,
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/ui/page-header"
+import { Button } from "@/components/ui/button";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { getHexCodes } from "@/components/graphics/Graphs/utils";
 
 export const EraFilter: React.FC = () => {
   const [config, setConfig] = useConfig();
   const { resolvedTheme: mode } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
+  const searchParams = useSearchParams();
+  const { replace } = useRouter();
+  const pathname = usePathname();
+
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  const updateEra = (era: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("era", era);
+    replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   return (
     <PageHeader>
     <PageHeaderHeading>Themes</PageHeaderHeading>
     <PageHeaderDescription>This is a test page</PageHeaderDescription>
     <div className="flex items-center space-x-2">
-      <div className="mr-2 items-center space-x-0.5 flex">
+      <div className="mr-2 items-center space-x-2 flex">
         {mounted ? (
           <>
             {["red", "yellow", "green"].map((color) => {
               const theme = themes.find((theme) => theme.name === color);
+              const themeCodes = getHexCodes(theme, mode)
               const isActive = config.theme === color;
 
               if (!theme) {
@@ -45,59 +53,44 @@ export const EraFilter: React.FC = () => {
               }
 
               return (
-                <Tooltip key={theme.name}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => {
-                        console.log('era', theme.era);
-                        if (isActive) {
-                          setConfig({
-                            ...config,
-                            theme: 'zinc',
-                          })
-                          return;
-                        }
-                        setConfig({
-                          ...config,
-                          theme: theme.name,
-                        })
-                      }
-                      }
-                      className={cn(
-                        "flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs",
-                        isActive
-                          ? "border-[--theme-primary]"
-                          : "border-transparent"
-                      )}
-                      style={
-                        {
-                          "--theme-primary": `hsl(${
-                            theme?.activeColor[
-                              mode === "dark" ? "dark" : "light"
-                            ]
-                          })`,
-                        } as React.CSSProperties
-                      }
-                    >
-                      <span
-                        className={cn(
-                          "flex h-6 w-6 items-center justify-center rounded-full bg-[--theme-primary]"
-                        )}
-                      >
-                        {isActive && (
-                          <CheckIcon className="h-4 w-4 text-white" />
-                        )}
-                      </span>
-                      <span className="sr-only">{theme.label}</span>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    align="center"
-                    className="rounded-[0.5rem] bg-zinc-900 text-zinc-50"
+                <Button
+                key={'era-filter-' + theme.name}
+                onClick={() => {
+                  if (isActive) {
+                    setConfig({
+                      ...config,
+                      theme: 'default',
+                    })
+                    updateEra('');
+                    return;
+                  }
+                  setConfig({
+                    ...config,
+                    theme: theme.name,
+                  })
+                  updateEra(theme.era);
+                }
+                }
+                className={cn(
+                  "bg-[--theme-primary] hover:bg-default",
+                  isActive ? "transition-all shadow-md shadow-[--theme-primary] scale-110 duration-300" : "hover:opacity-80"
+                )}
+                style={
+                  {
+                    "--theme-primary": themeCodes["primary"],
+                    "--theme-test": themeCodes["foreground"],
+                  } as React.CSSProperties
+                }
+
+              >
+                 <span
+                    className={cn(
+                      "text-white"
+                    )}
                   >
-                    {theme.label}
-                  </TooltipContent>
-                </Tooltip>
+                    {theme.eraName}
+                  </span>
+              </Button>
               );
             })}
           </>

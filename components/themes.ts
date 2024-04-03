@@ -1,6 +1,9 @@
 export const themes = [
     {
         era: "hs",
+        eraName: "High School",
+        minDate: null,
+        maxDate: new Date(2017, 5, 1).toISOString(),
         name: "red",
         label: "Red",
         activeColor: {
@@ -55,6 +58,9 @@ export const themes = [
       },
       {
         era: "college",
+        eraName: "College",
+        minDate: new Date(2017, 5, 1).toISOString(),
+        maxDate: new Date(2020, 5, 1).toISOString(),
         name: "yellow",
         label: "Yellow",
         activeColor: {
@@ -109,6 +115,9 @@ export const themes = [
       },
       {
         era: "adult",
+        eraName: "Adult",
+        minDate: new Date(2020, 5, 1).toISOString(),
+        maxDate: null,
         name: "green",
         label: "Green",
         activeColor: {
@@ -136,6 +145,7 @@ export const themes = [
             border: "240 5.9% 90%",
             input: "240 5.9% 90%",
             ring: "142.1 76.2% 36.3%",
+            radius: "0.95rem",
           },
           dark: {
             background: "20 14.3% 4.1%",
@@ -157,12 +167,16 @@ export const themes = [
             border: "240 3.7% 15.9%",
             input: "240 3.7% 15.9%",
             ring: "142.4 71.8% 29.2%",
+            radius: "0.95rem",
           },
         },
       },
       {
         era: "",
-        name: "zinc",
+        eraName: "",
+        minDate: null,
+        maxDate: null,
+        name: "default",
         label: "Zinc",
         activeColor: {
           light: "240 5.9% 10%",

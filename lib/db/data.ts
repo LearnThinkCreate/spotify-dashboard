@@ -53,6 +53,9 @@ const getArtistCardData = async () => {
   };
 };
 
+
+
+
 type ArtistCardData = {
   topArtist: {
     artist: string;
@@ -81,5 +84,26 @@ type ArtistCardData = {
   artistProfile: { name: string; value: any }[];
 };
 
+const getAlbumCardData = async () => {};
+
+type AlbumCardData = {
+  topAlbum: {
+    album: string;
+    album_id: string;
+    hours_played: number;
+    image_xl: { url: string };
+    image_lg: { url: string };
+    image_md: { url: string };
+    image_sm: { url: string };
+  };
+  topSong: {
+    song: string;
+    hours_played: number;
+    image_lg: { url: string };
+    image_md: { url: string };
+    image_sm: { url: string };
+  };
+  audioFeatures: { name: string; value: any }[];
+};
 export { getArtistCardData };
 export type { ArtistCardData };
