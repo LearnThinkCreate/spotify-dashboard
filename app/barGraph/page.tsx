@@ -13,11 +13,10 @@ import { EraFilter } from "@/components/era-filter";
 import { ThemeWrapper } from "@/components/theme-wrapper";
 import { MenuBar } from "@/components/menu-bar";
 import HistoryBarChart from "@/components/graphics/Graphs/bar-chart";
-import { basicBarQuery } from "@/lib/db/utils";
 import { DropdownMenuDemo } from "@/components/genre-search";
-import { Badge } from "@/components/ui/badge";
 import { GenreBadges } from "@/components/genre-badges";
 import { themes, Theme } from "@/components/themes";
+import prisma from "@/lib/db/prisma";
 
 export default async function Page({
   searchParams
@@ -32,15 +31,35 @@ export default async function Page({
   const genreFilters = getGenreFilters({main_genre: searchParams.main_genre, secondary_genre: searchParams.secondary_genre});
   const filterString = `${getEraFilters(era)} ${getEraFilters(era) && genreFilters ? 'AND' : ''} ${genreFilters}`.trim();
 
-  const data = await query(basicBarQuery({
-    category: option.value,
-    limit: 10,
-    offset: 0,
-    filter: filterString
+  const data = await prisma.spotify_data_overview.groupBy({
+    by: [option.value || 'artist' as any],
+    _sum: {
+      hours_played: true,
+    },
+    orderBy: {
+      _sum: {
+        hours_played: "desc",
+      },
+    },
+    where: {
+      AND: [
+        {
+          ts: eraFilters(era)
+        },
+        {
+          OR: prismaGenreFilters({main_genre: searchParams.main_genre, secondary_genre: searchParams.secondary_genre})
+        }
+      ]
+    },
+    take: 10,
+  });
+  const transformedData = data.map(item => ({
+    [option.value]: item[option.value],
+    hours_played: item._sum.hours_played
   }));
 
+
   const genreOptions = await getGenreOptions(searchParams.genreQuery);
-  // const genreBadges = getGenreBadges({main_genre: searchParams.main_genre, secondary_genre: searchParams.secondary_genre});
   const searchKey = `${searchParams.categoryValue || ''}-${filterString}`
 
   return (
@@ -68,7 +87,7 @@ export default async function Page({
             <CardContent className="flex-1">
               <React.Suspense fallback={<div>Loading...</div>}>
                 <HistoryBarChart
-                  data={JSON.stringify(data["rows"])}
+                  data={JSON.stringify(transformedData)}
                   categroyValue={ option.value }
                   searchKey={searchKey}
                 />
@@ -124,17 +143,24 @@ const getGenreOptions = async (genreQuery: string) => {
 
   return genres;
 }
-  
-const getGenreBadges = ({ main_genre, secondary_genre }) => {
-  const mainGenreBadges = formatFilterParam(main_genre).map(genre => <Badge variant="default" key={genre}>{genre}</Badge>);
-  const secondaryGenreBadges = formatFilterParam(secondary_genre).map(genre => <Badge variant="secondary" key={genre}>{genre}</Badge>);
-
-  return mainGenreBadges.concat(secondaryGenreBadges);
-}
 
 const getEraFilters = (era: Theme) => {
   const filters = [];
   if (era.minDate) filters.push(`ts >= '${era.minDate}'`);
   if (era.maxDate) filters.push(`ts < '${era.maxDate}'`);
   return filters.join(' AND ');
+}
+
+const eraFilters = (era: Theme) => {
+  const filters = {};
+  if (era.minDate) filters['gte'] = era.minDate;
+  if (era.maxDate) filters['lt'] = era.maxDate;
+  return filters;
+}
+
+const prismaGenreFilters = ({ main_genre, secondary_genre }) => {
+  const filters = [];
+  if (main_genre) filters.push({ main_genre: { in: formatFilterParam(main_genre) } });
+  if (secondary_genre) filters.push({ secondary_genre: { in: formatFilterParam(secondary_genre) } });
+  return filters;
 }

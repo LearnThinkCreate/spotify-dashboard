@@ -12,7 +12,6 @@ import {
     maxImageHeight
 } from '@/components/graphics/CoreCards/base-components';
 import { CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArtistCardData } from '@/lib/db/data';
 import GradientBarChart from '@/components/graphics/Graphs/vm-meter';
 
 
@@ -21,9 +20,8 @@ export default function ArtistCard({
   topArtist,
   topSong,
   topAlbum,
-  totalHours,
   artistProfile
-}: ArtistCardData) {
+}: any) {
     const cardClasses = {
       content: "flex-1",
       footer: "mt-auto",

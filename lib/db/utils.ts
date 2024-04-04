@@ -24,34 +24,6 @@ export const formatAggParams = ({ aggFunc, params }: {
 
 export const insertCte = () => {}
 
-export const basicBarQuery = ({
-  category = "artist",
-  limit = 5,
-  offset = 0,
-  filter = "",
-}: {
-  category?: string;
-  limit?: number;
-  offset: number;
-  filter: string;
-}) => {
-  return `
-    select 
-        ${category}, sum(hours_played) as hours_played
-    from 
-        spotify_data_overview
-    ${filter ? `where ${filter}` : ""}
-    group by 
-        ${category}
-    order by 
-        hours_played desc
-    limit 
-        ${limit}
-    offset 
-        ${offset}
-    `;
-};
-
 export const basicLineQuery = ({
     category = 'energy',
     dateGroup = 'year',

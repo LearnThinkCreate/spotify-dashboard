@@ -176,8 +176,6 @@ const HistoryBarChart = ({data, categroyValue, searchKey}: {
     </ResponsiveContainer>
   );
 };
-
-
   
-  export default HistoryBarChart;
+export default HistoryBarChart;
   

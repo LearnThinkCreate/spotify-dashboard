@@ -1,11 +1,9 @@
-import query from "@/lib/db";
 import prisma from "@/lib/db/prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma, artist_metadata, track_metadata } from "@prisma/client";
 
 interface PrismaFuncParams {
   filter?: Prisma.spotify_data_overviewWhereInput;
   offset?: number;
-
 }
 
 export const topSongQuery = async ({
@@ -50,7 +48,6 @@ export const topSongQuery = async ({
     image_sm: trackMetadata.image_sm,
   };
 };
-
 
 export const getTopArtist = async ({
   offset = 0,
@@ -216,33 +213,5 @@ const getArtistCardData = async () => {
   };
 };
 
-type ArtistCardData = {
-  topArtist: {
-    artist: string;
-    artist_id: string;
-    hours_played: number;
-    image_xl: { url: string };
-    image_lg: { url: string };
-    image_md: { url: string };
-    image_sm: { url: string };
-  };
-  topSong: {
-    song: string;
-    hours_played: number;
-    image_lg: { url: string };
-    image_md: { url: string };
-    image_sm: { url: string };
-  };
-  topAlbum: {
-    album: string;
-    hours_played: number;
-    image_lg: { url: string };
-    image_md: { url: string };
-    image_sm: { url: string };
-  };
-  totalHours: number;
-  artistProfile: { name: string; value: any }[];
-};
 
 export { getArtistCardData };
-export type { ArtistCardData };

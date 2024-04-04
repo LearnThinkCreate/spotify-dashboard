@@ -3,7 +3,6 @@ import ArtistCard from "./Cards/ArtistCoreCard";
 
 export default async function CoreCards() {
     const artistData = await getArtistCardData();
-    // console.log(artistData.artistProfile);
     return (
         <>
         <ArtistCard {...artistData} />
