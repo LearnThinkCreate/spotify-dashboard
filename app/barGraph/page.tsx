@@ -1,5 +1,4 @@
 import * as React from "react";
-import query from "@/lib/db";
 import {
   Card,
   CardContent,
@@ -28,9 +27,8 @@ export default async function Page({
     );
 
   const era = themes.find(theme => theme.era === (searchParams.era || '')) || themes[0];
-  const genreFilters = getGenreFilters({main_genre: searchParams.main_genre, secondary_genre: searchParams.secondary_genre});
-  const filterString = `${getEraFilters(era)} ${getEraFilters(era) && genreFilters ? 'AND' : ''} ${genreFilters}`.trim();
-
+  const filterString = `era-${searchParams.era}-main genres ${searchParams.main_gener}-secondary genres ${searchParams.secondary_genre}`.trim();
+  
   const data = await prisma.spotify_data_overview.groupBy({
     by: [option.value || 'artist' as any],
     _sum: {
@@ -58,8 +56,8 @@ export default async function Page({
     hours_played: item._sum.hours_played
   }));
 
+  const genreOptions = await prismaGenreOptions(searchParams.genreQuery);
 
-  const genreOptions = await getGenreOptions(searchParams.genreQuery);
   const searchKey = `${searchParams.categoryValue || ''}-${filterString}`
 
   return (
@@ -102,55 +100,6 @@ export default async function Page({
 
 const formatFilterParam = (filter) => Array.isArray(filter) ? filter : (filter ? [filter] : []);
 
-const getGenreFilters = ({ main_genre, secondary_genre }) => {
-  const mainGenreFilters = formatFilterParam(main_genre).map(genre => `main_genre = '${genre}'`).join(' OR ');
-  const secondaryGenreFilters = formatFilterParam(secondary_genre).map(genre => `secondary_genre = '${genre}'`).join(' OR ');
-  
-  let filters = [];
-  if (mainGenreFilters) filters.push(`${mainGenreFilters}`);
-  if (secondaryGenreFilters) filters.push(`${secondaryGenreFilters}`);
-
-  return filters.join(' OR ');
-}
-
-const getGenreOptions = async (genreQuery: string) => {
-  const formatGenreQuery = (genre_type: string = 'main_genre', genreQuery: string) => ( `
-    select 
-    ${genre_type} as genre,
-    '${genre_type}' as genre_type
-    from 
-    spotify_data_overview
-    ${
-      genreQuery ? `where ${genre_type} ilike '%${genreQuery}%'` : ''
-    }
-    group by ${genre_type}
-    order by SUM(hours_played) DESC
-    limit 10
-  `)
-
-  const main_genres = await query(formatGenreQuery('main_genre', genreQuery));
-  const sub_genres = await query(formatGenreQuery('secondary_genre', genreQuery));
-
-  let genres;
-  if (main_genres.rows.length >= 5 && sub_genres.rows.length >= 5) {
-    genres = main_genres.rows.slice(0, 5).concat(sub_genres.rows.slice(0, 5));
-  } else if (main_genres.rows.length >= 5) {
-    // genres = main_genres.rows.slice(0, 10 - sub_genres.rows.length).concat(sub_genres.rows);
-    genres = sub_genres.concat(main_genres.rows.slice(0, 10 - sub_genres.rows.length));
-  } else {
-    genres = main_genres.rows.concat(sub_genres.rows.slice(0, 10 - main_genres.rows.length));
-  }
-
-  return genres;
-}
-
-const getEraFilters = (era: Theme) => {
-  const filters = [];
-  if (era.minDate) filters.push(`ts >= '${era.minDate}'`);
-  if (era.maxDate) filters.push(`ts < '${era.maxDate}'`);
-  return filters.join(' AND ');
-}
-
 const eraFilters = (era: Theme) => {
   const filters = {};
   if (era.minDate) filters['gte'] = era.minDate;
@@ -163,4 +112,38 @@ const prismaGenreFilters = ({ main_genre, secondary_genre }) => {
   if (main_genre) filters.push({ main_genre: { in: formatFilterParam(main_genre) } });
   if (secondary_genre) filters.push({ secondary_genre: { in: formatFilterParam(secondary_genre) } });
   return filters;
+}
+
+const prismaGenreOptions = async (genreQuery: string) => {
+  const prismaQueryParams = (genre_type: any = 'main_genre', genreQuery: string) => ({
+    where: genreQuery ? {
+      [genre_type]: {
+        contains: genreQuery
+      }
+    } : {},
+    by: [genre_type],
+    orderBy: {
+      _sum: {
+        hours_played: 'desc' as any
+      }
+    },
+    take: 10,
+  });
+  const main_genres = await prisma.spotify_data_overview.groupBy(prismaQueryParams('main_genre', genreQuery));
+  const sub_genres = await prisma.spotify_data_overview.groupBy(prismaQueryParams('secondary_genre', genreQuery));
+
+  let genres;
+  if (main_genres.length >= 5 && sub_genres.length >= 5) {
+    genres = main_genres.slice(0, 5).concat(sub_genres.slice(0, 5));
+  } else if (main_genres.length >= 5) {
+    genres = sub_genres.concat(main_genres.slice(0, 10 - sub_genres.length));
+  } else {
+    genres = main_genres.concat(sub_genres.slice(0, 10 - main_genres.length));
+  }
+
+  const genreOptions = genres.map(item => ({
+    genre: item.main_genre || item.secondary_genre,
+    genre_type: item.main_genre ? 'main_genre' : 'secondary_genre'
+  }));
+  return genreOptions;
 }
