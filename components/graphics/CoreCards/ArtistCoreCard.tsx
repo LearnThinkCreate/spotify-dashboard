@@ -10,9 +10,9 @@ import {
     CoreCardHeader,
     padding,
     maxImageHeight
-} from '@/components/graphics/CoreCards/base-components';
+} from '@/components/graphics/CoreCards/base-core-card';
 import { CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import GradientBarChart from '@/components/graphics/Graphs/vm-meter';
+import GradientBarChart from '@/components/graphics/vm-meter';
 
 
 

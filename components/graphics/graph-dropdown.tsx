@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { GraphOption, getOptions } from "@/components/graphics/Graphs/options";
+import { GraphOption, getOptions } from "@/components/graphics/options";
 
 interface GraphDropDownProps {
     paramValue: string;

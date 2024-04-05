@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { useTheme } from 'next-themes';
 import { useConfig } from '@/hooks/use-config';
-import { themes, Theme } from '@/components/themes';
-import { getHexCodes } from '@/components/graphics/Graphs/utils';
+import { themes, Theme, getHexCodes } from '@/components/themes';
 
 export function useThemeState() {
     const { theme: mode } = useTheme()

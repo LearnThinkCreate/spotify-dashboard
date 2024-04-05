@@ -4,9 +4,8 @@ import {
     decibelFormatter, 
     tempoFormatter,
     hoursFormatter,
-    toTitleCase
-} from '@/components/graphics/Graphs/utils';
-import { format } from 'path';
+} from '@/components/graphics/utils';
+import { toTitleCase } from '@/lib/utils';
 import * as dbUtils from '@/lib/db/utils';
 
 type GraphOption = {

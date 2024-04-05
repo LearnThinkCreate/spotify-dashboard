@@ -6,13 +6,12 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import GraphDropDown from "@/components/graphics/Graphs/graph-dropdown";
-import  { BarGraphOptions } from "@/components/graphics/Graphs/options";
+import GraphDropDown from "@/components/graphics/graph-dropdown";
+import  { BarGraphOptions } from "@/components/graphics/options";
 import { EraFilter } from "@/components/era-filter";
 import { ThemeWrapper } from "@/components/theme-wrapper";
-import { MenuBar } from "@/components/menu-bar";
-import HistoryBarChart from "@/components/graphics/Graphs/bar-chart";
-import { DropdownMenuDemo } from "@/components/genre-search";
+import HistoryBarChart from "@/components/graphics/bar-chart";
+import { GenreSearch } from "@/components/genre-search";
 import { GenreBadges } from "@/components/genre-badges";
 import { themes, Theme } from "@/components/themes";
 import prisma from "@/lib/db/prisma";
@@ -77,7 +76,7 @@ export default async function Page({
                 <div className="flex flex-col lg:flex-row gap-5">
                   <GenreBadges />
                   <div className="flex flex-row gap-5 order-1 lg:order-2">
-                  <DropdownMenuDemo genres={genreOptions} />
+                  <GenreSearch genres={genreOptions} />
                   <GraphDropDown paramValue="categoryValue" />
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 import * as React from "react";
 import query from "@/lib/db";
-import HistoryLineChart from "@/components/graphics/Graphs/line-chart";
+import HistoryLineChart from "@/components/graphics/line-chart";
 import {
   Card,
   CardContent,
@@ -8,11 +8,10 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import GraphDropDown from "@/components/graphics/Graphs/graph-dropdown";
-import  { LineGraphOptions } from "@/components/graphics/Graphs/options";
+import GraphDropDown from "@/components/graphics/graph-dropdown";
+import  { LineGraphOptions } from "@/components/graphics/options";
 import { EraFilter } from "@/components/era-filter";
 import { ThemeWrapper } from "@/components/theme-wrapper";
-import { MenuBar } from "@/components/menu-bar";
 import { basicLineQuery } from "@/lib/db/utils";
 
 export default async function Page({

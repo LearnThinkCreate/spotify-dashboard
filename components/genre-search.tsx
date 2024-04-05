@@ -24,14 +24,14 @@ import {
 } from "@/components/ui/popover"
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
-import { toTitleCase } from "@/components/utils"
+import { toTitleCase } from "@/lib/utils"
 
 type Genre = {
   genre: string
   genre_type: string
 }
 
-export function DropdownMenuDemo({ genres }: { genres: { genre: string, genre_type: string }[]}) {
+export function GenreSearch({ genres }: { genres: { genre: string, genre_type: string }[]}) {
   const [open, setOpen] = React.useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const [selectedStatus, setSelectedStatus] = React.useState<Genre[] | null>(
@@ -136,7 +136,6 @@ function StatusList({
         key={genre.genre}
         value={genre.genre}
         onSelect={(value) => {
-          console.log(value)
           onSelect({
             status: genres.find((genre) => genre.genre === value) || null,
             genreType: genre.genre_type

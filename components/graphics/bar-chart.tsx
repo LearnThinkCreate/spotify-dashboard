@@ -1,11 +1,11 @@
 "use client";
 import * as React from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, LabelList  } from "recharts";
-import { BarGraphOptions } from '@/components/graphics/Graphs/options';
+import { BarGraphOptions } from '@/components/graphics/options';
 import { useScreenWidth } from "@/hooks/screen-width";
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { useThemeState } from "@/hooks/theme-state";
-import { wrapWord, addEllipsis } from "@/components/graphics/Graphs/tick-wrapping";
+import { wrapWord, addEllipsis } from "@/components/graphics/tick-wrapping";
 
 const HistoryBarChart = ({data, categroyValue, searchKey}: {
     data: any,

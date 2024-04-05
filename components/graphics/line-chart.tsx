@@ -1,8 +1,8 @@
 "use client";
 import * as React from "react";
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip  } from "recharts";
-import { formatXAxis } from "@/components/graphics/Graphs/utils";
-import { LineGraphOptions } from '@/components/graphics/Graphs/options';
+import { formatXAxis } from "@/components/graphics/utils";
+import { LineGraphOptions } from '@/components/graphics/options';
 import { useScreenWidth } from "@/hooks/screen-width";
 import { useThemeState } from "@/hooks/theme-state";
 

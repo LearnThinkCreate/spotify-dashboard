@@ -2,7 +2,7 @@
 import * as React from "react";
 import clsx from 'clsx';
 import { Badge } from "@/components/ui/badge";
-import { formatSearchParams } from "@/lib/utils"
+import { toTitleCase } from "@/lib/utils";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 
 
@@ -69,7 +69,7 @@ export function GenreBadges({}) {
                         'animate-shrink-disappear': removingBadge === genre,
                     })}
                 >
-                    {genre}
+                    {toTitleCase(genre)}
                 </Badge>
             ))}
             {secondaryGenre.map((genre, index) => (
@@ -81,7 +81,7 @@ export function GenreBadges({}) {
                         'animate-shrink-disappear': removingBadge === genre,
                     })}
                 >
-                    {genre}
+                    {toTitleCase(genre)}
                 </Badge>
             ))}
         </div>

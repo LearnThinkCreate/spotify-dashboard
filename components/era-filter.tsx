@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { CheckIcon } from "@radix-ui/react-icons";
 import { useTheme } from "next-themes";
 import { useConfig } from "@/hooks/use-config";
-import { themes, Theme } from "@/components/themes";
+import { themes, Theme, getHexCodes } from "@/components/themes";
 import { cn } from "@/lib/utils";
 import {
   // PageActions,
@@ -14,7 +13,6 @@ import {
 } from "@/components/ui/page-header"
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { getHexCodes } from "@/components/graphics/Graphs/utils";
 
 export const EraFilter: React.FC = () => {
   const [config, setConfig] = useConfig();
