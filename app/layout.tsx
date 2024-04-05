@@ -33,7 +33,7 @@ export default function RootLayout({
           <div className="relative flex min-h-screen flex-col bg-background">
             <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"></header>
             <main className="flex-1 flex flex-col p-4 md:p-2 2xl:p-6">
-            <MenuBar searchParams={searchParams} />
+              <MenuBar searchParams={searchParams} />
               {children}
             </main>
           </div>

@@ -28,7 +28,7 @@ export default async function Page({
     );
 
   const era = themes.find(theme => theme.era === (searchParams.era || '')) || themes[0];
-  const filterString = `era-${searchParams.era}-main genres ${searchParams.main_gener}-secondary genres ${searchParams.secondary_genre}`.trim();
+  const filterString = `era-${searchParams.era}-main genres ${searchParams.main_genre}-secondary genres ${searchParams.secondary_genre}`.trim();
   
   const data = await prisma.spotify_data_overview.groupBy({
     by: [option.value || 'artist' as any],
@@ -60,6 +60,7 @@ export default async function Page({
   const genreOptions = await prismaGenreOptions(searchParams.genreQuery);
 
   const searchKey = `${searchParams.categoryValue || ''}-${filterString}`
+
 
   return (
     <>
