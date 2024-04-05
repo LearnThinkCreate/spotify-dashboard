@@ -15,12 +15,12 @@ import { ThemeWrapper } from "@/components/theme-wrapper";
 import { MenuBar } from "@/components/menu-bar";
 import { basicLineQuery } from "@/lib/db/utils";
 
-export default async function Page(
-  searchParams: any
-) {
+export default async function Page({
+  searchParams
+}) {
   const option = (
-    searchParams.searchParams.historyValue 
-    ? LineGraphOptions.find(option => option.value === searchParams.searchParams.historyValue) 
+    searchParams.historyValue 
+    ? LineGraphOptions.find(option => option.value === searchParams.historyValue) 
     : LineGraphOptions[0]
     );
 
@@ -31,7 +31,6 @@ export default async function Page(
   return (
     <>
         <div className="flex flex-col flex-1 p-4">
-          <MenuBar />
           <EraFilter />
           <ThemeWrapper className="flex flex-1" >
           <Card className="flex flex-col flex-1 overflow-hidden">

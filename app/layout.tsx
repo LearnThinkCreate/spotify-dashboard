@@ -6,12 +6,14 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeSwitcher } from "@/components/theme-switcher"
 import { cn } from "@/lib/utils";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { MenuBar } from "@/components/menu-bar";
 
 
 export default function RootLayout({
-  children,
+  children, searchParams
 }: {
   children: React.ReactNode;
+  searchParams
 }) {
   return (
     <html suppressHydrationWarning lang="en">
@@ -31,6 +33,7 @@ export default function RootLayout({
           <div className="relative flex min-h-screen flex-col bg-background">
             <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"></header>
             <main className="flex-1 flex flex-col p-4 md:p-2 2xl:p-6">
+            <MenuBar searchParams={searchParams} />
               {children}
             </main>
           </div>
