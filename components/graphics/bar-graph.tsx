@@ -24,11 +24,9 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
   );
   const [mainGenre, setMainGenre] = React.useState<Genre[]>([]);
   const [secondaryGenre, setSecondaryGenre] = React.useState<Genre[]>([]);
-  const [config, setConfig] = useConfig();
-  const theme = themes.find((theme) => theme.name === config.theme);
+  // const [config, setConfig] = useConfig();
+  // const theme = themes.find((theme) => theme.name === config.theme);
   const renderCount = React.useRef(0);
-
-  // let newTheme = themes.find((theme) => theme.name === config.theme)
 
   function updateGenreArray(genreType: string, genreArray: Genre[]) {
     if (genreType === "main_genre") {
@@ -93,7 +91,7 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
         where: {
           AND: [
             {
-              ts: eraFilters(theme),
+              // ts: eraFilters(theme),
             },
             {
               OR: prismaGenreFilters({
@@ -106,7 +104,7 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
         take: 10,
       })}`
     );
-    const data = await response.json(); // Ensure you await the json() call
+    const data = await response.json();
     const transformedData = data.map((item) => ({
       [option.value]: item[option.value],
       hours_played: item._sum.hours_played,
@@ -115,12 +113,9 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
   };
 
   React.useEffect(() => {
-    renderCount.current += 1;
-    if (renderCount.current > 1) {
-      fetchData();
-      console.log("fetching data");
-    }
-  }, [dropdownValue, mainGenre, secondaryGenre, config]);
+    // fetchData();
+    console.log("useEffect called");
+  }, []);
 
   const option = BarGraphOptions.find(
     (option) => option.value === dropdownValue
@@ -152,7 +147,6 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
         </div>
       </CardHeader>
       <CardContent className="flex-1">
-        <React.Suspense fallback={<div>Loading...</div>}>
           {data && (
             <HistoryBarChart
               data={data}
@@ -160,7 +154,6 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
               option={option}
             />
           )}
-        </React.Suspense>
       </CardContent>
     </Card>
   );

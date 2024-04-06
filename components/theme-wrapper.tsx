@@ -17,6 +17,7 @@ export function ThemeWrapper({
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
+    console.log("ThemeWrapper mounted");
     setMounted(true)
   }, [])
 
