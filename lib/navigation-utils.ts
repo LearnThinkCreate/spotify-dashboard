@@ -4,6 +4,13 @@ import prisma from "@/lib/db/prisma";
 export const formatFilterParam = (filter) => Array.isArray(filter) ? filter : (filter ? [filter] : []);
 
 export const eraFilters = (era: Theme) => {
+  const filters = [];
+  if (era.minDate) filters.push(`ts >= '${era.minDate}'`);
+  if (era.maxDate) filters.push(`ts < '${era.maxDate}'`);
+  return filters.length > 0 ? filters : null;
+}
+
+export const prismaEraFilters = (era: Theme) => {
   const filters = {};
   if (era.minDate) filters['gte'] = era.minDate;
   if (era.maxDate) filters['lt'] = era.maxDate;

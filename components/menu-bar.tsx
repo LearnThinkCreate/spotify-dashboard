@@ -1,7 +1,6 @@
 import Link from 'next/link';
 
 export const MenuBar = ({  }) => {
-    console.log("MenuBar")
     return (
     <div className="flex justify-center space-x-10 pb-6">
         <Link href={{

@@ -1,3 +1,12 @@
+const getFullYear = (date: string) => {
+  return new Date(date).getFullYear();
+}
+
+const getShortMonthYear = (date: string) => {
+  const dateObj = new Date(date);
+  return dateObj.toLocaleString('default', { month: 'short', year: 'numeric' });
+}
+
 const formatXAxis = (tickItem: string) => {
   // Convert the date string to a Date object
   const date = new Date(tickItem);
@@ -15,6 +24,8 @@ const hoursFormatter = (value: string) => parseFloat(value).toFixed(2) as string
 
 
 export { 
+  getFullYear,
+  getShortMonthYear,
   formatXAxis, 
   percentFormatter, 
   decibelFormatter, 

@@ -12,8 +12,6 @@ export function useMediaQuery(query: string) {
     result.addEventListener("change", onChange)
     setValue(result.matches)
 
-    // console.log('useMediaQuery mounted')
-
     return () => result.removeEventListener("change", onChange)
   }, [query])
 

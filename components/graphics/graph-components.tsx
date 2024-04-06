@@ -1,13 +1,5 @@
 "use client";
 
-import { useScreenWidth } from "@/hooks/screen-width";
-import { useMediaQuery } from "@/hooks/use-media-query";
-
-type TextWrap = {
-    word: string,
-    maxCharWidth: number,
-}
-
 const calculateMultiplier = (
   maxMultiplier,
   minMultiplier,
@@ -98,9 +90,30 @@ export const wrapWord = ({ word, fontSize, width, isDesktop, screenWidth }) => {
 };
 
 
-export const WrappedXAxisTick = (props) => {
+export const WrappedXAxisTick = ({
+  x,
+  y,
+  stroke,
+  payload,
+  width,
+  visibleTicksCount,
+  isDesktop,
+  themeCodes,
+  screenWidth,
+  tickFormatter,
+}: {
+  x?: number;
+  y?: number;
+  stroke?: string;
+  payload?: any;
+  width?: number;
+  visibleTicksCount?: number;
+  isDesktop?: boolean;
+  themeCodes?: any;
+  screenWidth?: number;
+  tickFormatter?: (value: string) => string;
+}) => {
     
-  const { x, y, stroke, payload, width, isDesktop, themeCodes, screenWidth, tickFormatter } = props;
 
   const textAnchor = 'end';
   
@@ -110,13 +123,12 @@ export const WrappedXAxisTick = (props) => {
   } 
 
   const textObjects = wrapWord({
-    word: payload.value,
+    word: tickFormatter ? tickFormatter(payload.value) : payload.value,
     fontSize: parseInt(xAxisStyle.fontSize),
-    width: (width / props.visibleTicksCount),
+    width: (width / visibleTicksCount),
     isDesktop,
     screenWidth,
   });
-
   
   return (
     <g transform={`translate(${x},${y})`}>
@@ -132,7 +144,7 @@ export const WrappedXAxisTick = (props) => {
           key={index}
         >
           {addEllipsis(
-            tickFormatter ? tickFormatter(text.word) : text.word, 
+            text.word, 
             text.maxCharWidth
           )}
         </text>

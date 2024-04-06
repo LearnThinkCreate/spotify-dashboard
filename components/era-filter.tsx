@@ -6,32 +6,20 @@ import { useConfig } from "@/hooks/use-config";
 import { themes, Theme, getHexCodes } from "@/components/themes";
 import { cn } from "@/lib/utils";
 import {
-  // PageActions,
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/ui/page-header"
 import { Button } from "@/components/ui/button";
-// import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export const EraFilter: React.FC = () => {
   const [config, setConfig] = useConfig();
   const { resolvedTheme: mode } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
-  // const searchParams = useSearchParams();
-  // const { replace } = useRouter();
-  // const pathname = usePathname();
-
   React.useEffect(() => {
     setMounted(true);
   }, []);
-
-  // const updateEra = (era: string) => {
-  //   const params = new URLSearchParams(searchParams.toString());
-  //   params.set("era", era);
-  //   replace(`${pathname}?${params.toString()}`, { scroll: false });
-  // };
 
   return (
     <PageHeader>
@@ -59,7 +47,6 @@ export const EraFilter: React.FC = () => {
                       ...config,
                       theme: 'default',
                     })
-                    // updateEra('');
                     return;
                   }
                   setConfig({
@@ -67,7 +54,6 @@ export const EraFilter: React.FC = () => {
                     theme: theme.name,
                     era: theme.era,
                   })
-                  // updateEra(theme.era);
                 }
                 }
                 className={cn(

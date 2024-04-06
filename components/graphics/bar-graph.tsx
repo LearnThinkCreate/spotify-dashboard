@@ -10,7 +10,7 @@ import {
 import { GraphDropDown } from "@/components/graph-dropdown";
 import { BarGraphOptions } from "@/components/graphics/options";
 import { useConfig } from "@/hooks/use-config";
-import { prismaGenreFilters, eraFilters } from "@/lib/navigation-utils";
+import { prismaGenreFilters, prismaEraFilters } from "@/lib/navigation-utils";
 import { GenreSearch, GenreResult } from "@/components/genre-search";
 import { GenreBadges, Genre } from "@/components/genre-badges";
 import { themes, getHexCodes } from "@/components/themes";
@@ -23,7 +23,6 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  LabelList,
 } from "recharts";
 import {
   WrappedXAxisTick,
@@ -46,6 +45,22 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const isLargeDesktop = useMediaQuery("(min-width: 1024px)");
   const screenWidth = useScreenWidth();
+
+  const option = BarGraphOptions.find(
+    (option) => option.value === dropdownValue
+  );
+
+  const maxLabelLength = data
+    ? Math.max(...data.map((item) => item[option.value]?.length))
+    : 0;
+  let marginBottom;
+  if (maxLabelLength < 10) {
+    marginBottom = 15;
+  } else if (maxLabelLength < 20) {
+    marginBottom = 65;
+  } else {
+    marginBottom = 80;
+  }
 
   function updateGenreArray(genreType: string, genreArray: Genre[]) {
     if (genreType === "main_genre") {
@@ -110,7 +125,7 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
         where: {
           AND: [
             {
-              ts: eraFilters(theme),
+              ts: prismaEraFilters(theme),
             },
             {
               OR: prismaGenreFilters({
@@ -134,22 +149,6 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
   React.useEffect(() => {
     fetchData();
   }, [dropdownValue, mainGenre, secondaryGenre, config]);
-
-  const option = BarGraphOptions.find(
-    (option) => option.value === dropdownValue
-  );
-
-  const maxLabelLength = data
-    ? Math.max(...data.map((item) => item[option.value]?.length))
-    : 0;
-  let marginBottom;
-  if (maxLabelLength < 10) {
-    marginBottom = 15;
-  } else if (maxLabelLength < 20) {
-    marginBottom = 65;
-  } else {
-    marginBottom = 80;
-  }
 
   return (
     <Card className="flex flex-col flex-1">

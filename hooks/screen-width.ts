@@ -5,7 +5,6 @@ export function useScreenWidth() {
         setScreenWidth(window.innerWidth);
         const handleResize = () => setScreenWidth(window.innerWidth);
         window.addEventListener('resize', handleResize);
-        // console.log('useScreenWidth mounted')
         return () => window.removeEventListener('resize', handleResize);
     }, []);
     return screenWidth;
