@@ -14,8 +14,7 @@ import { useConfig } from "@/hooks/use-config";
 import { prismaGenreFilters, eraFilters } from "@/lib/navigation-utils";
 import { GenreSearch, GenreResult } from "@/components/genre-search";
 import { GenreBadges, Genre } from "@/components/genre-badges";
-import { useThemeState } from "@/hooks/theme-state";
-import { themes, Theme, getHexCodes } from "@/components/themes";
+import { themes } from "@/components/themes";
 
 export const BarGraph = ({ initialData }: { initialData? }) => {
   const [data, setData] = React.useState(initialData);
@@ -24,8 +23,8 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
   );
   const [mainGenre, setMainGenre] = React.useState<Genre[]>([]);
   const [secondaryGenre, setSecondaryGenre] = React.useState<Genre[]>([]);
-  // const [config, setConfig] = useConfig();
-  // const theme = themes.find((theme) => theme.name === config.theme);
+  const [config, setConfig] = useConfig();
+  const theme = themes.find((theme) => theme.name === config.theme);
   const renderCount = React.useRef(0);
 
   function updateGenreArray(genreType: string, genreArray: Genre[]) {
@@ -91,7 +90,7 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
         where: {
           AND: [
             {
-              // ts: eraFilters(theme),
+              ts: eraFilters(theme),
             },
             {
               OR: prismaGenreFilters({
@@ -113,9 +112,8 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
   };
 
   React.useEffect(() => {
-    // fetchData();
-    console.log("useEffect called");
-  }, []);
+    fetchData();
+  }, [dropdownValue, mainGenre, secondaryGenre, config]);
 
   const option = BarGraphOptions.find(
     (option) => option.value === dropdownValue

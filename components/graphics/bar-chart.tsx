@@ -59,7 +59,9 @@ const HistoryBarChart = ({data, categroyValue, option }: {
     const textObjects = wrapWord({
       word: payload.value,
       fontSize: parseInt(xAxisStyle.fontSize),
-      width: (width / props.visibleTicksCount) 
+      width: (width / props.visibleTicksCount),
+      isDesktop,
+      screenWidth,
     });
 
     

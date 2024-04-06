@@ -12,26 +12,26 @@ import {
   PageHeaderHeading,
 } from "@/components/ui/page-header"
 import { Button } from "@/components/ui/button";
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+// import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export const EraFilter: React.FC = () => {
   const [config, setConfig] = useConfig();
   const { resolvedTheme: mode } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
-  const searchParams = useSearchParams();
-  const { replace } = useRouter();
-  const pathname = usePathname();
+  // const searchParams = useSearchParams();
+  // const { replace } = useRouter();
+  // const pathname = usePathname();
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
 
-  const updateEra = (era: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("era", era);
-    replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+  // const updateEra = (era: string) => {
+  //   const params = new URLSearchParams(searchParams.toString());
+  //   params.set("era", era);
+  //   replace(`${pathname}?${params.toString()}`, { scroll: false });
+  // };
 
   return (
     <PageHeader>

@@ -30,9 +30,7 @@ export const addEllipsis = (text, maxCharWidth) => {
   return text;
 };
 
-export const wrapWord = ({ word, fontSize, width }) => {
-    const isDesktop = useMediaQuery("(min-width: 768px)");
-    const screenWidth = useScreenWidth();
+export const wrapWord = ({ word, fontSize, width, isDesktop, screenWidth }) => {
 
 
     let widthMultiplier;
