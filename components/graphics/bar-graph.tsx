@@ -12,8 +12,8 @@ import { GraphDropDown } from "@/components/graph-dropdown";
 import  { BarGraphOptions } from "@/components/graphics/options";
 import { useConfig } from "@/hooks/use-config";
 import { prismaGenreFilters, eraFilters } from "@/lib/navigation-utils";
-import { GenreSearch, GenreResult } from '@/components/client-genre-search'
-import { GenreBadges, Genre } from '@/components/client-genre-badges'
+import { GenreSearch, GenreResult } from '@/components/genre-search'
+import { GenreBadges, Genre } from '@/components/genre-badges'
 import { useThemeState } from "@/hooks/theme-state";
 import { themes, Theme, getHexCodes } from '@/components/themes';
 
