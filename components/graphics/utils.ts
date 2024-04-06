@@ -14,10 +14,10 @@ const tempoFormatter = (value: string) => parseFloat(value).toFixed(0) + " BPM" 
 const hoursFormatter = (value: string) => parseFloat(value).toFixed(2) as string;
 
 
-  export { 
-    formatXAxis, 
-    percentFormatter, 
-    decibelFormatter, 
-    tempoFormatter,
-    hoursFormatter, 
-  }
+export { 
+  formatXAxis, 
+  percentFormatter, 
+  decibelFormatter, 
+  tempoFormatter,
+  hoursFormatter, 
+}

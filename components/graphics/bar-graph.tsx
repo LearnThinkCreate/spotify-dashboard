@@ -7,14 +7,29 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import HistoryBarChart from "@/components/graphics/bar-chart";
 import { GraphDropDown } from "@/components/graph-dropdown";
 import { BarGraphOptions } from "@/components/graphics/options";
 import { useConfig } from "@/hooks/use-config";
 import { prismaGenreFilters, eraFilters } from "@/lib/navigation-utils";
 import { GenreSearch, GenreResult } from "@/components/genre-search";
 import { GenreBadges, Genre } from "@/components/genre-badges";
-import { themes } from "@/components/themes";
+import { themes, getHexCodes } from "@/components/themes";
+import { useScreenWidth } from "@/hooks/screen-width";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  LabelList,
+} from "recharts";
+import {
+  WrappedXAxisTick,
+  CircleBarLabel,
+} from "@/components/graphics/graph-components";
+import { useTheme } from "next-themes";
 
 export const BarGraph = ({ initialData }: { initialData? }) => {
   const [data, setData] = React.useState(initialData);
@@ -23,9 +38,14 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
   );
   const [mainGenre, setMainGenre] = React.useState<Genre[]>([]);
   const [secondaryGenre, setSecondaryGenre] = React.useState<Genre[]>([]);
+  const { theme: mode } = useTheme();
   const [config, setConfig] = useConfig();
   const theme = themes.find((theme) => theme.name === config.theme);
-  const renderCount = React.useRef(0);
+  const themeCodes = getHexCodes(theme, mode);
+
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isLargeDesktop = useMediaQuery("(min-width: 1024px)");
+  const screenWidth = useScreenWidth();
 
   function updateGenreArray(genreType: string, genreArray: Genre[]) {
     if (genreType === "main_genre") {
@@ -63,7 +83,7 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
           (_, index) => index !== genreIndex
         );
         updateGenreArray(genre.genre_type, newArray);
-      }, 200); // Adjust 1000ms to match your animation duration
+      }, 200);
     } else {
       // Add a new genre if it doesn't exist
       updateGenreArray(genre.genre_type, [
@@ -119,6 +139,18 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
     (option) => option.value === dropdownValue
   );
 
+  const maxLabelLength = data
+    ? Math.max(...data.map((item) => item[option.value]?.length))
+    : 0;
+  let marginBottom;
+  if (maxLabelLength < 10) {
+    marginBottom = 15;
+  } else if (maxLabelLength < 20) {
+    marginBottom = 65;
+  } else {
+    marginBottom = 80;
+  }
+
   return (
     <Card className="flex flex-col flex-1">
       <CardHeader>
@@ -145,13 +177,69 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
         </div>
       </CardHeader>
       <CardContent className="flex-1">
-          {data && (
-            <HistoryBarChart
+        {data && (
+          <ResponsiveContainer>
+            <BarChart
               data={data}
-              categroyValue={dropdownValue}
-              option={option}
-            />
-          )}
+              margin={{
+                top: 5,
+                right: 0,
+                left: 0,
+                bottom: isDesktop ? marginBottom : marginBottom + 20,
+              }}
+            >
+              <CartesianGrid horizontal={false} vertical={false} />
+              <Bar
+                dataKey={"hours_played"}
+                name={option.label}
+                style={
+                  {
+                    fill: themeCodes["primary"],
+                    opacity: 1,
+                  } as React.CSSProperties
+                }
+                label={
+                  <CircleBarLabel
+                    isLargeDesktop={isLargeDesktop}
+                    screenWidth={screenWidth}
+                    themeCodes={themeCodes}
+                  />
+                }
+                isAnimationActive={true}
+              />
+              <XAxis
+                dataKey={option.value}
+                padding={{ left: 5, right: 5 }}
+                type="category"
+                tickLine={false}
+                tickCount={10}
+                tick={
+                  <WrappedXAxisTick
+                    isDesktop={isDesktop}
+                    themeCodes={themeCodes}
+                    screenWidth={screenWidth}
+                    tickFormatter={option.tickFormatter}
+                  />
+                }
+                minTickGap={0}
+                interval={0}
+                allowDataOverflow={true}
+              />
+              <YAxis
+                name="Test"
+                domain={option.scale}
+                tickFormatter={
+                  option.tickFormatter ? option.tickFormatter : undefined
+                }
+                padding={{ top: 5, bottom: 10 }}
+                tick={{
+                  fontSize: "10",
+                  fill: themeCodes["accent-foreground"],
+                }}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </CardContent>
     </Card>
   );
