@@ -15,5 +15,8 @@ export function useThemeState() {
         setThemeCodes(getHexCodes(newTheme, mode));
     } , [config])
 
-    return themeCodes
+    return {
+        themeCodes,
+        currentTheme
+    }
 }

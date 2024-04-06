@@ -59,14 +59,15 @@ export const EraFilter: React.FC = () => {
                       ...config,
                       theme: 'default',
                     })
-                    updateEra('');
+                    // updateEra('');
                     return;
                   }
                   setConfig({
                     ...config,
                     theme: theme.name,
+                    era: theme.era,
                   })
-                  updateEra(theme.era);
+                  // updateEra(theme.era);
                 }
                 }
                 className={cn(

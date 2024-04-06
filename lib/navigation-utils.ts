@@ -10,10 +10,13 @@ export const eraFilters = (era: Theme) => {
   return filters;
 }
 
-export const prismaGenreFilters = ({ main_genre, secondary_genre }) => {
+export const prismaGenreFilters = ({ main_genre, secondary_genre }: {
+  main_genre: string | string[],
+  secondary_genre: string | string[]
+}) => {
   const filters = [];
-  if (main_genre) filters.push({ main_genre: { in: formatFilterParam(main_genre) } });
-  if (secondary_genre) filters.push({ secondary_genre: { in: formatFilterParam(secondary_genre) } });
+  if (main_genre?.length > 0) filters.push({ main_genre: { in: formatFilterParam(main_genre) } });
+  if (secondary_genre?.length > 0) filters.push({ secondary_genre: { in: formatFilterParam(secondary_genre) } });
   return filters;
 }
 

@@ -7,44 +7,38 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 import { useThemeState } from "@/hooks/theme-state";
 import { wrapWord, addEllipsis } from "@/components/graphics/tick-wrapping";
 
-const HistoryBarChart = ({data, categroyValue, searchKey}: {
+const HistoryBarChart = ({data, categroyValue, option }: {
     data: any,
     categroyValue: string,
-    searchKey: string
+    option: any
+    // searchKey: string
 }) => {
-  const localSearchKeyRef = React.useRef("");
-  const animationActiveRef = React.useRef(true);
-  const renderCount = React.useRef(0);
-  const offset = React.useRef(0);
+  // const animationActiveRef = React.useRef(true);
+  // const renderCount = React.useRef(0);
+  // const offset = React.useRef(0);
 
-  React.useEffect(() => {
-    if (renderCount.current < 4) {
-      renderCount.current += 1;
-    }
-    if (renderCount.current  == 2 ) {
-      offset.current = 1;
-      animationActiveRef.current = false;
-      return
-    } else if (renderCount.current === 3) {
-      offset.current = 0;
-      return
-    }
-  });
-  
-  React.useEffect(() => {
-    if (localSearchKeyRef.current !== searchKey) {
-      localSearchKeyRef.current = searchKey;
-    }
-  }, [searchKey])
+  // React.useEffect(() => {
+  //   if (renderCount.current < 4) {
+  //     renderCount.current += 1;
+  //   }
+  //   if (renderCount.current  == 2 ) {
+  //     offset.current = 1;
+  //     animationActiveRef.current = false;
+  //     return
+  //   } else if (renderCount.current === 3) {
+  //     offset.current = 0;
+  //     return
+  //   }
+  // });
 
-  const option = BarGraphOptions.find(option => option.value === categroyValue) 
+  // const option = BarGraphOptions.find(option => option.value === categroyValue) 
 
-  const maxLabelLength = Math.max(...JSON.parse(data).map(item => item[option.value]?.length));
+  const maxLabelLength = Math.max(...data.map(item => item[option.value]?.length));
 
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const isLargeDesktop = useMediaQuery("(min-width: 1024px)")
   const screenWidth = useScreenWidth();
-  const themeCodes = useThemeState();
+  const themeCodes = useThemeState().themeCodes;
 
   let marginBottom;
   if (maxLabelLength < 10) {marginBottom = 15}
@@ -52,7 +46,6 @@ const HistoryBarChart = ({data, categroyValue, searchKey}: {
   else {marginBottom = 80}
 
   const CustomizedAxisTick = (props) => {
-    // console.log('CustomizedAxisTick Rendered')
     
     const { x, y, stroke, payload, width } = props;
 
@@ -81,6 +74,7 @@ const HistoryBarChart = ({data, categroyValue, searchKey}: {
             fill={themeCodes['accent-foreground']}
             fontSize={xAxisStyle.fontSize}
             transform={`rotate(${xAxisStyle.angle})`}
+            key={index}
           >
             {addEllipsis(
               option.tickFormatter ? option.tickFormatter(text.word) : text.word, 
@@ -129,7 +123,7 @@ const HistoryBarChart = ({data, categroyValue, searchKey}: {
   return (
     <ResponsiveContainer>
       <BarChart
-        data={JSON.parse(data)}
+        data={data}
         margin={{
           top: 5,
           right: 0,
@@ -148,8 +142,8 @@ const HistoryBarChart = ({data, categroyValue, searchKey}: {
             } as React.CSSProperties
           }
           label={<CustomizedLabel  />}
-          isAnimationActive={(offset.current === 1 ) ? true : (searchKey !== localSearchKeyRef.current)}
-          // isAnimationActive={true}
+          // isAnimationActive={(offset.current === 1 ) ? true : (searchKey !== localSearchKeyRef.current)}
+          isAnimationActive={true}
         />
         <XAxis
           dataKey={option.value}
