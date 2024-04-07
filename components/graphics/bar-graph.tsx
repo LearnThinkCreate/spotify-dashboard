@@ -9,11 +9,9 @@ import {
 } from "@/components/ui/card";
 import { GraphDropDown } from "@/components/graph-dropdown";
 import { BarGraphOptions } from "@/components/graphics/options";
-import { useConfig } from "@/hooks/use-config";
 import { prismaGenreFilters, prismaEraFilters } from "@/lib/navigation-utils";
 import { GenreSearch, GenreResult } from "@/components/genre-search";
 import { GenreBadges, Genre } from "@/components/genre-badges";
-import { themes, getHexCodes } from "@/components/themes";
 import { useScreenWidth } from "@/hooks/screen-width";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
@@ -28,7 +26,7 @@ import {
   WrappedXAxisTick,
   CircleBarLabel,
 } from "@/components/graphics/graph-components";
-import { useTheme } from "next-themes";
+import { useThemeState } from "@/hooks/theme-state";
 import { cn } from "@/lib/utils";
 
 export const BarGraph = ({ initialData, className }: { initialData?; className?: string }) => {
@@ -38,10 +36,7 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
   );
   const [mainGenre, setMainGenre] = React.useState<Genre[]>([]);
   const [secondaryGenre, setSecondaryGenre] = React.useState<Genre[]>([]);
-  const { theme: mode } = useTheme();
-  const [config, setConfig] = useConfig();
-  const theme = themes.find((theme) => theme.name === config.theme);
-  const themeCodes = getHexCodes(theme, mode);
+  const { currentTheme, themeCodes } = useThemeState();
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const isLargeDesktop = useMediaQuery("(min-width: 1024px)");
@@ -126,7 +121,7 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
         where: {
           AND: [
             {
-              ts: prismaEraFilters(theme),
+              ts: prismaEraFilters(currentTheme),
             },
             {
               OR: prismaGenreFilters({
@@ -149,7 +144,7 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
 
   React.useEffect(() => {
     fetchData();
-  }, [dropdownValue, mainGenre, secondaryGenre, config]);
+  }, [dropdownValue, mainGenre, secondaryGenre, currentTheme]);
 
   return (
     <Card className={cn(

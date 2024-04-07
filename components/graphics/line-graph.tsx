@@ -26,7 +26,7 @@ export const LineGraph = ({ initialData, className }: { initialData?; className?
     );
 
     const { theme: mode } = useTheme();
-    const [config, setConfig] = useConfig();
+    const [config] = useConfig();
     const theme = themes.find((theme) => theme.name === config.theme);
     const themeCodes = getHexCodes(theme, mode);
 
@@ -52,6 +52,14 @@ export const LineGraph = ({ initialData, className }: { initialData?; className?
     React.useEffect(() => {
         fetchData();
     }, [dropdownValue, config]);
+
+    const [tooltipDisabled, setTooltipDisabled] = React.useState(false);
+    React.useEffect(() => {
+      setTooltipDisabled(true);
+      setTimeout(() => {
+        setTooltipDisabled(false);
+      }, 1000);
+    }, [dropdownValue]);
 
     return (
       <Card className={cn("flex flex-col flex-1", className)}>
@@ -102,6 +110,7 @@ export const LineGraph = ({ initialData, className }: { initialData?; className?
                   itemStyle={{
                     color: themeCodes["primary"],
                   }}
+                  active={!tooltipDisabled ? null : false}
                 />
                 <CartesianGrid horizontal={false} vertical={false} />
                 <XAxis
