@@ -29,8 +29,9 @@ import {
   CircleBarLabel,
 } from "@/components/graphics/graph-components";
 import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
 
-export const BarGraph = ({ initialData }: { initialData? }) => {
+export const BarGraph = ({ initialData, className }: { initialData?; className?: string }) => {
   const [data, setData] = React.useState(initialData);
   const [dropdownValue, setDropdownValue] = React.useState(
     BarGraphOptions[0].value
@@ -151,7 +152,9 @@ export const BarGraph = ({ initialData }: { initialData? }) => {
   }, [dropdownValue, mainGenre, secondaryGenre, config]);
 
   return (
-    <Card className="flex flex-col flex-1">
+    <Card className={cn(
+      "flex flex-col flex-1"
+    )}>
       <CardHeader>
         <div className="flex flex-col gap-5 lg:gap-0 lg:flex-row justify-between items-center">
           <div>

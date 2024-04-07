@@ -20,7 +20,8 @@ export default function ArtistCard({
   topArtist,
   topSong,
   topAlbum,
-  artistProfile
+  artistProfile,
+  className
 }: any) {
     const cardClasses = {
       content: "flex-1",
@@ -28,7 +29,7 @@ export default function ArtistCard({
     };
 
     return (
-      <CoreCard >
+      <CoreCard className="">
 
         <CoreCardHeader>
           <div className="flex flex-row items-center justify-between space-y-0">

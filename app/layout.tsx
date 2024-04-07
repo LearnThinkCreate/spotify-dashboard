@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeSwitcher } from "@/components/theme-switcher"
 import { cn } from "@/lib/utils";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { EraFilter } from "@/components/era-filter";
 import { MenuBar } from "@/components/menu-bar";
 
 
@@ -29,13 +30,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex min-h-screen flex-col bg-background">
-            <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"></header>
-            <main className="flex-1 flex flex-col p-4 md:p-2 2xl:p-6">
-              <MenuBar />
-              {children}
-            </main>
-          </div>
+        <div className="flex flex-col h-screen overflow-auto">
+            <div className="sticky top-0 z-50 shadow px-4 py-2 w-full">
+                <MenuBar />
+                <EraFilter />
+              </div>
+              <main className="flex-1 overflow-scroll">
+                {children}
+              </main>
+        </div>
           <TailwindIndicator />
           <SpeedInsights />
           <ThemeSwitcher />

@@ -17,8 +17,9 @@ import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tool
 import { getShortMonthYear } from "@/components/graphics/utils";
 import { WrappedXAxisTick } from "@/components/graphics/graph-components";
 import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
 
-export const LineGraph = ({ initialData }: { initialData? }) => {
+export const LineGraph = ({ initialData, className }: { initialData?; className?: string }) => {
     const [data, setData] = React.useState(initialData);
     const [dropdownValue, setDropdownValue] = React.useState(
       LineGraphOptions[0].value
@@ -53,7 +54,7 @@ export const LineGraph = ({ initialData }: { initialData? }) => {
     }, [dropdownValue, config]);
 
     return (
-      <Card className="flex flex-col flex-1 overflow-hidden">
+      <Card className={cn("flex flex-col flex-1", className)}>
         <CardHeader>
           <div className="flex flex-col gap-5 lg:flex-row lg:gap-0 justify-between items-center">
             <div>

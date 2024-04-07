@@ -1,8 +1,9 @@
 import Link from 'next/link';
 
+
 export const MenuBar = ({  }) => {
     return (
-    <div className="flex justify-center space-x-10 pb-6">
+    <div className="flex justify-center space-x-10 pt-3">
         <Link href={{
             pathname: '/',
             // query: searchParams
@@ -11,17 +12,10 @@ export const MenuBar = ({  }) => {
             Go to Cards
         </Link>
         <Link href={{
-            pathname: '/lineGraph',
-            // query: searchParams
-        
-        }}>
-            Go to Line Graph
-        </Link>
-        <Link href={{
-            pathname: '/barGraph',
+            pathname: '/graph',
             // query: searchParams
         }}>
-            Go to Bar Graph
+            Go To Graphs
         </Link>
     </div>
     )
