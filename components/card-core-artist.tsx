@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import query from '@/lib/db';
 import { RxAvatar } from 'react-icons/rx';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
@@ -10,9 +9,9 @@ import {
     CoreCardHeader,
     padding,
     maxImageHeight
-} from '@/components/graphics/CoreCards/base-core-card';
+} from '@/components/card-core-base';
 import { CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import GradientBarChart from '@/components/graphics/vm-meter';
+import GradientBarChart from '@/components/graph-vm-meter';
 
 
 

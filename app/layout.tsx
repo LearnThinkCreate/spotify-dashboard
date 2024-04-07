@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeSwitcher } from "@/components/theme-switcher"
 import { cn } from "@/lib/utils";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
-import { EraFilter } from "@/components/era-filter";
-import { MenuBar } from "@/components/menu-bar";
+import { EraFilter } from "@/components/nav-era-filter";
+import { MenuBar } from "@/components/nav-menu-bar";
 
 
 export default function RootLayout({

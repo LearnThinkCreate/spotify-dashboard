@@ -1,7 +1,7 @@
 import prisma from "@/lib/db/prisma";
 import { Prisma } from "@prisma/client";
 import { Theme } from "@/components/themes";
-import { eraFilters } from "@/lib/navigation-utils";
+import { eraFilters } from "@/lib/db/query-utils";
 
 const getDateGroup = (era?: Theme) => era ? 'month' : 'month';
 const getEraFilter = (era?: Theme) => era ? eraFilters(era) : null;

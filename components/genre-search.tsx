@@ -40,7 +40,7 @@ export function GenreSearch({ onGenreSelect }: { onGenreSelect: GenreSelectParam
 
     const handleSearch = useDebouncedCallback(async (term: string) => {
         try {
-            const response = await fetch(`/api/genre-options?query=${term}`);
+            const response = await fetch(`/api/search-genre?query=${term}`);
             const data = await response.json(); // Ensure you await the json() call
             setGenres(data);
             setTerm(term)

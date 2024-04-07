@@ -4,7 +4,7 @@ import {
     decibelFormatter, 
     tempoFormatter,
     hoursFormatter,
-} from '@/components/graphics/utils';
+} from '@/components/graph-utils';
 import { toTitleCase } from '@/lib/utils';
 
 type GraphOption = {

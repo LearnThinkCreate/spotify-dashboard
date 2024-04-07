@@ -8,14 +8,14 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { GraphDropDown } from "@/components/graph-dropdown";
-import { LineGraphOptions } from '@/components/graphics/options';
+import { LineGraphOptions } from '@/components/graph-options';
 import { useConfig } from "@/hooks/use-config";
 import { themes, getHexCodes } from "@/components/themes";
 import { useScreenWidth } from "@/hooks/screen-width";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip  } from "recharts";
-import { getShortMonthYear } from "@/components/graphics/utils";
-import { WrappedXAxisTick } from "@/components/graphics/graph-components";
+import { getShortMonthYear } from "@/components/graph-utils";
+import { WrappedXAxisTick } from "@/components/graph-custom-components";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
@@ -44,7 +44,7 @@ export const LineGraph = ({ initialData, className }: { initialData?; className?
       };
 
     const fetchData = async () => {
-        const response = await fetch(`api/basicLineQuery?category=${dropdownValue}&era=${JSON.stringify(theme)}`);
+        const response = await fetch(`api/graph-line-data?category=${dropdownValue}&era=${JSON.stringify(theme)}`);
         const data = await response.json();
         setData(data);
     }

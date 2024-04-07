@@ -8,8 +8,8 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { GraphDropDown } from "@/components/graph-dropdown";
-import { BarGraphOptions } from "@/components/graphics/options";
-import { prismaGenreFilters, prismaEraFilters } from "@/lib/navigation-utils";
+import { BarGraphOptions } from "@/components/graph-options";
+import { prismaGenreFilters, prismaEraFilters } from "@/lib/db/query-utils";
 import { GenreSearch, GenreResult } from "@/components/genre-search";
 import { GenreBadges, Genre } from "@/components/genre-badges";
 import { useScreenWidth } from "@/hooks/screen-width";
@@ -25,7 +25,7 @@ import {
 import {
   WrappedXAxisTick,
   CircleBarLabel,
-} from "@/components/graphics/graph-components";
+} from "@/components/graph-custom-components";
 import { useThemeState } from "@/hooks/theme-state";
 import { cn } from "@/lib/utils";
 
@@ -108,7 +108,7 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
     const getGenres = (genres: Genre[]) => genres.map((genre) => genre.genre);
 
     const response = await fetch(
-      `api/aggregate?query=${JSON.stringify({
+      `api/sdo-group-by?query=${JSON.stringify({
         by: [dropdownValue],
         _sum: {
           hours_played: true,

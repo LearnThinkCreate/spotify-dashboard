@@ -1,8 +1,6 @@
 import * as React from "react";
-import { EraFilter } from "@/components/era-filter";
-import { ThemeWrapper } from "@/components/theme-wrapper";
-import { BarGraph } from "@/components/graphics/bar-graph";
-import { LineGraph } from "@/components/graphics/line-graph";
+import { BarGraph } from "@/components/graph-main-bar";
+import { LineGraph } from "@/components/graph-main-line";
 
 export default async function Page({}) {
   return (

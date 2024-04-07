@@ -1,9 +1,7 @@
 import { Suspense } from "react";
 
-import { ThemeWrapper } from "@/components/theme-wrapper";
-
-import { CoreCardWrapper } from "@/components/graphics/card-animation-wrapper";
-import CoreCards from "@/components/graphics/cards";
+import { CoreCardWrapper } from "@/components/card-core-animation";
+import CoreCards from "@/components/card-core";
 
 
 export default async function Page() {

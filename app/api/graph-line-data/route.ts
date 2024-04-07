@@ -5,7 +5,7 @@ import {
     basicLineQuery,
     instrumentalQuery,
     hoursListenedQuery,
-} from "@/lib/db/line-data";
+} from "@/lib/db/data-main-line";
 
 export async function GET(request: NextRequest) {
     const category = new URL(request.url).searchParams.get('category');

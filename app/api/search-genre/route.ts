@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prismaGenreOptions } from "@/lib/navigation-utils";
+import { prismaGenreOptions } from "@/lib/db/query-utils";
 
 export async function GET(request: NextRequest) 
 {

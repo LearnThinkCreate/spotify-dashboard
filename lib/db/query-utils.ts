@@ -1,4 +1,4 @@
-import { themes, Theme } from "@/components/themes";
+import { Theme } from "@/components/themes";
 import prisma from "@/lib/db/prisma";
 
 export const formatFilterParam = (filter) => Array.isArray(filter) ? filter : (filter ? [filter] : []);
