@@ -1,23 +1,62 @@
-import { Suspense } from "react";
+import * as React from "react"
 
-import { CoreCardWrapper } from "@/components/card-core-animation";
-import CoreCards from "@/components/card-core";
+// import { CoreCardWrapper } from "@/components/card-core-animation";
+// import CoreCards from "@/components/card-core";
+
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { FavoriteCard } from "@/components/card-core-favorite";
 
 
 export default async function Page() {
   return (
-    <div className="h-full p-4">
-      <Suspense fallback={<div></div>}>
-        <CoreCardWrapper
-          className={`w-full grid grid-rows-4 
-            grid-cols-1 lg:grid-cols-4 
-            lg:grid-rows-1
-            gap-4
-          `}
-        >
-          <CoreCards />
-        </CoreCardWrapper>
-      </Suspense>
+    <div className="h-full grid grid-cols-3 gap-4 p-6">
+      <React.Suspense fallback={<div>Loading...</div>}>
+        <FavoriteCard className=""/>
+        {/* <ExampleCard /> */}
+        <ExampleCard />
+        <ExampleCard />
+
+        <ExampleCard />
+        <ExampleCard />
+        <ExampleCard />
+
+        <ExampleCard />
+        <ExampleCard />
+        <ExampleCard />
+      </React.Suspense>
     </div>
   );
 }
+
+const ExampleCard = React.forwardRef<
+HTMLDivElement,
+React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <Card
+    ref={ref}
+    className={cn(
+      ``,
+      className
+    )}
+    {...props}
+  >
+    <CardHeader>
+      <CardTitle>Card Title</CardTitle>
+      <CardDescription>Card Description</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <p>Card Content</p>
+    </CardContent>
+    <CardFooter>
+      <p>Card Footer</p>
+    </CardFooter>
+  </Card>
+));

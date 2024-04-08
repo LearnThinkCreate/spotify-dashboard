@@ -5,7 +5,7 @@ import { LineGraph } from "@/components/graph-main-line";
 export default async function Page({}) {
   return (
     <>
-      <div className="flex flex-col h-full overflow-auto">
+      <div className="flex flex-col h-full">
         <div className="snap-y snap-mandatory overflow-scroll flex-1">
           <div className="snap-center h-full flex p-4">
             <BarGraph initialData={null} className="grow flex flex-col" />
