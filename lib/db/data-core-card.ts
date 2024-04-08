@@ -9,7 +9,7 @@ interface PrismaFuncParams {
 }
 const IMAGE_FIELDS = ["image_lg", "image_md", "image_sm"] as const;
 
-const CATEGORIES = {
+const CUSTOM_CATEGORIES = {
   song: {
     primaryKey: "track_id",
     imageFields: IMAGE_FIELDS,
@@ -30,10 +30,11 @@ const CATEGORIES = {
     groupBy: ["album"] as Prisma.spotify_data_overviewGroupByArgs["by"],
     model: prisma.track_metadata,
     includeImage: true,
-  }
+  },
+
 } as const;
 
-type TopQueryCategory = keyof typeof CATEGORIES;
+type CustomQueryCategory = keyof typeof CUSTOM_CATEGORIES;
 
 export const getImageDict = (imageFields, value) => {
   return imageFields.reduce((acc, field) => {
@@ -47,9 +48,9 @@ export const getMetadata = async ({
   type,
 }: {
   id: string | string[];
-  type: TopQueryCategory;
+  type: CustomQueryCategory;
 }) => {
-  const select = getImageDict(CATEGORIES[type].imageFields, true);
+  const select = getImageDict(CUSTOM_CATEGORIES[type].imageFields, true);
   let where;
   let model;
 
@@ -117,13 +118,13 @@ export const getIdFromName = async ({
   return data[0][NAMES_TO_IDS[type]];
 }
 
-export const topQuery = async ({
+export const customTopQuery = async ({
   category,
   filter = {},
   offset = 0,
   take = 1,
-}: PrismaFuncParams & { category: TopQueryCategory }) => {
-  const groupByParams = CATEGORIES[category].groupBy;
+}: PrismaFuncParams & { category: CustomQueryCategory }) => {
+  const groupByParams = CUSTOM_CATEGORIES[category].groupBy;
 
   const topData = await prisma.spotify_data_overview.groupBy({
     by: groupByParams,
@@ -145,7 +146,7 @@ export const topQuery = async ({
   }
 
   const formattedData = await Promise.all(topData.map(async (record) => {
-      let primaryKey = record[CATEGORIES[category].primaryKey];
+      let primaryKey = record[CUSTOM_CATEGORIES[category].primaryKey];
   
       if (!primaryKey && Object.keys(NAMES_TO_IDS).includes(category)) {
         const name = record[category] as string;
@@ -154,7 +155,7 @@ export const topQuery = async ({
       }
 
       let metadata;
-      if (CATEGORIES[category].includeImage && primaryKey) {
+      if (CUSTOM_CATEGORIES[category].includeImage && primaryKey) {
         metadata = await getMetadata({ id: primaryKey, type: category });
       }
   
@@ -171,3 +172,34 @@ export const topQuery = async ({
   return take && take === 1 ? formattedData[0] : formattedData;
 };
  
+export const topQuery = async ({
+  category,
+  filter = {},
+  offset = 0,
+  take = 1,
+}: PrismaFuncParams & { category: CustomQueryCategory | string }) => {
+  // Check if the category is a CustomQueryCategory or a generic string
+  if (Object.keys(CUSTOM_CATEGORIES).includes(category)) {
+    return customTopQuery({ category: category as CustomQueryCategory, filter, offset, take });
+  }
+  const data = prisma.spotify_data_overview.groupBy({
+    by: [category] as Prisma.spotify_data_overviewGroupByArgs["by"],
+    _sum: {
+      hours_played: true,
+    },
+    orderBy: {
+      _sum: {
+        hours_played: "desc",
+      },
+    },
+    where: filter,
+    take: take,
+    skip: offset,
+  });
+
+  return (await data).map((record) => ({
+    category,
+    value: record[category],
+    hours_played: record._sum.hours_played,
+  }));
+}
