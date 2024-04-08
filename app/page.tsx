@@ -1,8 +1,5 @@
 import * as React from "react"
-
-// import { CoreCardWrapper } from "@/components/card-core-animation";
-// import CoreCards from "@/components/card-core";
-
+import Image from "next/image";
 import {
   Card,
   CardHeader,
@@ -14,16 +11,26 @@ import {
 import { cn } from "@/lib/utils";
 import { FavoriteCard } from "@/components/card-favorite";
 import { FavoriteGenre } from "@/components/card-favorite-genre";
-
+import {  getRandomImagePath } from "@/lib/query-era-image";
 
 export default async function Page() {
   return (
     <div className="h-full grid grid-cols-3 gap-4 p-6">
       <React.Suspense fallback={<div>Loading...</div>}>
         <FavoriteCard className=""/>
-        {/* <ExampleCard /> */}
         <FavoriteGenre />
-        <ExampleCard />
+
+        <Card className="container">
+          <CardContent className="object-fill">
+            <img
+              className=" rounded-lg border"
+              // height={256}
+              // width={256}
+              src={getRandomImagePath()}
+              alt="Random Image"
+            />
+          </CardContent>
+        </Card>
 
         <ExampleCard />
         <ExampleCard />

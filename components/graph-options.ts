@@ -48,7 +48,6 @@ const LineGraphOptions: GraphOption[] = [
         value: 'loudness',
         label: 'Loudness',
         description: 'This graph shows the median loudness of songs by year.',
-        scale: null,
         labelFormatter: (value: string, name: string) => [decibelFormatter(value), name],
         tickFormatter: (value: string) => parseFloat(value).toFixed(0) + "dB"
     },
@@ -56,7 +55,6 @@ const LineGraphOptions: GraphOption[] = [
         value: 'tempo',
         label: 'Tempo',
         description: 'This graph shows the median tempo of songs by year.',
-        scale: null,
         labelFormatter: (value: string, name: string) => [tempoFormatter(value), name],
         tickFormatter: (value: string) => parseFloat(value).toFixed(0) + 'BPM'
     },
@@ -64,7 +62,6 @@ const LineGraphOptions: GraphOption[] = [
         value: 'hours_played',
         label: 'Hours Per Day',
         description: 'This graph shows the median hours played per day of songs by year.',
-        scale: null,
         labelFormatter: (value: string, name?: string) => [hoursFormatter(value), name || ''],
         tickFormatter: (value: string) => parseFloat(value).toFixed(0)
     }
