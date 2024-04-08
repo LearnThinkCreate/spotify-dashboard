@@ -4,7 +4,7 @@ import prisma from "@/lib/db/prisma";
 export const formatFilterParam = (filter) => Array.isArray(filter) ? filter : (filter ? [filter] : []);
 
 export const eraFilters = (era: Theme) => {
-  const filters = [];
+  const filters: string[] = [];
   if (era.minDate) filters.push(`ts >= '${era.minDate}'`);
   if (era.maxDate) filters.push(`ts < '${era.maxDate}'`);
   return filters.length > 0 ? filters : null;
@@ -21,7 +21,7 @@ export const prismaGenreFilters = ({ main_genre, secondary_genre }: {
   main_genre: string | string[],
   secondary_genre: string | string[]
 }) => {
-  const filters = [];
+  const filters: any[] = []; // Update the type of `filters` to `any[]`
   if (main_genre?.length > 0) filters.push({ main_genre: { in: formatFilterParam(main_genre) } });
   if (secondary_genre?.length > 0) filters.push({ secondary_genre: { in: formatFilterParam(secondary_genre) } });
   return filters;

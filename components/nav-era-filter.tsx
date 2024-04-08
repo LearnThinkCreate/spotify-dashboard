@@ -23,8 +23,7 @@ export const EraFilter: React.FC = () => {
 
   return (
     <PageHeader>
-    <PageHeaderHeading>Themes</PageHeaderHeading>
-    <PageHeaderDescription>This is a test page</PageHeaderDescription>
+    <PageHeaderDescription>Era</PageHeaderDescription>
     <div className="flex items-center space-x-2">
       <div className="mr-2 items-center space-x-2 flex">
         {mounted ? (

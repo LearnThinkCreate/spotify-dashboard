@@ -78,7 +78,7 @@ export function GenreSearch({ onGenreSelect }: { onGenreSelect: GenreSelectParam
     return (
         <Drawer open={open} onOpenChange={handleOpen}>
             <DrawerTrigger asChild>
-            <Button variant="outline" className="w-[150px] justify-start bg-card">
+            <Button variant="outline" className="w-[136px] justify-start bg-card">
             + Set Genre
             </Button>
             </DrawerTrigger>

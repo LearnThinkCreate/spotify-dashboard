@@ -9,6 +9,13 @@ import {
 
 export async function GET(request: NextRequest) {
     const category = new URL(request.url).searchParams.get('category');
+
+    if (!category) {
+        return new Response('Category not found', {
+            status: 400,
+        });
+    }
+
     const era = new URL(request.url).searchParams.get('era');
     const eraObj = era ? JSON.parse(era) : null;
     let query;

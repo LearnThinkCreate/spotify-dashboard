@@ -7,11 +7,11 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
-
+import { cn } from "@/lib/utils";
 export const GraphDropDown = ({ 
     options,
     value,
-    onValueChange,
+    onValueChange
 }) => {
     return (
         <Select 
@@ -19,7 +19,7 @@ export const GraphDropDown = ({
         onValueChange={onValueChange}
         >
         <SelectTrigger 
-        className="w-[180px] bg-card text-card-foreground"
+        className="w-[136px] bg-card text-card-foreground"
         >
             <SelectValue placeholder="Theme" />
         </SelectTrigger>

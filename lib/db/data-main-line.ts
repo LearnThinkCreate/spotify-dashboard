@@ -8,7 +8,7 @@ const getEraFilter = (era?: Theme) => era ? eraFilters(era) : null;
 
 export const basicLineQuery = ({
     category = '',
-    era = null,
+    era,
 }: {
     category?: string,
     era?: Theme,
@@ -29,7 +29,7 @@ export const basicLineQuery = ({
     `;
 }
 
-export const instrumentalQuery = ({ era = null }: { era?: Theme }) => {
+export const instrumentalQuery = ({ era }: { era?: Theme }) => {
     const dateGroup = getDateGroup(era);
     const filter = getEraFilter(era);
     return `
@@ -54,7 +54,7 @@ export const instrumentalQuery = ({ era = null }: { era?: Theme }) => {
     `;
 }
 
-export const hoursListenedQuery = ({ era = null }: { era?: Theme }) => {
+export const hoursListenedQuery = ({ era }: { era?: Theme }) => {
     const dateGroup = getDateGroup(era);
     const filter = getEraFilter(era);
     if (dateGroup === 'month') {

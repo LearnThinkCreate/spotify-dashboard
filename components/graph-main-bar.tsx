@@ -25,6 +25,7 @@ import {
 import {
   WrappedXAxisTick,
   CircleBarLabel,
+  MobileBarLabel
 } from "@/components/graph-custom-components";
 import { useThemeState } from "@/hooks/theme-state";
 import { cn } from "@/lib/utils";
@@ -44,7 +45,7 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
 
   const option = BarGraphOptions.find(
     (option) => option.value === dropdownValue
-  );
+  ) || BarGraphOptions[0];
 
   const maxLabelLength = data
     ? Math.max(...data.map((item) => item[option.value]?.length))
@@ -121,7 +122,7 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
         where: {
           AND: [
             {
-              ts: prismaEraFilters(currentTheme),
+              ts: prismaEraFilters(currentTheme as any),
             },
             {
               OR: prismaGenreFilters({
@@ -148,7 +149,8 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
 
   return (
     <Card className={cn(
-      "flex flex-col flex-1"
+      "",
+      className
     )}>
       <CardHeader>
         <div className="flex flex-col gap-5 lg:gap-0 lg:flex-row justify-between items-center">
@@ -162,7 +164,7 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
               secondaryGenre={secondaryGenre}
               onBadgeClick={handleGenreFilter}
             />
-            <div className="flex flex-row gap-5 order-1 lg:order-2">
+            <div className="flex flex-row flex-wrap gap-5 order-1 lg:order-2">
               <GenreSearch onGenreSelect={handleGenreFilter} />
               <GraphDropDown
                 options={BarGraphOptions}
@@ -173,8 +175,9 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
           </div>
         </div>
       </CardHeader>
-      <CardContent className="flex-1">
+      <CardContent className="grow flex flex-col">
         {data && (
+          // <div className="size-full flex-none">
           <ResponsiveContainer>
             <BarChart
               data={data}
@@ -182,7 +185,7 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
                 top: 5,
                 right: 0,
                 left: 0,
-                bottom: isDesktop ? marginBottom : marginBottom + 20,
+                bottom: marginBottom,
               }}
             >
               <CartesianGrid horizontal={false} vertical={false} />
@@ -196,11 +199,15 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
                   } as React.CSSProperties
                 }
                 label={
-                  <CircleBarLabel
+                  isDesktop ? (
+                    <CircleBarLabel
                     isLargeDesktop={isLargeDesktop}
                     screenWidth={screenWidth}
                     themeCodes={themeCodes}
                   />
+                  ) : (
+                    <MobileBarLabel themeCodes={themeCodes} />
+                  )
                 }
                 isAnimationActive={true}
               />
@@ -236,6 +243,7 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
               />
             </BarChart>
           </ResponsiveContainer>
+          // </div>
         )}
       </CardContent>
     </Card>

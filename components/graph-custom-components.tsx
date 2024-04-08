@@ -48,7 +48,7 @@ export const wrapWord = ({ word, fontSize, width, isDesktop, screenWidth }) => {
         let maxMultiplier = 0.3;
         let minMultiplier = 0.15;
         let maxScreenWidth = 768;
-        let minScreenWidth = 500;
+        let minScreenWidth = 375;
 
         if (screenWidth < minScreenWidth) {
             widthMultiplier = minMultiplier;
@@ -153,6 +153,30 @@ export const WrappedXAxisTick = ({
     </g>
   );
 };
+
+export const MobileBarLabel = ({ x, y, width, height, value, themeCodes }: {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  value?: any;
+  themeCodes?: any;
+}) => {
+  return (
+    <g>
+      <text
+        x={x + width / 2}
+        y={y + 10}
+        fill={themeCodes['accent-foreground']}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fontSize="9"
+      >
+        {parseFloat(value).toFixed(0)}
+      </text>
+    </g>
+  )
+}
 
 export const CircleBarLabel = (props) => {
   const { x, y, width, height, value, isLargeDesktop, screenWidth, themeCodes } = props;

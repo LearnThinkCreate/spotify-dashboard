@@ -62,7 +62,7 @@ export const LineGraph = ({ initialData, className }: { initialData?; className?
     }, [dropdownValue]);
 
     return (
-      <Card className={cn("flex flex-col flex-1", className)}>
+      <Card className={cn("", className)}>
         <CardHeader>
           <div className="flex flex-col gap-5 lg:flex-row lg:gap-0 justify-between items-center">
             <div>
@@ -78,7 +78,7 @@ export const LineGraph = ({ initialData, className }: { initialData?; className?
             />
           </div>
         </CardHeader>
-        <CardContent className="flex-1">
+        <CardContent className="grow flex flex-col">
           {data && (
             <ResponsiveContainer>
               <LineChart
