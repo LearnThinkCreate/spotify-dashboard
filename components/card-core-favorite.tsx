@@ -9,20 +9,17 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import {
-  topQuery,
-  customTopQuery
-} from "@/lib/db/data-core-card";
+  topCategory
+} from "@/lib/db/query-top-category";
+
 
 export const FavoriteCard = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(async ({ className, ...props }, ref) => {
-  const topAlbum = await customTopQuery({ category: "album" });
-  const topArtist = await customTopQuery({ category: "artist" });
-  const topSong = await customTopQuery({ category: "song" });
-  
-  const topGenre = await topQuery({ category: "main_genre", take: 3 });
-  console.log(topGenre);
+  const topAlbum = await topCategory({ category: "album" });
+  const topArtist = await topCategory({ category: "artist" });
+  const topSong = await topCategory({ category: "song" });
 
   return (
     <Card ref={ref} className={cn(``, className)}>
