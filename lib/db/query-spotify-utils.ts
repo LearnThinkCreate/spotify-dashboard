@@ -1,6 +1,17 @@
 import prisma from "@/lib/db/prisma";
 import { Prisma } from "@prisma/client";
 
+export const queryHoursPlayed = async (where?: Prisma.spotify_data_overviewWhereInput) => (
+    await prisma.spotify_data_overview
+    .aggregate({
+      _sum: {
+        hours_played: true,
+      },
+      where,
+    })
+    .then((data) => data._sum.hours_played)
+);
+
 export const NAMES_TO_IDS = {
   song: "track_id",
   artist: "artist_id",

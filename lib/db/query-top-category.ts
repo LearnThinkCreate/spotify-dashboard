@@ -1,7 +1,7 @@
 import prisma from "@/lib/db/prisma";
 import { Prisma } from "@prisma/client";
 import { getSpotifyImage } from "./query-spotify-image";
-import { getIdFromName, NAMES_TO_IDS } from "./query-spotify-id";
+import { getIdFromName, NAMES_TO_IDS } from "./query-spotify-utils";
 
 interface PrismaFuncParams {
   filter?: Prisma.spotify_data_overviewWhereInput;
@@ -94,7 +94,7 @@ export const topCategory = async ({
   if (Object.keys(CUSTOM_CATEGORIES).includes(category)) {
     return customTopCategory({ category: category as customeCategory, filter, offset, take });
   }
-  const data = prisma.spotify_data_overview.groupBy({
+  const data = await prisma.spotify_data_overview.groupBy({
     by: [category] as Prisma.spotify_data_overviewGroupByArgs["by"],
     _sum: {
       hours_played: true,
@@ -107,11 +107,11 @@ export const topCategory = async ({
     where: filter,
     take: take,
     skip: offset,
-  });
-
-  return (await data).map((record) => ({
+  }).then((data) => data.map((record) => ({
     category,
     value: record[category],
     hours_played: record._sum.hours_played,
-  }));
+    })));
+
+  return take && take === 1 ? data[0] : data;
 }

@@ -2,11 +2,8 @@ import * as React from "react";
 import { cn, toTitleCase } from "@/lib/utils";
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 import {
   topCategory

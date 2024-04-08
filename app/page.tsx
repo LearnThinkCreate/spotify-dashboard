@@ -12,7 +12,8 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { FavoriteCard } from "@/components/card-core-favorite";
+import { FavoriteCard } from "@/components/card-favorite";
+import { FavoriteGenre } from "@/components/card-favorite-genre";
 
 
 export default async function Page() {
@@ -21,7 +22,7 @@ export default async function Page() {
       <React.Suspense fallback={<div>Loading...</div>}>
         <FavoriteCard className=""/>
         {/* <ExampleCard /> */}
-        <ExampleCard />
+        <FavoriteGenre />
         <ExampleCard />
 
         <ExampleCard />
