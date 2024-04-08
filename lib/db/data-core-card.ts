@@ -32,7 +32,7 @@ const CATEGORIES = {
 
 type TopQueryCategory = keyof typeof CATEGORIES;
 
-const getImageDict = (imageFields, value) => {
+export const getImageDict = (imageFields, value) => {
   return imageFields.reduce((acc, field) => {
     acc[field] = value;
     return acc;
@@ -79,7 +79,6 @@ export const getMetadata = async ({
   const select = getImageDict(CATEGORIES[type].imageFields, true);
   let where;
   let model;
-  console.log('id', id)
 
   // Select the model and construct the where clause based on the type
   switch (type) {
@@ -107,7 +106,7 @@ export const getMetadata = async ({
     : ( type === 'album' ? model.findFirst({ select, where }) : model.findUnique({ select, where }) )
 };
 
-export const topSongQuery = async ({
+export const getTopSong = async ({
   filter = {},
 }: PrismaFuncParams = {}) => {
   // Step 1: Aggregate data to find the top song with the applied filter
@@ -226,7 +225,7 @@ export const getArtistProfile = async (artistId) => {
 const getArtistCardData = async () => {
   const topArtist = await getTopArtist({ offset: 3 });
   if (!topArtist) return;
-  const topSong = await topSongQuery({
+  const topSong = await getTopSong({
     filter: { artist_id: topArtist.artist_id },
   });
   const topAlbum = await getTopAlbum({
