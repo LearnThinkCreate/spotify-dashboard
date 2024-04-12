@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/popover"
 import { useDebouncedCallback } from 'use-debounce';
 import { toTitleCase } from "@/lib/utils"
+import { prismaGenreOptions } from "@/lib/db/query-spotify-utils"
 
 export type GenreResult = {
   genre: string
@@ -40,8 +41,7 @@ export function GenreSearch({ onGenreSelect }: { onGenreSelect: GenreSelectParam
 
     const handleSearch = useDebouncedCallback(async (term: string) => {
         try {
-            const response = await fetch(`/api/search-genre?query=${term}`);
-            const data = await response.json(); // Ensure you await the json() call
+            const data = await prismaGenreOptions(term);
             setGenres(data);
             setTerm(term)
         } catch (error) {
@@ -57,7 +57,11 @@ export function GenreSearch({ onGenreSelect }: { onGenreSelect: GenreSelectParam
     }
 
     React.useEffect(() => {
-        handleSearch('')
+        let ignore = false;
+        if (!ignore) {
+            handleSearch('');
+        }
+        return () => { ignore = true; }
     }, [])
 
     if (isDesktop) {
