@@ -1,3 +1,4 @@
+// 'use server'
 import { Theme } from "@/components/themes";
 import prisma from "@/lib/db/prisma";
 
@@ -60,3 +61,9 @@ export const prismaGenreOptions = async (genreQuery: string) => {
   }));
   return genreOptions;
 }
+
+export const NAMES_TO_IDS = {
+  song: "track_id",
+  artist: "artist_id",
+  album: "album_id",
+} as const;

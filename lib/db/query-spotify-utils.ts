@@ -1,5 +1,7 @@
+'use server';
 import prisma from "@/lib/db/prisma";
 import { Prisma } from "@prisma/client";
+import { NAMES_TO_IDS } from "@/lib/db/query-utils";
 
 export const queryHoursPlayed = async (where?: Prisma.spotify_data_overviewWhereInput) => (
     await prisma.spotify_data_overview
@@ -12,11 +14,6 @@ export const queryHoursPlayed = async (where?: Prisma.spotify_data_overviewWhere
     .then((data) => data._sum.hours_played)
 );
 
-export const NAMES_TO_IDS = {
-  song: "track_id",
-  artist: "artist_id",
-  album: "album_id",
-} as const;
 
 export const getIdFromName = async ({
   name,
@@ -50,3 +47,7 @@ export const getIdFromName = async ({
   }
   return data[0][NAMES_TO_IDS[type]];
 };
+
+export const sdoGroupBy = async (query: Prisma.spotify_data_overviewGroupByArgs) => {
+  return await (prisma.spotify_data_overview.groupBy as any)(query);
+}

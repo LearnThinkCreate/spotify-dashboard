@@ -1,7 +1,7 @@
 import prisma from "@/lib/db/prisma";
 import { Prisma } from "@prisma/client";
 import { getSpotifyImage } from "./query-spotify-image";
-import { getIdFromName, NAMES_TO_IDS } from "./query-spotify-utils";
+import { getIdFromName } from "./query-spotify-utils";
 
 interface PrismaFuncParams {
   filter?: Prisma.spotify_data_overviewWhereInput;
@@ -64,7 +64,7 @@ const customTopCategory = async ({
   const formattedData = await Promise.all(topData.map(async (record) => {
       let primaryKey = record[CUSTOM_CATEGORIES[category].primaryKey] as string;
   
-      if (!primaryKey && Object.keys(NAMES_TO_IDS).includes(category)) {
+      if (!primaryKey) {
         const name = record[category] as string;
         
         primaryKey = await getIdFromName({ name, type: category }) as string;
