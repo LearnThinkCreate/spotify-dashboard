@@ -10,7 +10,6 @@ import {
 import { GraphDropDown } from "@/components/graph-dropdown";
 import { LineGraphOptions } from '@/components/graph-options';
 import { useConfig } from "@/hooks/use-config";
-import { themes, getHexCodes } from "@/components/themes";
 import { useScreenWidth } from "@/hooks/screen-width";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip  } from "recharts";
@@ -19,6 +18,7 @@ import { WrappedXAxisTick } from "@/components/graph-custom-components";
 import { useTheme } from "next-themes";
 import { useThemeState } from "@/hooks/theme-state";
 import { cn } from "@/lib/utils";
+import { getLineData } from "@/lib/db/data-main-line";
 
 export const LineGraph = ({ initialData, className }: { initialData?; className?: string }) => {
     const [data, setData] = React.useState(initialData);
@@ -43,14 +43,18 @@ export const LineGraph = ({ initialData, className }: { initialData?; className?
         fill: themeCodes['accent-foreground'],
       };
 
-    const fetchData = async () => {
-        const response = await fetch(`api/graph-line-data?category=${dropdownValue}&era=${JSON.stringify(currentTheme)}`);
-        const data = await response.json();
-        setData(data);
-    }
-
     React.useEffect(() => {
-        fetchData();
+        let ignore = false;
+        if (!ignore) {
+          const fetchData = async () => {
+            const data = await getLineData({ category: dropdownValue, era: currentTheme });
+            setData(data);
+          }
+          fetchData();
+        }
+        return () => {
+            ignore = true;
+        };
     }, [dropdownValue, config]);
 
     const [tooltipDisabled, setTooltipDisabled] = React.useState(false);

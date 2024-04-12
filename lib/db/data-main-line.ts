@@ -1,3 +1,4 @@
+"use server";
 import prisma from "@/lib/db/prisma";
 import { Prisma } from "@prisma/client";
 import { Theme } from "@/components/themes";
@@ -6,7 +7,29 @@ import { eraFilters } from "@/lib/db/query-utils";
 const getDateGroup = (era?: Theme) => era ? 'month' : 'month';
 const getEraFilter = (era?: Theme) => era ? eraFilters(era) : null;
 
-export const basicLineQuery = ({
+
+export const getLineData = async ({
+    category,
+    era,
+}: {
+    category: string,
+    era?: Theme,
+}) => {
+    let query;
+    switch (category) {
+        case 'instrumental':
+            query = instrumentalQuery({ era });
+            break;
+        case 'hours_played':
+            query = hoursListenedQuery({ era });
+            break;
+        default:
+            query = basicLineQuery({ category, era });
+    }
+    return await prisma.$queryRawUnsafe(query);
+};
+
+const basicLineQuery = ({
     category = '',
     era,
 }: {
@@ -29,7 +52,7 @@ export const basicLineQuery = ({
     `;
 }
 
-export const instrumentalQuery = ({ era }: { era?: Theme }) => {
+const instrumentalQuery = ({ era }: { era?: Theme }) => {
     const dateGroup = getDateGroup(era);
     const filter = getEraFilter(era);
     return `
@@ -54,7 +77,7 @@ export const instrumentalQuery = ({ era }: { era?: Theme }) => {
     `;
 }
 
-export const hoursListenedQuery = ({ era }: { era?: Theme }) => {
+const hoursListenedQuery = ({ era }: { era?: Theme }) => {
     const dateGroup = getDateGroup(era);
     const filter = getEraFilter(era);
     if (dateGroup === 'month') {
@@ -84,14 +107,4 @@ export const hoursListenedQuery = ({ era }: { era?: Theme }) => {
     ORDER BY 
         year;
     `
-
-//     SELECT 
-//         TO_CHAR(date_trunc('quarter', ts), 'Q-YY') AS quarter_year,
-//         SUM(hours_played) / COUNT(DISTINCT ts::date) AS avg_hours_played_per_day
-//     FROM 
-//         spotify_data_overview
-//     GROUP BY 
-//         quarter_year
-//     ORDER BY 
-//         quarter_year;
 }

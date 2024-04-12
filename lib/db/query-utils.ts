@@ -1,4 +1,3 @@
-// 'use server'
 import { Theme } from "@/components/themes";
 import prisma from "@/lib/db/prisma";
 

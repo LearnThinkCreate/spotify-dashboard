@@ -1,5 +1,7 @@
 "use client";
 
+import * as charts from "recharts";
+
 const calculateMultiplier = (
   maxMultiplier,
   minMultiplier,
@@ -66,7 +68,7 @@ export const wrapWord = ({ word, fontSize, width, isDesktop, screenWidth }) => {
     const charWidth = fontSize * widthMultiplier;
     const maxCharWidth = (width / charWidth);
 
-    const textObjects = [];
+    const textObjects = [] as any;
 
     if (isDesktop) {
         const words = word.split(" ");
@@ -90,31 +92,26 @@ export const wrapWord = ({ word, fontSize, width, isDesktop, screenWidth }) => {
 };
 
 
+
+
+interface CustomXAxisTickProps extends charts.XAxisProps {
+  tickFormatter?: (value: string) => string;
+  themeCodes?: any;
+  screenWidth?: number;
+  isDesktop?: boolean;
+  visibleTicksCount?: number;
+  width?: number;
+}
+
 export const WrappedXAxisTick = ({
-  x,
-  y,
-  stroke,
-  payload,
-  width,
-  visibleTicksCount,
   isDesktop,
   themeCodes,
   screenWidth,
   tickFormatter,
-}: {
-  x?: number;
-  y?: number;
-  stroke?: string;
-  payload?: any;
-  width?: number;
-  visibleTicksCount?: number;
-  isDesktop?: boolean;
-  themeCodes?: any;
-  screenWidth?: number;
-  tickFormatter?: (value: string) => string;
-}) => {
+  ...props
+}: CustomXAxisTickProps) => {
     
-
+  const { x, y, payload, visibleTicksCount, width } = props as any;
   const textAnchor = 'end';
   
   const xAxisStyle = {
@@ -154,14 +151,12 @@ export const WrappedXAxisTick = ({
   );
 };
 
-export const MobileBarLabel = ({ x, y, width, height, value, themeCodes }: {
-  x?: number;
-  y?: number;
-  width?: number;
-  height?: number;
-  value?: any;
+interface MobileBarLabelProps extends charts.LabelProps {
   themeCodes?: any;
-}) => {
+}
+
+export const MobileBarLabel = ({ themeCodes, ...props }: MobileBarLabelProps) => {
+  const { x, y, width, value } = props as any;
   return (
     <g>
       <text
@@ -178,8 +173,19 @@ export const MobileBarLabel = ({ x, y, width, height, value, themeCodes }: {
   )
 }
 
-export const CircleBarLabel = (props) => {
-  const { x, y, width, height, value, isLargeDesktop, screenWidth, themeCodes } = props;
+interface CircleBarLabelProps extends charts.LabelProps {
+  isLargeDesktop: boolean;
+  screenWidth: number;
+  themeCodes?: any;
+}
+export const CircleBarLabel = ({
+  isLargeDesktop,
+  screenWidth,
+  themeCodes,
+  ...props
+}: CircleBarLabelProps) => {
+  const { x, y, width, height, value } = props as any;
+
   const radius = !(isLargeDesktop) ? 15 : 18;
   const heightAdjust = screenWidth < 500 ? 0 : height > 60 ? 40 : 0;
   let fontSize;
@@ -210,9 +216,3 @@ export const CircleBarLabel = (props) => {
     </g>
   );
 }
-////
-
-// Width Multiplier
-// (
-//     MaxMultiplier - ((MaxMultiplier - MinMultipliaer) / 10) * (10 / MaxScreenWidth - MinScreenWidth) * (MaxScreenWidth - screenWidth)
-// )

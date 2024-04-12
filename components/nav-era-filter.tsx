@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useTheme } from "next-themes";
 import { useConfig } from "@/hooks/use-config";
-import { themes, getHexCodes } from "@/components/themes";
+import { themes, getHexCodes, Theme } from "@/components/themes";
 import { cn } from "@/lib/utils";
 import {
   PageHeader,
@@ -29,8 +29,8 @@ export const EraFilter: React.FC = () => {
         {mounted ? (
           <>
             {["red", "yellow", "green"].map((color) => {
-              const theme = themes.find((theme) => theme.name === color);
-              const themeCodes = getHexCodes(theme, mode)
+              const theme = themes.find((theme) => theme.name === color) as Theme;
+              const themeCodes = getHexCodes(theme, mode as string)
               const isActive = config.theme === color;
 
               if (!theme) {

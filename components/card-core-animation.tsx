@@ -23,7 +23,7 @@ export const CoreCardWrapper = ({ className, children }: {
         });
         }, { scope: container});
     return (
-        <div ref={container} className={cn(
+        <div ref={container.current} className={cn(
             "",
             className
         )}>

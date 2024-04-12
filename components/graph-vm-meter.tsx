@@ -8,7 +8,7 @@ const CustomBarShape = (props) => {
   const totalBars = 14;
   const segmentHeight = Math.floor(props.background.height / totalBars);
   const segmentStroke = '#000'; // This is the border color; you can change it as needed
-  let segments = [];
+  let segments = [] as JSX.Element[];
 
   // Calculate the number of segments that should be displayed for this value
   const valueSegments = calculateSegments(value, totalBars);
