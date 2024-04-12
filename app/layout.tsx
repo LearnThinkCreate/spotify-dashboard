@@ -32,7 +32,7 @@ export default function RootLayout({
         >
         <div className="flex flex-col h-screen overflow-auto">
             <div className="sticky top-0 z-50 shadow px-4 py-2 w-full">
-                <MenuBar />
+                {/* <MenuBar /> */}
                 <EraFilter />
               </div>
               <main className="flex-1 overflow-scroll">
