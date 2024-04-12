@@ -25,14 +25,14 @@ import {
 import {
   WrappedXAxisTick,
   CircleBarLabel,
-  MobileBarLabel
+  MobileBarLabel,
 } from "@/components/graph-custom-components";
 import { useThemeState } from "@/hooks/theme-state";
 import { cn } from "@/lib/utils";
 import { sdoGroupBy } from "@/lib/db/query-spotify-utils";
 
-export const BarGraph = ({ initialData, className }: { initialData?; className?: string }) => {
-  const [data, setData] = React.useState(initialData);
+export const BarGraph = ({ className }: { className?: string }) => {
+  const [data, setData] = React.useState();
   const [dropdownValue, setDropdownValue] = React.useState(
     BarGraphOptions[0].value
   );
@@ -44,9 +44,9 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
   const isLargeDesktop = useMediaQuery("(min-width: 1024px)");
   const screenWidth = useScreenWidth();
 
-  const option = BarGraphOptions.find(
-    (option) => option.value === dropdownValue
-  ) || BarGraphOptions[0];
+  const option =
+    BarGraphOptions.find((option) => option.value === dropdownValue) ||
+    BarGraphOptions[0];
 
   const maxLabelLength = getMaxLabelLength(data, option);
   const marginBottom = getMarginBottom(maxLabelLength);
@@ -101,9 +101,14 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
     let ignore = false;
     if (!ignore) {
       const updateData = async () => {
-        const data = await fetchData(dropdownValue, mainGenre, secondaryGenre, currentTheme);
+        const data = await fetchData(
+          dropdownValue,
+          mainGenre,
+          secondaryGenre,
+          currentTheme
+        );
         setData(data);
-      }
+      };
       updateData();
     }
     return () => {
@@ -112,10 +117,7 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
   }, [dropdownValue, mainGenre, secondaryGenre, currentTheme]);
 
   return (
-    <Card className={cn(
-      "",
-      className
-    )}>
+    <Card className={cn("", className)}>
       <CardHeader>
         <div className="flex flex-col gap-5 lg:gap-0 lg:flex-row justify-between items-center">
           <div>
@@ -165,10 +167,10 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
                 label={
                   isDesktop ? (
                     <CircleBarLabel
-                    isLargeDesktop={isLargeDesktop}
-                    screenWidth={screenWidth}
-                    themeCodes={themeCodes}
-                  />
+                      isLargeDesktop={isLargeDesktop}
+                      screenWidth={screenWidth}
+                      themeCodes={themeCodes}
+                    />
                   ) : (
                     <MobileBarLabel themeCodes={themeCodes} />
                   )
@@ -217,7 +219,7 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
 const getMaxLabelLength = (data, option) => {
   if (!data) return 0;
   return Math.max(...data.map((item) => item[option.value]?.length));
-}
+};
 
 const getMarginBottom = (maxLabelLength) => {
   if (maxLabelLength < 10) {
@@ -226,9 +228,14 @@ const getMarginBottom = (maxLabelLength) => {
     return 65;
   }
   return 80;
-}
+};
 
-const fetchData = async (dropdownValue, mainGenre, secondaryGenre, currentTheme) => {
+const fetchData = async (
+  dropdownValue,
+  mainGenre,
+  secondaryGenre,
+  currentTheme
+) => {
   const getGenres = (genres) => genres.map((genre) => genre.genre);
   const data = await sdoGroupBy({
     by: [dropdownValue] as any,
@@ -259,4 +266,4 @@ const fetchData = async (dropdownValue, mainGenre, secondaryGenre, currentTheme)
     [dropdownValue]: item[dropdownValue],
     hours_played: item._sum.hours_played,
   }));
-}
+};
