@@ -48,17 +48,8 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
     (option) => option.value === dropdownValue
   ) || BarGraphOptions[0];
 
-  const maxLabelLength = data
-    ? Math.max(...data.map((item) => item[option.value]?.length))
-    : 0;
-  let marginBottom;
-  if (maxLabelLength < 10) {
-    marginBottom = 15;
-  } else if (maxLabelLength < 20) {
-    marginBottom = 65;
-  } else {
-    marginBottom = 80;
-  }
+  const maxLabelLength = getMaxLabelLength(data, option);
+  const marginBottom = getMarginBottom(maxLabelLength);
 
   function updateGenreArray(genreType: string, genreArray: Genre[]) {
     if (genreType === "main_genre") {
@@ -109,40 +100,11 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
   React.useEffect(() => {
     let ignore = false;
     if (!ignore) {
-      const getGenres = (genres: Genre[]) => genres.map((genre) => genre.genre);
-      const fetchData = async () => {
-        const data = await sdoGroupBy({
-          by: [dropdownValue] as any,
-          _sum: {
-            hours_played: true,
-          },
-          orderBy: {
-            _sum: {
-              hours_played: "desc",
-            },
-          },
-          where: {
-            AND: [
-              {
-                ts: prismaEraFilters(currentTheme as any),
-              },
-              {
-                OR: prismaGenreFilters({
-                  main_genre: getGenres(mainGenre),
-                  secondary_genre: getGenres(secondaryGenre),
-                }),
-              },
-            ],
-          },
-          take: 10,
-        });
-        const transformedData = data.map((item) => ({
-          [option.value]: item[option.value],
-          hours_played: item._sum.hours_played,
-        }));
-        setData(transformedData);
+      const updateData = async () => {
+        const data = await fetchData(dropdownValue, mainGenre, secondaryGenre, currentTheme);
+        setData(data);
       }
-      fetchData();
+      updateData();
     }
     return () => {
       ignore = true;
@@ -251,3 +213,50 @@ export const BarGraph = ({ initialData, className }: { initialData?; className?:
     </Card>
   );
 };
+
+const getMaxLabelLength = (data, option) => {
+  if (!data) return 0;
+  return Math.max(...data.map((item) => item[option.value]?.length));
+}
+
+const getMarginBottom = (maxLabelLength) => {
+  if (maxLabelLength < 10) {
+    return 15;
+  } else if (maxLabelLength < 20) {
+    return 65;
+  }
+  return 80;
+}
+
+const fetchData = async (dropdownValue, mainGenre, secondaryGenre, currentTheme) => {
+  const getGenres = (genres) => genres.map((genre) => genre.genre);
+  const data = await sdoGroupBy({
+    by: [dropdownValue] as any,
+    _sum: {
+      hours_played: true,
+    },
+    orderBy: {
+      _sum: {
+        hours_played: "desc",
+      },
+    },
+    where: {
+      AND: [
+        {
+          ts: prismaEraFilters(currentTheme as any),
+        },
+        {
+          OR: prismaGenreFilters({
+            main_genre: getGenres(mainGenre),
+            secondary_genre: getGenres(secondaryGenre),
+          }),
+        },
+      ],
+    },
+    take: 10,
+  });
+  return data.map((item) => ({
+    [dropdownValue]: item[dropdownValue],
+    hours_played: item._sum.hours_played,
+  }));
+}
