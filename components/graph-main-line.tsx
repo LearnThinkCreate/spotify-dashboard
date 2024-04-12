@@ -17,6 +17,7 @@ import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tool
 import { getShortMonthYear } from "@/components/graph-utils";
 import { WrappedXAxisTick } from "@/components/graph-custom-components";
 import { useTheme } from "next-themes";
+import { useThemeState } from "@/hooks/theme-state";
 import { cn } from "@/lib/utils";
 
 export const LineGraph = ({ initialData, className }: { initialData?; className?: string }) => {
@@ -27,12 +28,11 @@ export const LineGraph = ({ initialData, className }: { initialData?; className?
 
     const { theme: mode } = useTheme();
     const [config] = useConfig();
-    const theme = themes.find((theme) => theme.name === config.theme);
-    const themeCodes = getHexCodes(theme, mode);
+    const { currentTheme, themeCodes } = useThemeState();
 
     const option = LineGraphOptions.find(
         (option) => option.value === dropdownValue
-        );
+        ) || LineGraphOptions[0];;
 
     const screenWidth = useScreenWidth();
     const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -44,7 +44,7 @@ export const LineGraph = ({ initialData, className }: { initialData?; className?
       };
 
     const fetchData = async () => {
-        const response = await fetch(`api/graph-line-data?category=${dropdownValue}&era=${JSON.stringify(theme)}`);
+        const response = await fetch(`api/graph-line-data?category=${dropdownValue}&era=${JSON.stringify(currentTheme)}`);
         const data = await response.json();
         setData(data);
     }
@@ -110,7 +110,7 @@ export const LineGraph = ({ initialData, className }: { initialData?; className?
                   itemStyle={{
                     color: themeCodes["primary"],
                   }}
-                  active={!tooltipDisabled ? null : false}
+                  active={!tooltipDisabled ? undefined : false}
                 />
                 <CartesianGrid horizontal={false} vertical={false} />
                 <XAxis
