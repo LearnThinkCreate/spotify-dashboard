@@ -98,6 +98,7 @@ view spotify_data_overview {
   reason_start       String?
   reason_end         String?
   shuffle            Boolean?
+  is_instrumental    Boolean?
 
   @@index([artist_id], map: "idx_spotify_data_overview_artist_id")
   @@index([track_id], map: "idx_spotify_data_overview_track_id")
@@ -111,6 +112,7 @@ view spotify_data_overview {
   @@index([secondary_genre], map: "idx_spotify_data_overview_secondary_genre")
   @@index([genre_list], map: "idx_spotify_data_overview_genre_list")
   @@index([ts], map: "idx_spotify_data_overview_ts")
+  @@index([genre_category], map: "idx_spotify_data_overview_genre_category")
 }
 
 /// This table is a partition table and requires additional setup for migrations. Visit https://pris.ly/d/partition-tables for more info.
@@ -148,6 +150,7 @@ model spotify_history {
   @@index([month], map: "idx_spotify_history_month")
   @@index([track_id], map: "idx_spotify_history_track_id")
   @@index([year], map: "idx_spotify_history_year")
+  @@index([ts], map: "idx_spotify_history_ts")
 }
 
 model track_metadata {
