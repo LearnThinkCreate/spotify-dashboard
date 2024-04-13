@@ -10,12 +10,13 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { FavoriteCard } from "@/components/card-favorite";
-// import { FavoriteGenre } from "@/components/card-favorite-genre";
+import { FavoriteGenre } from "@/components/card-favorite-genre";
 import { getRandomImagePath } from "@/lib/query-era-image";
-
 import { BarGraph } from "@/components/graph-main-bar";
+import { queryHoursPlayed } from "@/lib/db/query-spotify-utils";
 
 export default async function Page({ searchParams }) {
+  const totalHoursPlayed = await queryHoursPlayed() as number;
   return (
     <div className="flex-none lg:flex lg:flex-col h-full p-6">
       <React.Suspense fallback={<div>Loading...</div>}>
@@ -31,7 +32,7 @@ export default async function Page({ searchParams }) {
             </CardContent>
           </Card>
           <FavoriteCard className="" />
-          {/* <FavoriteGenre /> */}
+          <FavoriteGenre totalHoursPlayed={totalHoursPlayed} />
           <ExampleCard />
           <ExampleCard />
         </div>
