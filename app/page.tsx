@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import Image from "next/image";
 import {
   Card,
@@ -10,49 +10,42 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { FavoriteCard } from "@/components/card-favorite";
-import { FavoriteGenre } from "@/components/card-favorite-genre";
-import {  getRandomImagePath } from "@/lib/query-era-image";
+// import { FavoriteGenre } from "@/components/card-favorite-genre";
+import { getRandomImagePath } from "@/lib/query-era-image";
 
 import { BarGraph } from "@/components/graph-main-bar";
 
-export default async function Page() {
+export default async function Page({ searchParams }) {
   return (
     <div className="flex-none lg:flex lg:flex-col h-full p-6">
       <React.Suspense fallback={<div>Loading...</div>}>
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-4">
-      <Card className="min-h-72 max-w-96 xl:min-h-full xl:max-w-full container order-first lg:order-2 flex p-0 border-none bg-transparent">
-          <CardContent className="flex-1 relative">
-            <Image
-              className="rounded-lg"
-              src={getRandomImagePath()}
-              alt="Random Image"
-              fill={true}
-            />
-          </CardContent>
-        </Card>
-        <FavoriteCard className=""/>
-        <FavoriteGenre />
-        <ExampleCard />
-        <ExampleCard />
-      </div>
-      <BarGraph className="flex flex-col h-full" />
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-4">
+          <Card className="min-h-72 max-w-96 xl:h-full xl:max-w-full container order-first lg:order-2 flex p-0 border-none bg-transparent">
+            <CardContent className="flex-1 relative">
+              <Image
+                className="rounded-lg"
+                src={getRandomImagePath()}
+                alt="Random Image"
+                fill={true}
+              />
+            </CardContent>
+          </Card>
+          <FavoriteCard className="" />
+          {/* <FavoriteGenre /> */}
+          <ExampleCard />
+          <ExampleCard />
+        </div>
+        <BarGraph className="flex flex-col h-full" />
       </React.Suspense>
     </div>
   );
 }
 
 const ExampleCard = React.forwardRef<
-HTMLDivElement,
-React.HTMLAttributes<HTMLDivElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <Card
-    ref={ref}
-    className={cn(
-      ``,
-      className
-    )}
-    {...props}
-  >
+  <Card ref={ref} className={cn(``, className)} {...props}>
     <CardHeader>
       <CardTitle>Card Title</CardTitle>
       <CardDescription>Card Description</CardDescription>
@@ -65,3 +58,4 @@ React.HTMLAttributes<HTMLDivElement>
     </CardFooter>
   </Card>
 ));
+ExampleCard.displayName = "ExampleCard";

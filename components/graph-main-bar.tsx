@@ -31,8 +31,8 @@ import { useThemeState } from "@/hooks/theme-state";
 import { cn } from "@/lib/utils";
 import { sdoGroupBy } from "@/lib/db/query-spotify-utils";
 
-export const BarGraph = ({ className }: { className?: string }) => {
-  const [data, setData] = React.useState();
+export const BarGraph = ({ initialData, className }: { initialData?, className?: string }) => {
+  const [data, setData] = React.useState(initialData);
   const [dropdownValue, setDropdownValue] = React.useState(
     BarGraphOptions[0].value
   );
@@ -99,18 +99,18 @@ export const BarGraph = ({ className }: { className?: string }) => {
 
   React.useEffect(() => {
     let ignore = false;
-    if (!ignore) {
-      const updateData = async () => {
-        const data = await fetchData(
-          dropdownValue,
-          mainGenre,
-          secondaryGenre,
-          currentTheme
-        );
+    const updateData = async () => {
+      const data = await fetchData(
+        dropdownValue,
+        mainGenre,
+        secondaryGenre,
+        currentTheme
+      ).then((r) => r.promise);
+      if (!ignore) {
         setData(data);
-      };
-      updateData();
-    }
+      }
+    };
+    updateData();
     return () => {
       ignore = true;
     };
@@ -236,34 +236,39 @@ const fetchData = async (
   secondaryGenre,
   currentTheme
 ) => {
-  const getGenres = (genres) => genres.map((genre) => genre.genre);
-  const data = await sdoGroupBy({
-    by: [dropdownValue] as any,
-    _sum: {
-      hours_played: true,
-    },
-    orderBy: {
+  async function doStuff() {
+    const getGenres = (genres) => genres.map((genre) => genre.genre);
+    const data = await sdoGroupBy({
+      by: [dropdownValue] as any,
       _sum: {
-        hours_played: "desc",
+        hours_played: true,
       },
-    },
-    where: {
-      AND: [
-        {
-          ts: prismaEraFilters(currentTheme as any),
+      orderBy: {
+        _sum: {
+          hours_played: "desc",
         },
-        {
-          OR: prismaGenreFilters({
-            main_genre: getGenres(mainGenre),
-            secondary_genre: getGenres(secondaryGenre),
-          }),
-        },
-      ],
-    },
-    take: 10,
-  });
-  return data.map((item) => ({
-    [dropdownValue]: item[dropdownValue],
-    hours_played: item._sum.hours_played,
-  }));
+      },
+      where: {
+        AND: [
+          {
+            ts: prismaEraFilters(currentTheme as any),
+          },
+          {
+            OR: prismaGenreFilters({
+              main_genre: getGenres(mainGenre),
+              secondary_genre: getGenres(secondaryGenre),
+            }),
+          },
+        ],
+      },
+      take: 10,
+    });
+    return data.map((item) => ({
+      [dropdownValue]: item[dropdownValue],
+      hours_played: item._sum.hours_played,
+    }));
+  }
+  return {
+    promise: doStuff(),
+  }
 };

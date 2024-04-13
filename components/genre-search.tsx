@@ -57,11 +57,7 @@ export function GenreSearch({ onGenreSelect }: { onGenreSelect: GenreSelectParam
     }
 
     React.useEffect(() => {
-        let ignore = false;
-        if (!ignore) {
-            handleSearch('');
-        }
-        return () => { ignore = true; }
+        handleSearch('');
     }, [])
 
     if (isDesktop) {
@@ -94,6 +90,7 @@ export function GenreSearch({ onGenreSelect }: { onGenreSelect: GenreSelectParam
         </Drawer>
     )
 }
+
 
 function StatusList({
     setOpen,

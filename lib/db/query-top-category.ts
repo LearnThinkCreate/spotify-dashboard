@@ -1,3 +1,4 @@
+"use server";
 import prisma from "@/lib/db/prisma";
 import { Prisma } from "@prisma/client";
 import { getSpotifyImage } from "./query-spotify-image";
@@ -91,27 +92,33 @@ export const topCategory = async ({
   offset = 0,
   take = 1,
 }: PrismaFuncParams & { category: customeCategory | string }) => {
-  if (Object.keys(CUSTOM_CATEGORIES).includes(category)) {
-    return customTopCategory({ category: category as customeCategory, filter, offset, take });
-  }
-  const data = await prisma.spotify_data_overview.groupBy({
-    by: [category] as Prisma.spotify_data_overviewGroupByArgs["by"],
-    _sum: {
-      hours_played: true,
-    },
-    orderBy: {
+  async function doStuff () {
+    if (Object.keys(CUSTOM_CATEGORIES).includes(category)) {
+      return customTopCategory({ category: category as customeCategory, filter, offset, take });
+    }
+    const data = await prisma.spotify_data_overview.groupBy({
+      by: [category] as Prisma.spotify_data_overviewGroupByArgs["by"],
       _sum: {
-        hours_played: "desc",
+        hours_played: true,
       },
-    },
-    where: filter,
-    take: take,
-    skip: offset,
-  }).then((data) => data.map((record) => ({
-    category,
-    value: record[category],
-    hours_played: record._sum.hours_played,
-    })));
-
-  return take && take === 1 ? data[0] : data;
+      orderBy: {
+        _sum: {
+          hours_played: "desc",
+        },
+      },
+      where: filter,
+      take: take,
+      skip: offset,
+    }).then((data) => data.map((record) => ({
+      category,
+      value: record[category],
+      hours_played: record._sum.hours_played,
+      })));
+    console.log(data);
+  
+    return take && take === 1 ? data[0] : data;
+  }
+  return {
+    promise: doStuff(),
+  }
 }
