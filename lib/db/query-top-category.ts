@@ -114,7 +114,6 @@ export const topCategory = async ({
       value: record[category],
       hours_played: record._sum.hours_played,
       })));
-    console.log(data);
   
     return take && take === 1 ? data[0] : data;
   }
