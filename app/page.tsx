@@ -14,6 +14,7 @@ import { FavoriteGenre } from "@/components/card-favorite-genre";
 import { getRandomImagePath } from "@/lib/query-era-image";
 import { BarGraph } from "@/components/graph-main-bar";
 import { queryHoursPlayed } from "@/lib/db/query-spotify-utils";
+import { PieGraph } from "@/components/graph-pie";
 
 export default async function Page({ searchParams }) {
   const totalHoursPlayed = await queryHoursPlayed() as number;
@@ -33,7 +34,7 @@ export default async function Page({ searchParams }) {
           </Card>
           <FavoriteCard className="" />
           <FavoriteGenre totalHoursPlayed={totalHoursPlayed} />
-          <ExampleCard />
+          <PieGraph className="flex flex-col" />
           <ExampleCard />
         </div>
         <BarGraph className="flex flex-col h-full" />

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { BarGraph } from "@/components/graph-main-bar";
 import { LineGraph } from "@/components/graph-main-line";
+import { PieGraph } from "@/components/graph-pie";
 
 export default async function Page({}) {
   return (
@@ -13,8 +14,8 @@ export default async function Page({}) {
           <div className="snap-center h-full flex p-4">
             <LineGraph className="grow flex flex-col" />
           </div>
-          <div className="snap-center h-full flex items-center justify-center bg-red-500">
-            <p className="text-2xl text-white">Page 3</p>
+          <div className="snap-center h-full flex p-4">
+          <PieGraph className="grow flex flex-col" />
           </div>
         </div>
       </div>

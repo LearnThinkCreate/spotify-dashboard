@@ -86,3 +86,15 @@ export const prismaGenreOptions = async (genreQuery: string) => {
   }));
   return genreOptions;
 }
+
+export const getRapData = async () => {
+  return await prisma.spotify_data_overview.groupBy({
+    by: ['genre_category'],
+    _sum: {
+      hours_played: true,
+    },
+  }).then((data) => data.map((item) => ({
+    genre: item.genre_category,
+    hours_played: item._sum.hours_played,
+  })));
+}
