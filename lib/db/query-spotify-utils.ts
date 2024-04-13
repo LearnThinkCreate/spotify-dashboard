@@ -3,15 +3,15 @@ import prisma from "@/lib/db/prisma";
 import { Prisma } from "@prisma/client";
 import { NAMES_TO_IDS } from "@/lib/db/query-utils";
 
-export const queryHoursPlayed = async (where?: Prisma.spotify_data_overviewWhereInput) => (
-    await prisma.spotify_data_overview
+export const queryHoursPlayed = async (where?: Prisma.spotify_historyWhereInput) => (
+    await prisma.spotify_history
     .aggregate({
       _sum: {
-        hours_played: true,
+        ms_played: true,
       },
       where,
     })
-    .then((data) => data._sum.hours_played)
+    .then((data) => data._sum.ms_played ? data._sum.ms_played  / (1000 * 60 * 60) : 0)
 );
 
 
