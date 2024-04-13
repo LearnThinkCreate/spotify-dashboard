@@ -15,8 +15,11 @@ export const PieGraph = ({
     dataKey?: string;
     nameKey?: string;
 }) => {
-  const { themeCodes } = useThemeState();
-  const COLORS = [themeCodes["accent-foreground"], themeCodes["primary"]];
+  const { currentTheme, themeCodes } = useThemeState();
+
+  const secondaryColor = currentTheme?.era !== "" ? themeCodes["accent-foreground"] : themeCodes["muted-foreground"];
+
+  const COLORS = [secondaryColor, themeCodes["primary"]];
 
   if (!data) {
     return <div className={cn("", className)}>Loading...</div>;

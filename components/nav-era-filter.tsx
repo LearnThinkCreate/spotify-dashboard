@@ -19,7 +19,7 @@ export const EraFilter: React.FC = () => {
   React.useEffect(() => {
     setMounted(true);
   }, []);
-
+  themes.slice(0, 3).forEach((theme) => {theme.name});
   return (
     <PageHeader>
     <PageHeaderDescription>Era</PageHeaderDescription>
@@ -27,10 +27,9 @@ export const EraFilter: React.FC = () => {
       <div className="mr-2 items-center space-x-2 flex">
         {mounted ? (
           <>
-            {["red", "yellow", "green"].map((color) => {
-              const theme = themes.find((theme) => theme.name === color) as Theme;
+            {themes.slice(0, 3).map((theme) => {
               const themeCodes = getHexCodes(theme, mode as string)
-              const isActive = config.theme === color;
+              const isActive = config.theme === theme.name;
 
               if (!theme) {
                 return null;
