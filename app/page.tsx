@@ -33,8 +33,8 @@ export default async function Page({ searchParams }) {
             </CardContent>
           </Card>
           <FavoriteCard className="" />
-          <FavoriteGenre totalHoursPlayed={totalHoursPlayed} />
-          <PieGraph className="flex flex-col" />
+          <FavoriteGenre totalHoursPlayed={totalHoursPlayed} className="flex flex-col"/>
+          <ExampleCard />
           <ExampleCard />
         </div>
         <BarGraph className="flex flex-col h-full" />

@@ -1,7 +1,9 @@
 'use server';
 import prisma from "@/lib/db/prisma";
 import { Prisma } from "@prisma/client";
-import { NAMES_TO_IDS } from "@/lib/db/query-utils";
+import { prismaEraFilters, NAMES_TO_IDS } from "@/lib/db/query-utils";
+import { Theme } from "@/components/themes";
+import { toTitleCase } from "@/lib/utils";
 
 export const queryHoursPlayed = async (where?: Prisma.spotify_historyWhereInput) => (
     await prisma.spotify_history
@@ -87,14 +89,17 @@ export const prismaGenreOptions = async (genreQuery: string) => {
   return genreOptions;
 }
 
-export const getRapData = async () => {
+export const getRapData = async (era: Theme) => {
   return await prisma.spotify_data_overview.groupBy({
     by: ['genre_category'],
     _sum: {
       hours_played: true,
     },
+    where: {
+      ts: prismaEraFilters(era) as any,
+    }
   }).then((data) => data.map((item) => ({
-    genre: item.genre_category,
+    genre: toTitleCase(item.genre_category || ''),
     hours_played: item._sum.hours_played,
   })));
 }

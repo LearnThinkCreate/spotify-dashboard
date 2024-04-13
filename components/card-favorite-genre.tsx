@@ -8,30 +8,33 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { topCategory } from "@/lib/db/query-top-category";
-import { queryHoursPlayed } from "@/lib/db/query-spotify-utils";
+import { getRapData } from "@/lib/db/query-spotify-utils";
 import { useThemeState } from "@/hooks/theme-state";
+import { PieGraph } from "@/components/graph-pie";
 
 export const FavoriteGenre = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & { totalHoursPlayed: number }
 >(({ className, totalHoursPlayed, ...props }, ref) => {
-  const { currentTheme } = useThemeState();
-  const [topGenre, setTopGenre] = React.useState() as any;
-  let shareOfHoursPlayed =
-    topGenre && ((topGenre.hours_played / totalHoursPlayed) * 100).toFixed(2);
+
+  const [data, setData] = React.useState() as any;
+  const { currentTheme, themeCodes } = useThemeState();
+
 
   React.useEffect(() => {
     let ignore = false;
     const fetchData = async () => {
-      const genre = await topCategory({ category: "main_genre" }).then(
-        (r) => r.promise
-      );
+      const data = await getRapData(currentTheme);
+      console.log(data);
       if (!ignore) {
-        setTopGenre(genre);
+        setData(data);
       }
     };
-    fetchData();
+
+    if (!ignore) {
+      fetchData();
+    }
+
     return () => {
       ignore = true;
     };
@@ -39,36 +42,20 @@ export const FavoriteGenre = React.forwardRef<
 
   return (
     <Card ref={ref} className={cn(``, className)}>
-      {topGenre && (
-        <>
-          {" "}
           <CardHeader>
-            <CardTitle className="">Rap vs Non-Rap</CardTitle>
-            {/* <CardDescription>Hours listened: {topGenre.hours_played.toFixed(0)}</CardDescription> */}
+            <CardTitle className="text-center">Rap vs Non-Rap</CardTitle>
+            {/* <CardDescription></CardDescription> */}
           </CardHeader>
-          <CardContent className="flex items-center justify-center">
-            <div className="w-24 h-24 relative">
-              <div className="w-full h-full mask mask-radial-gradient bg-gray-300 dark:bg-gray-800" />
-              <div className="absolute inset-0 flex items-center justify-center text-2xl font-semibold text-primary">
-                {shareOfHoursPlayed}%
-              </div>
-            </div>
+          <CardContent className="grow p-0">
+
+            <PieGraph
+              data={data}
+              dataKey="hours_played"
+              nameKey="genre"
+              className="flex flex-col"
+            />
           </CardContent>
-        </>
-      )}
     </Card>
-    //   <Card ref={ref} className={cn(``, className)}>
-    //           <CardHeader>
-    //     <CardTitle className="">{toTitleCase(topGenre.value)}</CardTitle>
-    //     <CardDescription>Hours listened: {topGenre.hours_played.toFixed(0)}</CardDescription>
-    //   </CardHeader>
-    //   <CardContent className="flex items-center justify-center">
-    //     <div className="w-24 h-24 relative">
-    //       <div className="w-full h-full mask mask-radial-gradient bg-gray-300 dark:bg-gray-800" />
-    //       <div className="absolute inset-0 flex items-center justify-center text-2xl font-semibold text-primary">{shareOfHoursPlayed}%</div>
-    //     </div>
-    //     </CardContent>
-    //   </Card>
   );
 });
 FavoriteGenre.displayName = "FavoriteGenre";
