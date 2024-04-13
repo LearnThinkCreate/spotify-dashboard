@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/card";
 import { GraphDropDown } from "@/components/graph-dropdown";
 import { LineGraphOptions } from "@/components/graph-options";
-import { useConfig } from "@/hooks/use-config";
 import { useScreenWidth } from "@/hooks/screen-width";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
@@ -23,7 +22,6 @@ import {
 } from "recharts";
 import { getShortMonthYear } from "@/components/graph-utils";
 import { WrappedXAxisTick } from "@/components/graph-custom-components";
-import { useTheme } from "next-themes";
 import { useThemeState } from "@/hooks/theme-state";
 import { cn } from "@/lib/utils";
 import { getLineData } from "@/lib/db/data-main-line";
@@ -33,9 +31,6 @@ export const LineGraph = ({ className }: { className?: string }) => {
   const [dropdownValue, setDropdownValue] = React.useState(
     LineGraphOptions[0].value
   );
-
-  const { theme: mode } = useTheme();
-  const [config] = useConfig();
   const { currentTheme, themeCodes } = useThemeState();
 
   const option =
