@@ -25,7 +25,6 @@ export const FavoriteGenre = React.forwardRef<
     let ignore = false;
     const fetchData = async () => {
       const data = await getRapData(currentTheme);
-      console.log(data);
       if (!ignore) {
         setData(data);
       }
@@ -46,7 +45,7 @@ export const FavoriteGenre = React.forwardRef<
             <CardTitle className="text-center">Rap vs Non-Rap</CardTitle>
             {/* <CardDescription></CardDescription> */}
           </CardHeader>
-          <CardContent className="grow p-0">
+          <CardContent className="grow">
 
             <PieGraph
               data={data}
