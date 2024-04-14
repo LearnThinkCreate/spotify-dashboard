@@ -2,6 +2,7 @@ export const themes = [
   {
     era: "hs",
     eraName: "High School",
+    imagePath: "hs",
     minDate: null,
     maxDate: new Date(2017, 5, 1).toISOString(),
     name: "violet",
@@ -57,6 +58,7 @@ export const themes = [
   },
   {
     era: "college",
+    imagePath: "uni",
     eraName: "College",
     minDate: new Date(2017, 5, 1).toISOString(),
     maxDate: new Date(2020, 5, 1).toISOString(),
@@ -113,6 +115,7 @@ export const themes = [
   },
   {
     era: "adult",
+    imagePath: "man",
     eraName: "Adult",
     minDate: new Date(2020, 5, 1).toISOString(),
     maxDate: null,
@@ -171,6 +174,7 @@ export const themes = [
   {
     era: "",
     eraName: "",
+    imagePath: undefined,
     minDate: null,
     maxDate: null,
     name: "default",

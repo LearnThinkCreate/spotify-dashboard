@@ -14,7 +14,7 @@ import { FavoriteGenre } from "@/components/card-favorite-genre";
 import { getRandomImagePath } from "@/lib/query-era-image";
 import { BarGraph } from "@/components/graph-main-bar";
 import { queryHoursPlayed } from "@/lib/db/query-spotify-utils";
-import { PieGraph } from "@/components/graph-pie";
+import { EraImage } from "@/components/media-era-image";
 
 export default async function Page({ searchParams }) {
   const totalHoursPlayed = await queryHoursPlayed() as number;
@@ -22,18 +22,7 @@ export default async function Page({ searchParams }) {
     <div className="flex-none lg:flex lg:flex-col h-full p-6">
       <React.Suspense fallback={<div>Loading...</div>}>
         <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-4">
-          <Card className="min-h-72 max-w-96 xl:h-full xl:max-w-full container order-first lg:order-2 flex p-0 border-none bg-transparent">
-            <CardContent className="flex-1 relative">
-              <Image
-                className="rounded-lg"
-                src={getRandomImagePath()}
-                alt="Random Image"
-                fill={true}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                priority={true}
-              />
-            </CardContent>
-          </Card>
+          <EraImage />
           <FavoriteCard className="" />
           <FavoriteGenre totalHoursPlayed={totalHoursPlayed} className="flex flex-col"/>
           <ExampleCard className="block lg:hidden xl:block"/>
