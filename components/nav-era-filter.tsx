@@ -19,7 +19,6 @@ export const EraFilter: React.FC = () => {
   React.useEffect(() => {
     setMounted(true);
   }, []);
-  themes.slice(0, 3).forEach((theme) => {theme.name});
   return (
     <PageHeader>
     <PageHeaderDescription>Era</PageHeaderDescription>
@@ -77,7 +76,10 @@ export const EraFilter: React.FC = () => {
             })}
           </>
         ) : (
-          <div></div>
+          <Button
+            disabled
+            className="animate-pulse bg-transparent rounded-md opacity-0"
+          />
         )}
       </div>
     </div>

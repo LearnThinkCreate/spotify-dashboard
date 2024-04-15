@@ -53,7 +53,7 @@ export const InstrumentalCard = ({ className }: {
             ) : null}
          </CardHeader>
          <CardContent className="text-primary">
-            <div className="text-9xl font-bold text-center">
+            <div className="text-8xl font-bold text-center">
                {data ? data.instrumental_share : " "}%
             </div>
          </CardContent>
