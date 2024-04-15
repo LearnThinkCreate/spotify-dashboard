@@ -12,8 +12,13 @@ import { useThemeState } from "@/hooks/theme-state";
 import { getEnergyLevel } from "@/lib/db/query-spotify-energy";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
-export const EnergyCard = () => {
+export const EnergyCard = ({
+   className,
+}: {
+   className?: string;
+}) => {
    const { currentTheme, themeCodes } = useThemeState();
 
    const [data, setData] = React.useState<any>();
@@ -33,7 +38,10 @@ export const EnergyCard = () => {
    }, [currentTheme]);
 
    return (
-      <Card className="grow flex flex-col">
+      <Card className={cn(
+         `flex flex-col ${data ? '' : 'animate-pulse'}`,
+         className
+      )}>
          <CardHeader className="flex flex-row justify-between">
                <CardTitle>Energy</CardTitle>
                {data ? (

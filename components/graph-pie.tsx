@@ -39,14 +39,14 @@ export const PieGraph = ({
   const COLORS = [secondaryColor, themeCodes["primary"]];
 
   if (!data) {
-    return <div className={cn("", className)}>Loading...</div>;
+    return <div className={cn("", className)}></div>;
   }
 
   return (
     <ResponsiveContainer
       width="100%"
       height="100%"
-      minHeight={isDesktop ? undefined : 200}
+      // minHeight={isDesktop ? undefined : 200}
     >
       <PieChart>
         <Pie

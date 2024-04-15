@@ -40,13 +40,11 @@ export const FavoriteGenre = React.forwardRef<
   }, [currentTheme]);
 
   return (
-    <Card ref={ref} className={cn(``, className)}>
+    <Card ref={ref} className={cn(data ? '' : 'animate-pulse', className)}>
           <CardHeader>
             <CardTitle className="text-center">Rap vs Non-Rap</CardTitle>
-            {/* <CardDescription></CardDescription> */}
           </CardHeader>
           <CardContent className="grow">
-
             <PieGraph
               data={data}
               dataKey="hours_played"

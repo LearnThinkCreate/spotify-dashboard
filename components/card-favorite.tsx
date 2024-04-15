@@ -49,7 +49,7 @@ export const FavoriteCard = React.forwardRef<
     };
   }, [currentTheme]);  
   return (
-    <Card ref={ref} className={cn(``, className)}>
+    <Card ref={ref} className={cn(`${topAlbum ? '' : 'animate-pulse'}`, className)}>
       <CardContent className="grow flex flex-col gap-4 pt-6">
       {topAlbum && topSong && topArtist ? (
         [topArtist, topAlbum, topSong].map((top) => (

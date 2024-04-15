@@ -41,7 +41,7 @@ export const InstrumentalCard = ({ className }: {
 
    return (
       <Card className={cn(
-        "grow flex flex-col",
+        `grow flex flex-col ${data ? '' : 'animate-pulse'}`,
         className
       )}>
          <CardHeader>
