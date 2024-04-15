@@ -24,7 +24,7 @@ export const FavoriteGenre = React.forwardRef<
   React.useEffect(() => {
     let ignore = false;
     const fetchData = async () => {
-      const data = await getRapData(currentTheme);
+      const data = await getRapData(currentTheme).then((r) => r.promise);
       if (!ignore) {
         setData(data);
       }

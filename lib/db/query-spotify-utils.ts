@@ -97,16 +97,22 @@ export const prismaGenreOptions = async (genreQuery: string) => {
 }
 
 export const getRapData = async (era: Theme) => {
-  return await prisma.spotify_data_overview.groupBy({
-    by: ['genre_category'],
-    _sum: {
-      hours_played: true,
-    },
-    where: {
-      ts: prismaEraFilters(era) as any,
-    }
-  }).then((data) => data.map((item) => ({
-    genre: toTitleCase(item.genre_category || ''),
-    hours_played: item._sum.hours_played,
-  })));
+  console.log(`Server Action: getRapData`)
+  async function doStuff() {
+    return await prisma.spotify_data_overview.groupBy({
+      by: ['genre_category'],
+      _sum: {
+        hours_played: true,
+      },
+      where: {
+        ts: prismaEraFilters(era) as any,
+      }
+    }).then((data) => data.map((item) => ({
+      genre: toTitleCase(item.genre_category || ''),
+      hours_played: item._sum.hours_played,
+    })));
+  }
+  return {
+    promise: doStuff(),
+  };
 }
