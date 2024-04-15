@@ -11,10 +11,10 @@ import {
 import { cn } from "@/lib/utils";
 import { FavoriteCard } from "@/components/card-favorite";
 import { FavoriteGenre } from "@/components/card-favorite-genre";
-import { getRandomImagePath } from "@/lib/query-era-image";
 import { BarGraph } from "@/components/graph-main-bar";
 import { queryHoursPlayed } from "@/lib/db/query-spotify-utils";
 import { EraImage } from "@/components/media-era-image";
+import { EnergyCard } from "@/components/graph-energy";
 
 export default async function Page({ searchParams }) {
   const totalHoursPlayed = await queryHoursPlayed() as number;
@@ -25,8 +25,8 @@ export default async function Page({ searchParams }) {
           <EraImage />
           <FavoriteCard className="" />
           <FavoriteGenre totalHoursPlayed={totalHoursPlayed} className="flex flex-col"/>
+          <EnergyCard />
           <ExampleCard className="block lg:hidden xl:block"/>
-          <ExampleCard />
         </div>
         <BarGraph className="flex flex-col h-full" />
       </React.Suspense>

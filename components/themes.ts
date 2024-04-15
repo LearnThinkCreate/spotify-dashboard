@@ -3,6 +3,7 @@ export const themes = [
     era: "hs",
     eraName: "High School",
     imagePath: "hs",
+    instrumentalFooter: "Yeah... wasn't the best at doing homework.", //PiMaskSadFill
     minDate: null,
     maxDate: new Date(2017, 5, 1).toISOString(),
     name: "violet",
@@ -60,6 +61,7 @@ export const themes = [
     era: "college",
     imagePath: "uni",
     eraName: "College",
+    instrumentalFooter: "Might have crammed once or twice", //CiCoffeeCup
     minDate: new Date(2017, 5, 1).toISOString(),
     maxDate: new Date(2020, 5, 1).toISOString(),
     name: "green",
@@ -117,6 +119,7 @@ export const themes = [
     era: "adult",
     imagePath: "man",
     eraName: "Adult",
+    instrumentalFooter: "Grind Mode: Activated", //MdAutoGraph
     minDate: new Date(2020, 5, 1).toISOString(),
     maxDate: null,
     name: "red",
@@ -175,6 +178,7 @@ export const themes = [
     era: "",
     eraName: "",
     imagePath: undefined,
+    instrumentalFooter: "Instrumental = Max Productivity", //FaDumbbell
     minDate: null,
     maxDate: null,
     name: "default",
