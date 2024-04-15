@@ -262,7 +262,7 @@ const fetchData = async (
         ],
       },
       take: 10,
-    });
+    }).then((r) => r.promise) as any[];
     return data.map((item) => ({
       [dropdownValue]: item[dropdownValue],
       hours_played: item._sum.hours_played,

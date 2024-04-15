@@ -47,7 +47,7 @@ export const FavoriteCard = React.forwardRef<
     return () => {
       ignore = true;
     };
-  }, [eraFilter]);  
+  }, [currentTheme]);  
   return (
     <Card ref={ref} className={cn(``, className)}>
       <CardContent className="grow flex flex-col gap-4 pt-6">

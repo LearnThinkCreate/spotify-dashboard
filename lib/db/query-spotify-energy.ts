@@ -4,35 +4,42 @@ import { Theme } from "@/components/themes";
 import { eraFilters } from "@/lib/db/query-utils";
 
 export const getEnergyLevel = async (era: Theme) => {
-    const filter = eraFilters(era);
-    const eraFilter = filter ? `where ${filter.join(' AND ')}` : '';
-    const sigma = 0.1;
-    const n = 10000;
-    const numBins = 30;
-
-   const energyQuery = `
-   select 
-      Sum(energy * hours_played) / SUM(hours_played) as value
-   from spotify_data_overview
-   `;
-
-   const historicEnergy = await prisma.$queryRawUnsafe(energyQuery) as { value: number }[];
-
-   if (!eraFilter) {
-      return {
-         value: (historicEnergy[0].value * 100).toFixed(0),
-         delta: 0,
-         data: generateSkewedDataAndBins(historicEnergy[0].value, sigma, n, numBins),
-      }
+   console.log("Server Action: getEnergyLevel")
+   async function doStuff () {
+      const filter = eraFilters(era);
+      const eraFilter = filter ? `where ${filter.join(' AND ')}` : '';
+      const sigma = 0.1;
+      const n = 10000;
+      const numBins = 30;
+  
+     const energyQuery = `
+     select 
+        Sum(energy * hours_played) / SUM(hours_played) as value
+     from spotify_data_overview
+     `;
+  
+     const historicEnergy = await prisma.$queryRawUnsafe(energyQuery) as { value: number }[];
+  
+     if (!eraFilter) {
+        return {
+           value: (historicEnergy[0].value * 100).toFixed(0),
+           delta: 0,
+           data: generateSkewedDataAndBins(historicEnergy[0].value, sigma, n, numBins),
+        }
+     }
+     
+     const energy = await prisma.$queryRawUnsafe(energyQuery + ' ' + eraFilter) as { value: number }[];
+  
+     return {
+        value: (energy[0].value * 100).toFixed(0) ,
+        delta: ((energy[0].value - historicEnergy[0].value) / historicEnergy[0].value * 100).toFixed(0),
+        data: generateSkewedDataAndBins(energy[0].value, sigma, n, numBins),
+     }
    }
-   
-   const energy = await prisma.$queryRawUnsafe(energyQuery + ' ' + eraFilter) as { value: number }[];
 
    return {
-      value: (energy[0].value * 100).toFixed(0) ,
-      delta: ((energy[0].value - historicEnergy[0].value) / historicEnergy[0].value * 100).toFixed(0),
-      data: generateSkewedDataAndBins(energy[0].value, sigma, n, numBins),
-   }
+      promise: doStuff(),
+    }
 }
 
 

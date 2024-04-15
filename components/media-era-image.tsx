@@ -13,11 +13,17 @@ export const EraImage = () => {
     const [imagePath, setImagePath] = React.useState<string | null>();
 
     React.useEffect(() => {
+        let ignore = false;
         const fetchImage = async () => {
-            let path = await getRandomImagePath(currentTheme);
-            setImagePath(path);
+            let path = await getRandomImagePath(currentTheme).then((r) => r.promise);
+            if (!ignore) {
+                setImagePath(path);
+            }
         }
         fetchImage();
+        return () => {
+            ignore = true;
+        };
     }, [currentTheme]);
 
     return (

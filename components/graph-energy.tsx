@@ -21,7 +21,7 @@ export const EnergyCard = () => {
    React.useEffect(() => {
       let ignore = false;
       const updateData = async () => {
-         const data = await getEnergyLevel(currentTheme);
+         const data = await getEnergyLevel(currentTheme).then((r) => r.promise);
          if (!ignore) {
             setData(data);
          }
