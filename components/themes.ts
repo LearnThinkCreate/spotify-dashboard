@@ -3,7 +3,7 @@ export const themes = [
     era: "hs",
     eraName: "High School",
     imagePath: "hs",
-    instrumentalFooter: "Yeah... wasn't the best at doing homework.", //PiMaskSadFill
+    instrumentalFooter: "Wasn't the best at doing homework", //PiMaskSadFill
     minDate: null,
     maxDate: new Date(2017, 5, 1).toISOString(),
     name: "violet",
@@ -61,7 +61,7 @@ export const themes = [
     era: "college",
     imagePath: "uni",
     eraName: "College",
-    instrumentalFooter: "Might have crammed once or twice", //CiCoffeeCup
+    instrumentalFooter: "May have crammed once or twice", //CiCoffeeCup
     minDate: new Date(2017, 5, 1).toISOString(),
     maxDate: new Date(2020, 5, 1).toISOString(),
     name: "green",

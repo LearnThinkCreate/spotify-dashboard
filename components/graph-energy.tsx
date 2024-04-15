@@ -21,9 +21,9 @@ export const EnergyCard = () => {
    React.useEffect(() => {
       let ignore = false;
       const updateData = async () => {
-         const data = await getEnergyLevel(currentTheme).then((r) => r.promise);
+         const energyData = await getEnergyLevel(currentTheme).then((r) => r.promise);
          if (!ignore) {
-            setData(data);
+            setData(energyData);
          }
       };
       updateData();
@@ -34,8 +34,7 @@ export const EnergyCard = () => {
 
    return (
       <Card className="grow flex flex-col">
-         <CardHeader>
-            <div className="flex justify-between">
+         <CardHeader className="flex flex-row justify-between">
                <CardTitle>Energy</CardTitle>
                {data ? (
                   <div
@@ -57,9 +56,7 @@ export const EnergyCard = () => {
                         </>
                      )}
                   </div>
-               ) : null}
-            </div>
-            {/* <CardDescription>Energy - {data?.value}%</CardDescription> */}
+               ) : <div></div>}
          </CardHeader>
          <CardContent className="grow flex flex-col">
             {data && (
