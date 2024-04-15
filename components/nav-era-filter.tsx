@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useTheme } from "next-themes";
 import { useConfig } from "@/hooks/use-config";
-import { themes, getHexCodes, Theme } from "@/components/themes";
+import { themes, getHexCodes } from "@/components/themes";
 import { cn } from "@/lib/utils";
 import {
   PageHeader,

@@ -14,11 +14,11 @@ import { PieGraph } from "@/components/graph-pie";
 
 export const FavoriteGenre = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { totalHoursPlayed: number }
->(({ className, totalHoursPlayed, ...props }, ref) => {
+  React.HTMLAttributes<HTMLDivElement> & {  }
+>(({ className, ...props }, ref) => {
 
   const [data, setData] = React.useState() as any;
-  const { currentTheme, themeCodes } = useThemeState();
+  const { currentTheme } = useThemeState();
 
 
   React.useEffect(() => {

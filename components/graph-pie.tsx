@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useScreenWidth } from "@/hooks/screen-width";
+import { PieLabel, calculateSize } from "@/components/graph-custom-components";
 
 export const PieGraph = ({
   data,
@@ -72,19 +73,6 @@ export const PieGraph = ({
   );
 };
 
-const calculateSize = ({
-  maxMultiplier,
-  minMultiplier,
-  maxScreenWidth,
-  minScreenWidth,
-  screenWidth,
-  steps = 10,
-}) =>
-  maxMultiplier -
-  ((maxMultiplier - minMultiplier) / steps) *
-    (steps / (maxScreenWidth - minScreenWidth)) *
-    (maxScreenWidth - screenWidth);
-
 const getRadiusSize = ({ screenWidth, isDesktop, isXlDesktop }) => {
   if (!isDesktop) {
     return {
@@ -146,114 +134,3 @@ const getRadiusSize = ({ screenWidth, isDesktop, isXlDesktop }) => {
     outerRadius,
   };
 };
-
-const PieLabel = ({
-  x,
-  y,
-  cx,
-  cy,
-  midAngle,
-  innerRadius,
-  outerRadius,
-  percent,
-  name,
-  fill,
-  maxRadius,
-  isMini,
-  isDesktop,
-  middleRadius,
-}) => {
-  let fontSize;
-
-  if (isDesktop) {
-    fontSize = "14";
-  } else if (isMini) {
-    fontSize = "12";
-  } else {
-    fontSize = "16";
-  }
-
-  const charWidth = fontSize * 0.65;
-  const labelWidth = (percent * 100).toFixed(0).length * 10;
-
-  if (x < cx) {
-    x += labelWidth / 2;
-  } else {
-    x -= labelWidth / 2;
-  }
-
-  let defaultDelta = 0;
-  let nameDelta = 0;
-  let nameLength = name.length * charWidth;
-  if (x < cx) {
-    if (x + 5 - nameLength < 0) {
-      nameDelta = nameLength - x;
-    }
-  } else {
-    if (nameLength + x + defaultDelta > cx * 2) {
-      nameDelta = (nameLength + x + defaultDelta - cx * 2) * -1;
-    }
-  }
-
-  return (
-    <>
-      <PieLabelText
-        word={name as string}
-        ydelta={-20}
-        x={x}
-        y={y}
-        cx={cx}
-        fill={fill}
-        fontSize={fontSize}
-        xdelta={nameDelta}
-      />
-      <PieLabelText
-        word={`${((percent as number) * 100).toFixed(0)}%`}
-        xdelta={0}
-        x={x}
-        y={y}
-        cx={cx}
-        fill={fill}
-        fontSize={fontSize}
-      />
-    </>
-  );
-};
-
-const PieLabelText = ({
-  word,
-  ydelta = 0,
-  xdelta = 0,
-  x = 0,
-  y = 0,
-  cx = 0,
-  fill = "",
-  fontSize = 14,
-}: {
-  word: string;
-  ydelta?: number;
-  xdelta?: number;
-  x?: number;
-  y?: number;
-  cx?: number;
-  fill?: string;
-  fontSize?: number;
-}) => (
-  <>
-    <text
-      x={x + xdelta}
-      y={y - 8 + ydelta}
-      fill={fill}
-      textAnchor={x < cx ? "end" : "start"}
-      dominantBaseline="middle"
-      fontSize={fontSize}
-    >
-      {word}
-    </text>
-  </>
-);
-
-// const TestLabel = ({...props}: recharts.PieLabelRenderProps) => {
-//   console.log(props);
-//   return <></>;
-// }
