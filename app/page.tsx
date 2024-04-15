@@ -25,7 +25,7 @@ export default async function Page({  }) {
           <EnergyCard />
           <ExampleCard className="block lg:hidden xl:block"/>
         </div>
-        <BarGraph className="flex flex-col h-full" />
+        <BarGraph className="flex-none lg:flex-1 h-full lg:h-fit flex flex-col" />
     {/* </div> */}
     </div>
   );
