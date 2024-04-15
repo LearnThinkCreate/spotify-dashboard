@@ -4,7 +4,7 @@ import { Theme } from "@/components/themes";
 import { eraFilters } from "@/lib/db/query-utils";
 
 export const getEnergyLevel = async (era: Theme) => {
-   console.log("Server Action: getEnergyLevel")
+   // console.log("Server Action: getEnergyLevel")
    async function doStuff () {
       const filter = eraFilters(era);
       const eraFilter = filter ? `where ${filter.join(' AND ')}` : '';

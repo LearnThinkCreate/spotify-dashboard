@@ -4,7 +4,7 @@ import path from "path";
 import { Theme } from "@/components/themes";
 
 export const getRandomImagePath = async (era?: Theme) => {
-   console.log("Server Action: getRandomImagePath")
+   // console.log("Server Action: getRandomImagePath")
    async function doStuff() {
       const subDirs = ["hs", "uni", "man"];
       const subDir =

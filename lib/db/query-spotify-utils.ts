@@ -51,7 +51,7 @@ export const getIdFromName = async ({
 };
 
 export const sdoGroupBy = async (query: Prisma.spotify_data_overviewGroupByArgs) => {
-  console.log("Server Action: sdoGroupBy")
+  // console.log("Server Action: sdoGroupBy")
 
   async function doStuff() {
     // @ts-ignore
@@ -97,7 +97,7 @@ export const prismaGenreOptions = async (genreQuery: string) => {
 }
 
 export const getRapData = async (era: Theme) => {
-  console.log(`Server Action: getRapData`)
+  // console.log(`Server Action: getRapData`)
   async function doStuff() {
     return await prisma.spotify_data_overview.groupBy({
       by: ['genre_category'],
