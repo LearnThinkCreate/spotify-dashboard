@@ -7,6 +7,7 @@ import {
    CardHeader,
    CardTitle,
    CardDescription,
+   CardFooter
 } from "@/components/ui/card";
 import { useThemeState } from "@/hooks/theme-state";
 import { getEnergyLevel } from "@/lib/db/query-spotify-energy";
@@ -42,7 +43,8 @@ export const EnergyCard = ({
          `flex flex-col ${data ? '' : 'animate-pulse'}`,
          className
       )}>
-         <CardHeader className="flex flex-row justify-between">
+         <CardHeader className="">
+            <div className="flex flex-row justify-between">
                <CardTitle>Energy</CardTitle>
                {data ? (
                   <div
@@ -56,7 +58,7 @@ export const EnergyCard = ({
                      )}
                   >
                      {data?.delta === 0 ? (
-                        <>{data?.value}%</>
+                        <>{data?.value}</>
                      ) : (
                         <>
                            {data?.delta > 0 ? <FaArrowUp /> : <FaArrowDown />}
@@ -65,6 +67,8 @@ export const EnergyCard = ({
                      )}
                   </div>
                ) : <div></div>}
+            </div>
+            {data && data?.delta !== 0 ? <p style={{ fontSize: "9px"}}>{data?.value}</p> : <div></div>}
          </CardHeader>
          <CardContent className="grow flex flex-col">
             {data && (
@@ -87,6 +91,13 @@ export const EnergyCard = ({
                </ResponsiveContainer>
             )}
          </CardContent>
+         <CardFooter>
+            <p className="text-muted-foreground" style={{
+               fontSize: "9px"
+            }}>
+            Energy is a measure from 0 to 100 that represents intensity and activity. Energetic tracks are fast, loud, and noisy.
+            </p>
+         </CardFooter>
       </Card>
    );
 };
