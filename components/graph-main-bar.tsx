@@ -30,6 +30,7 @@ import {
 import { useThemeState } from "@/hooks/theme-state";
 import { cn } from "@/lib/utils";
 import { sdoGroupBy } from "@/lib/db/query-spotify-utils";
+import { toTitleCase } from "@/lib/utils";
 
 export const BarGraph = ({ initialData, className }: { initialData?, className?: string }) => {
   const [data, setData] = React.useState(initialData);
@@ -121,8 +122,8 @@ export const BarGraph = ({ initialData, className }: { initialData?, className?:
       <CardHeader>
         <div className="flex flex-col gap-5 lg:gap-0 lg:flex-row justify-between items-center">
           <div>
-            <CardTitle>Test</CardTitle>
-            <CardDescription>{option.description}</CardDescription>
+            <CardTitle>Top 10 {option.label}s</CardTitle>
+            {/* <CardDescription>{option.description}</CardDescription> */}
           </div>
           <div className="flex flex-col lg:flex-row gap-5">
             <GenreBadges
@@ -188,7 +189,8 @@ export const BarGraph = ({ initialData, className }: { initialData?, className?:
                     isDesktop={isDesktop}
                     themeCodes={themeCodes}
                     screenWidth={screenWidth}
-                    tickFormatter={option.tickFormatter}
+                    customFormatter={option.tickFormatter}
+                    test={'hello'}
                   />
                 }
                 minTickGap={0}
@@ -198,9 +200,6 @@ export const BarGraph = ({ initialData, className }: { initialData?, className?:
               <YAxis
                 name="Test"
                 domain={option.scale}
-                tickFormatter={
-                  option.tickFormatter ? option.tickFormatter : undefined
-                }
                 padding={{ top: 5, bottom: 10 }}
                 tick={{
                   fontSize: "10",

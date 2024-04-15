@@ -1,6 +1,7 @@
 "use client";
 
 import * as charts from "recharts";
+import { toTitleCase } from "@/lib/utils";
 
 export const calculateSize = ({
    maxMultiplier,
@@ -91,22 +92,25 @@ export const wrapWord = ({ word, fontSize, width, isDesktop, screenWidth }) => {
 };
 
 interface CustomXAxisTickProps extends charts.XAxisProps {
-   tickFormatter?: (value: string) => string;
+   // tickFormatter: (value: string) => string;
+   customFormatter?: any;
    themeCodes?: any;
    screenWidth?: number;
    isDesktop?: boolean;
    visibleTicksCount?: number;
    width?: number;
+   test?: string;
 }
-
 export const WrappedXAxisTick = ({
    isDesktop,
    themeCodes,
    screenWidth,
-   tickFormatter,
+   customFormatter,
+   test,
    ...props
 }: CustomXAxisTickProps) => {
    const { x, y, payload, visibleTicksCount, width } = props as any;
+   
    const textAnchor = "end";
 
    const xAxisStyle = {
@@ -114,8 +118,9 @@ export const WrappedXAxisTick = ({
       fontSize: isDesktop ? "14" : "10",
    };
 
+
    const textObjects = wrapWord({
-      word: tickFormatter ? tickFormatter(payload.value) : payload.value,
+      word: customFormatter ? customFormatter(payload.value) : payload.value,
       fontSize: parseInt(xAxisStyle.fontSize),
       width: width / visibleTicksCount,
       isDesktop,
