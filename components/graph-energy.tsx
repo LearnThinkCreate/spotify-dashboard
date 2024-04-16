@@ -70,13 +70,15 @@ export const EnergyCard = ({ className }: { className?: string }) => {
                   <div></div>
                )}
             </div>
-            {data && data?.delta !== 0 ? (
-               <p style={{ fontSize: "9px" }}>{data?.value}</p>
-            ) : (
-               <div></div>
-            )}
+            <div className="h-2">
+               {data && data?.delta !== 0 ? (
+                  <p style={{ fontSize: "9px" }}>{data?.value}</p>
+               ) : (
+                  <p style={{ fontSize: "9px" }}> </p>
+               )}
+            </div>
          </CardHeader>
-         <CardContent className="flex-1">
+         <CardContent className="flex-1 flex flex-col p-0 px-6 py-2 justify-end items-end">
             {data && (
                <ResponsiveContainer>
                   <BarChart data={data.data}>
@@ -96,8 +98,19 @@ export const EnergyCard = ({ className }: { className?: string }) => {
                   </BarChart>
                </ResponsiveContainer>
             )}
+            {/* <div className=""> */}
+               <p
+                  className="text-muted-foreground"
+                  style={{
+                     fontSize: "8px",
+                  }}
+               >
+                  Energy is a measure from 0 to 100 that represents intensity
+                  and activity. Energetic tracks are fast, loud, and noisy.
+               </p>
+            {/* </div> */}
          </CardContent>
-         <CardFooter className="p-0 px-6">
+         {/* <CardFooter className="p-0 px-6">
             <p
                className="text-muted-foreground"
                style={{
@@ -107,7 +120,7 @@ export const EnergyCard = ({ className }: { className?: string }) => {
                Energy is a measure from 0 to 100 that represents intensity and
                activity. Energetic tracks are fast, loud, and noisy.
             </p>
-         </CardFooter>
+         </CardFooter> */}
       </Card>
    );
 };
