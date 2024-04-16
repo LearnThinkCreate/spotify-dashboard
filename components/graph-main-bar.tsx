@@ -33,7 +33,7 @@ import { sdoGroupBy } from "@/lib/db/query-spotify-utils";
 import { toTitleCase } from "@/lib/utils";
 
 export const BarGraph = ({ initialData, className }: { initialData?, className?: string }) => {
-  const [data, setData] = React.useState(initialData);
+  const [data, setData] = React.useState<any[]>();
   const [dropdownValue, setDropdownValue] = React.useState(
     BarGraphOptions[0].value
   );
@@ -118,7 +118,7 @@ export const BarGraph = ({ initialData, className }: { initialData?, className?:
   }, [dropdownValue, mainGenre, secondaryGenre, currentTheme]);
 
   return (
-    <Card className={cn("", className)}>
+    <Card className={cn(`${data ? "" : "animate-pulse"}`, className)}>
       <CardHeader>
         <div className="flex flex-col gap-5 lg:gap-0 lg:flex-row justify-between items-center">
           <div>
@@ -142,10 +142,10 @@ export const BarGraph = ({ initialData, className }: { initialData?, className?:
           </div>
         </div>
       </CardHeader>
-      <CardContent className="grow flex flex-col">
+      <CardContent className="flex-1">
         {data && (
           // <div className="size-full flex-none">
-          <ResponsiveContainer>
+          <ResponsiveContainer key={`main-bar-graph-${isLargeDesktop}`} width="100%" height="100%">
             <BarChart
               data={data}
               margin={{

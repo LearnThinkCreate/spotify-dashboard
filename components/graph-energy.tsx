@@ -7,7 +7,7 @@ import {
    CardHeader,
    CardTitle,
    CardDescription,
-   CardFooter
+   CardFooter,
 } from "@/components/ui/card";
 import { useThemeState } from "@/hooks/theme-state";
 import { getEnergyLevel } from "@/lib/db/query-spotify-energy";
@@ -15,11 +15,7 @@ import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import clsx from "clsx";
 import { cn } from "@/lib/utils";
 
-export const EnergyCard = ({
-   className,
-}: {
-   className?: string;
-}) => {
+export const EnergyCard = ({ className }: { className?: string }) => {
    const { currentTheme, themeCodes } = useThemeState();
 
    const [data, setData] = React.useState<any>();
@@ -27,7 +23,9 @@ export const EnergyCard = ({
    React.useEffect(() => {
       let ignore = false;
       const updateData = async () => {
-         const energyData = await getEnergyLevel(currentTheme).then((r) => r.promise);
+         const energyData = await getEnergyLevel(currentTheme).then(
+            (r) => r.promise
+         );
          if (!ignore) {
             setData(energyData);
          }
@@ -39,11 +37,13 @@ export const EnergyCard = ({
    }, [currentTheme]);
 
    return (
-      <Card className={cn(
-         `flex flex-col ${data ? '' : 'animate-pulse'}`,
-         className
-      )}>
-         <CardHeader className="">
+      <Card
+         className={cn(
+            `flex flex-col ${data ? "" : "animate-pulse"}`,
+            className
+         )}
+      >
+         <CardHeader className="p-0 px-6 mt-6">
             <div className="flex flex-row justify-between">
                <CardTitle>Energy</CardTitle>
                {data ? (
@@ -66,11 +66,17 @@ export const EnergyCard = ({
                         </>
                      )}
                   </div>
-               ) : <div></div>}
+               ) : (
+                  <div></div>
+               )}
             </div>
-            {data && data?.delta !== 0 ? <p style={{ fontSize: "9px"}}>{data?.value}</p> : <div></div>}
+            {data && data?.delta !== 0 ? (
+               <p style={{ fontSize: "9px" }}>{data?.value}</p>
+            ) : (
+               <div></div>
+            )}
          </CardHeader>
-         <CardContent className="grow flex flex-col">
+         <CardContent className="">
             {data && (
                <ResponsiveContainer>
                   <BarChart data={data.data}>
@@ -91,13 +97,17 @@ export const EnergyCard = ({
                </ResponsiveContainer>
             )}
          </CardContent>
-         <CardFooter>
-            <p className="text-muted-foreground" style={{
-               fontSize: "9px"
-            }}>
-            Energy is a measure from 0 to 100 that represents intensity and activity. Energetic tracks are fast, loud, and noisy.
+         {/* <CardFooter className="p-0 px-6">
+            <p
+               className="text-muted-foreground"
+               style={{
+                  fontSize: "9px",
+               }}
+            >
+               Energy is a measure from 0 to 100 that represents intensity and
+               activity. Energetic tracks are fast, loud, and noisy.
             </p>
-         </CardFooter>
+         </CardFooter> */}
       </Card>
    );
 };
