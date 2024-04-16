@@ -1,8 +1,22 @@
 "use server";
-import fs from "fs";
-import path from "path";
+// import fs from "fs";
+// import path from "path";
 import { Theme } from "@/components/themes";
 import { dir } from "console";
+
+import fs from "fs/promises";
+import path from "path";
+
+const CONTENT = path.join(__dirname, "..", "app/content");
+
+export const readContentDir = async () => fs.readdir(CONTENT);
+
+export const readContentFile = async (file) =>
+   fs.readFile(path.join(CONTENT, file), "utf-8");
+
+export const readFolder = async (folder) => fs.readdir(path.join(CONTENT, folder));
+
+
 
 export const getRandomImagePath = async (era?: Theme) => {
    // console.log("Server Action: getRandomImagePath")
@@ -10,12 +24,12 @@ export const getRandomImagePath = async (era?: Theme) => {
       // const originalPath = path.join(process.cwd(), "public", "images").replace("./public", "")
       // const newPath = path.resolve(originalPath)
 
-      printDirectories(__dirname)
-      printDirectories(__dirname + '/../')
-      printDirectories(__dirname + '/../app')
-      printDirectories(__dirname + '/../app/content')
-      printDirectories(__dirname + '/../../')
-      printDirectories(__dirname + '/../era-images')
+      // printDirectories(__dirname)
+      // printDirectories(__dirname + '/../')
+      // printDirectories(__dirname + '/../app')
+      // printDirectories(__dirname + '/../app/content')
+      // printDirectories(__dirname + '/../../')
+      // printDirectories(__dirname + '/../era-images')
 
 
 
@@ -26,11 +40,13 @@ export const getRandomImagePath = async (era?: Theme) => {
          era && era.imagePath
             ? era.imagePath
             : subDirs[Math.floor(Math.random() * subDirs.length)];
-      process.env.pu
-      const dirPath = path.join(process.cwd(), "public/images", subDir);
-      const originalPath = dirPath.replace("./public", "");
-      const newPath = path.resolve(originalPath);
-      const files = fs.readdirSync(__dirname + '/../');
+      // process.env.pu
+      // const dirPath = path.join(process.cwd(), "public/images", subDir);
+      // const originalPath = dirPath.replace("./public", "");
+      // const newPath = path.resolve(originalPath);
+      // const files = fs.readdirSync(__dirname + '/../');
+      // const files = readContentDir();
+      const files = await readFolder(`era-images/${subDir}`);
       const imageFiles = files.filter((file) =>
          /\.(jpg|jpeg|png|gif)$/i.test(file)
       );
@@ -46,17 +62,17 @@ export const getRandomImagePath = async (era?: Theme) => {
 };
 
 
-const printDirectories = (dirPath) => {
-   console.log('-----------------------')
-   console.log('')
+// const printDirectories = (dirPath) => {
+//    console.log('-----------------------')
+//    console.log('')
 
-   const filesAndDirs = fs.readdirSync(dirPath);
+//    const filesAndDirs = fs.readdirSync(dirPath);
  
-   filesAndDirs.forEach(item => {
-     const fullPath = path.join(dirPath, item);
-     if (fs.statSync(fullPath).isDirectory()) {
-       console.log(item);  // This prints the directory name
-     }
-   });
-   console.log('')
- };
+//    filesAndDirs.forEach(item => {
+//      const fullPath = path.join(dirPath, item);
+//      if (fs.statSync(fullPath).isDirectory()) {
+//        console.log(item);  // This prints the directory name
+//      }
+//    });
+//    console.log('')
+//  };
