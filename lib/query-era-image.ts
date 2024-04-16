@@ -38,7 +38,7 @@ export const getRandomImagePath = async (era?: Theme) => {
       }
       catch (e) {
          console.log("Error: ", e)
-         return "/images/hs/2E659CA0-9183-4D48-ACC5-1D51885CB809.jpeg.jpg"
+         return "/images/hs/2E659CA0-9183-4D48-ACC5-1D51885CB809.jpeg"
       }
 
    }
