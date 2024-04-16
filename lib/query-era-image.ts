@@ -4,8 +4,8 @@ import * as fs from 'fs/promises';
 import path from "path";
 import { Theme } from "@/components/themes";
 import { createRequire } from 'module';
-createRequire(import.meta.url)('@/era-images');
-createRequire(import.meta.url)('../era-images');
+// createRequire(import.meta.url)('@/era-images');
+// createRequire(import.meta.url)('../era-images');
 
 export const getRandomImagePath = async (era?: Theme) => {
    // console.log("Server Action: getRandomImagePath")
