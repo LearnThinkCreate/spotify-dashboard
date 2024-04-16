@@ -1,5 +1,5 @@
 "use server";
-import fs from 'fs/promises';
+import fs from 'fs';
 import path from 'path';
 
 export const getRandomImagePath = async (era) => {
@@ -10,10 +10,10 @@ export const getRandomImagePath = async (era) => {
 
             let files;
             try {
-                files = await fs.readdir('public/images/' + subDir);
+                files = fs.readdirSync('public/images/' + subDir);
             } catch (error) {
                 if (error.code === 'ENOENT') {
-                    console.error(`Directory not found: ${subDir}`);
+                    console.error('public/images/' + subDir + ' not found.');
                     return; // Optionally return a default image path or handle as needed
                 }
                 throw error;
