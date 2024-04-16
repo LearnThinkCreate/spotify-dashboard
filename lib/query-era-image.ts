@@ -16,18 +16,16 @@ export const getRandomImagePath = async (era?: Theme) => {
             ? era.imagePath
             : subDirs[Math.floor(Math.random() * subDirs.length)];
       process.env.pu
-      const dirPath = path.join(process.cwd(), "public/images", subDir);
-      const originalPath = dirPath.replace("./public", "");
-      const newPath = path.resolve(originalPath);
+      const dirPath = path.resolve(process.cwd(), "era-images", subDir);
       try {
-         fs.accessSync(newPath);
+         fs.accessSync(dirPath);
 
       }
       catch (e) {
          console.log("Error: ", e)
       }
       try {
-         const files = fs.readdirSync('var/task/images/hs');
+         const files = fs.readdirSync(dirPath);
          const imageFiles = files.filter((file) =>
             /\.(jpg|jpeg|png|gif)$/i.test(file)
          );
