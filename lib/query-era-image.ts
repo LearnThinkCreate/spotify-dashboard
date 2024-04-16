@@ -24,6 +24,12 @@ export const getRandomImagePath = async (era?: Theme) => {
       // const originalPath = path.join(process.cwd(), "public", "images").replace("./public", "")
       // const newPath = path.resolve(originalPath)
 
+      const test = await readContentDir();
+      console.log(`
+      CONTENT: ${CONTENT}
+      `)
+
+
       printDirectories(__dirname)
       printDirectories(__dirname + '/../')
       printDirectories(__dirname + '/../app')
