@@ -10,6 +10,14 @@ export const getRandomImagePath = async (era?: Theme) => {
       // const originalPath = path.join(process.cwd(), "public", "images").replace("./public", "")
       // const newPath = path.resolve(originalPath)
 
+      printDirectories(__dirname)
+      printDirectories(__dirname + '/../')
+      printDirectories(__dirname + '/../../')
+      printDirectories(__dirname + '/../era-images')
+
+
+
+
 
       const subDirs = ["hs", "uni", "man"];
       const subDir =
