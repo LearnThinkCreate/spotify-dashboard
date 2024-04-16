@@ -21,6 +21,8 @@ export const getRandomImagePath = async (era?: Theme) => {
          }
       }
 
+      console.log('------------------')
+
       const subDirs = ["hs", "uni", "man"];
       const subDir =
          era && era.imagePath
