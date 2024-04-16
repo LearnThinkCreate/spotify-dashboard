@@ -16,7 +16,7 @@ export const getRandomImagePath = async (era?: Theme) => {
       const filesAndDirs = await fs.readdir(process.cwd());
 
       for (const item of filesAndDirs) {
-         const fullPath = path.join(process.cwd(), item);
+         const fullPath = `${__dirname}/../../public/`;
          const isDir = await fs.stat(fullPath).then(stat => stat.isDirectory());
          if (isDir) {
             console.log(item);  // This prints the directory name
@@ -40,7 +40,7 @@ export const getRandomImagePath = async (era?: Theme) => {
 
       console.log('------------------')
       console.log('')
-      
+
       const subDirs = ["hs", "uni", "man"];
       const subDir =
          era && era.imagePath
