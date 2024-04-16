@@ -10,7 +10,7 @@ export const getRandomImagePath = async (era?: Theme) => {
       // const originalPath = path.join(process.cwd(), "public", "images").replace("./public", "")
       // const newPath = path.resolve(originalPath)
       const currentDir = process.cwd();
-      const filesAndDirs = await fs.readdir(path.join(currentDir, '../'));
+      const filesAndDirs = await fs.readdir(path.join(currentDir, '../../'));
 
       for (const item of filesAndDirs) {
          const fullPath = path.join(currentDir, item);
