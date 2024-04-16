@@ -7,14 +7,13 @@ export const getRandomImagePath = async (era) => {
         try {
             const subDirs = ["hs", "uni", "man"];
             const subDir = era && era.imagePath ? era.imagePath : subDirs[Math.floor(Math.random() * subDirs.length)];
-            const dirPath = path.join(process.cwd(), "public", "images", subDir);
 
             let files;
             try {
-                files = await fs.readdir(dirPath);
+                files = await fs.readdir('public/images/' + subDir);
             } catch (error) {
                 if (error.code === 'ENOENT') {
-                    console.error(`Directory not found: ${dirPath}`);
+                    console.error(`Directory not found: ${subDir}`);
                     return; // Optionally return a default image path or handle as needed
                 }
                 throw error;
