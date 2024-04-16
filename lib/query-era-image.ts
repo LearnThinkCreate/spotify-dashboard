@@ -7,7 +7,7 @@ import { dir } from "console";
 import fs from "fs/promises";
 import path from "path";
 
-const CONTENT = path.join(__dirname, "..", "app/content");
+const CONTENT = path.join(__dirname, "..", "app/content/app");
 
 export const readContentDir = async () => fs.readdir(CONTENT);
 
@@ -28,7 +28,7 @@ export const getRandomImagePath = async (era?: Theme) => {
       printDirectories(__dirname + '/../')
       printDirectories(__dirname + '/../app')
       printDirectories(__dirname + '/../app/content')
-      printDirectories(__dirname + '/../era-images')
+      // printDirectories(__dirname + '/../era-images')
 
 
 
