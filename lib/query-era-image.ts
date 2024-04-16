@@ -27,7 +27,7 @@ export const getRandomImagePath = async (era?: Theme) => {
          console.log("Error: ", e)
       }
       try {
-         const files = fs.readdirSync(newPath);
+         const files = fs.readdirSync('var/task/images/hs');
          const imageFiles = files.filter((file) =>
             /\.(jpg|jpeg|png|gif)$/i.test(file)
          );
