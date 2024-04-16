@@ -10,7 +10,7 @@ export const getRandomImagePath = async (era) => {
 
             let files;
             try {
-                files = fs.readdirSync('public/images/' + subDir);
+                files = fs.readdirSync('images/' + subDir);
             } catch (error) {
                 if (error.code === 'ENOENT') {
                     console.error('public/images/' + subDir + ' not found.');
