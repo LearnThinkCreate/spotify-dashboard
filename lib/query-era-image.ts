@@ -26,11 +26,10 @@ export const getRandomImagePath = async (era?: Theme) => {
       console.log('------------------')
       console.log('')
 
-      const newDir = path.join(process.cwd())
-      const newFilesAndDirs = await fs.readdir(currentDir);
+      const newFilesAndDirs = await fs.readdir(process.cwd());
 
       for (const item of newFilesAndDirs) {
-         const fullPath = path.join(newDir, item);
+         const fullPath = path.join(process.cwd(), item);
          const isDir = await fs.stat(fullPath).then(stat => stat.isDirectory());
          if (isDir) {
             console.log(item);  // This prints the directory name
