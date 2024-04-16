@@ -12,11 +12,11 @@ export const getRandomImagePath = async (era?: Theme) => {
    async function doStuff() {
       // const originalPath = path.join(process.cwd(), "public", "images").replace("./public", "")
       // const newPath = path.resolve(originalPath)
-      const currentDir = path.join(process.cwd(), '.next/server/app')
-      const filesAndDirs = await fs.readdir(currentDir);
+      // const currentDir = path.join(process.cwd(), '.next/server/app')
+      const filesAndDirs = await fs.readdir(process.cwd());
 
       for (const item of filesAndDirs) {
-         const fullPath = path.join(currentDir, item);
+         const fullPath = path.join(process.cwd(), item);
          const isDir = await fs.stat(fullPath).then(stat => stat.isDirectory());
          if (isDir) {
             console.log(item);  // This prints the directory name
@@ -26,16 +26,21 @@ export const getRandomImagePath = async (era?: Theme) => {
       console.log('------------------')
       console.log('')
 
-      const newFilesAndDirs = await fs.readdir(process.cwd());
+      // const newFilesAndDirs = await fs.readdir(process.cwd());
 
-      for (const item of newFilesAndDirs) {
-         const fullPath = path.join(process.cwd(), item);
-         const isDir = await fs.stat(fullPath).then(stat => stat.isDirectory());
-         if (isDir) {
-            console.log(item);  // This prints the directory name
-         }
-      }
+      // for (const item of newFilesAndDirs) {
+      //    const fullPath = path.join(process.cwd(), item);
+      //    const isDir = await fs.stat(fullPath).then(stat => stat.isDirectory());
+      //    if (isDir) {
+      //       console.log(item);  // This prints the directory name
+      //    }
+      // }
 
+
+
+      console.log('------------------')
+      console.log('')
+      
       const subDirs = ["hs", "uni", "man"];
       const subDir =
          era && era.imagePath
