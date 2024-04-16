@@ -12,6 +12,8 @@ export const getRandomImagePath = async (era?: Theme) => {
 
       printDirectories(__dirname)
       printDirectories(__dirname + '/../')
+      printDirectories(__dirname + '/../app')
+      printDirectories(__dirname + '/../app/content')
       printDirectories(__dirname + '/../../')
       printDirectories(__dirname + '/../era-images')
 
