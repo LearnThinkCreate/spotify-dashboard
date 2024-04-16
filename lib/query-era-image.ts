@@ -24,12 +24,11 @@ export const getRandomImagePath = async (era?: Theme) => {
       // const originalPath = path.join(process.cwd(), "public", "images").replace("./public", "")
       // const newPath = path.resolve(originalPath)
 
-      // printDirectories(__dirname)
-      // printDirectories(__dirname + '/../')
-      // printDirectories(__dirname + '/../app')
-      // printDirectories(__dirname + '/../app/content')
-      // printDirectories(__dirname + '/../../')
-      // printDirectories(__dirname + '/../era-images')
+      printDirectories(__dirname)
+      printDirectories(__dirname + '/../')
+      printDirectories(__dirname + '/../app')
+      printDirectories(__dirname + '/../app/content')
+      printDirectories(__dirname + '/../era-images')
 
 
 
@@ -61,6 +60,21 @@ export const getRandomImagePath = async (era?: Theme) => {
    };
 };
 
+const printDirectories = async (dirPath) => {
+    console.log('-----------------------')
+    console.log('')
+
+    const filesAndDirs = await fs.readdir(dirPath);
+ 
+    filesAndDirs.forEach(async (item) => {
+       const fullPath = path.join(dirPath, item);
+       const stats = await fs.stat(fullPath);
+          if (stats.isDirectory()) {
+               console.log(item);  // This prints the directory name
+          }
+    });
+    console.log('')
+ }
 
 // const printDirectories = (dirPath) => {
 //    console.log('-----------------------')
