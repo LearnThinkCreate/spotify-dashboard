@@ -76,7 +76,7 @@ export const EnergyCard = ({ className }: { className?: string }) => {
                <div></div>
             )}
          </CardHeader>
-         <CardContent className="">
+         <CardContent className="flex-1">
             {data && (
                <ResponsiveContainer>
                   <BarChart data={data.data}>
@@ -97,7 +97,7 @@ export const EnergyCard = ({ className }: { className?: string }) => {
                </ResponsiveContainer>
             )}
          </CardContent>
-         {/* <CardFooter className="p-0 px-6">
+         <CardFooter className="p-0 px-6">
             <p
                className="text-muted-foreground"
                style={{
@@ -107,7 +107,7 @@ export const EnergyCard = ({ className }: { className?: string }) => {
                Energy is a measure from 0 to 100 that represents intensity and
                activity. Energetic tracks are fast, loud, and noisy.
             </p>
-         </CardFooter> */}
+         </CardFooter>
       </Card>
    );
 };

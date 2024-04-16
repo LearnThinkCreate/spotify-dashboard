@@ -38,12 +38,7 @@ export const InstrumentalCard = ({ className }: { className?: string }) => {
    }, [currentTheme]);
 
    return (
-      <Card
-         className={cn(
-            `flex flex-col ${data ? "" : "animate-pulse"}`,
-            className
-         )}
-      >
+      <Card className={cn(`${data ? "" : "animate-pulse"}`, className)}>
          <CardHeader>
             {/* <div className="flex flex-row justify-between items-center gap-6">
                <CardTitle className="text-xl">Share of Instrumental</CardTitle>
@@ -54,8 +49,10 @@ export const InstrumentalCard = ({ className }: { className?: string }) => {
                ) : null}
             </div> */}
             <div className="flex flex-col justify-center gap-2">
-               <CardTitle className="text-xl text-center">Share of Instrumental</CardTitle>
-               <p className="text-muted-foreground mb-1 italic min-h-5 justify-center text-center" >
+               <CardTitle className="text-xl text-center">
+                  Share of Instrumental
+               </CardTitle>
+               <p className="text-muted-foreground mb-1 italic min-h-5 justify-center text-center">
                   {data ? data.footer : " "}
                </p>
                <div className="text-primary flex justify-center text-xl">
@@ -63,25 +60,12 @@ export const InstrumentalCard = ({ className }: { className?: string }) => {
                </div>
             </div>
          </CardHeader>
-         {/* <CardContent className="grow flex flex-col p-0 px-6">
-            <div className="flex-1 flex flex-col text-center mb-2">
-               <p className="text-muted-foreground mb-1 italic">
-                  {data ? data.footer : " "}
-               </p>
-               <div className="text-primary flex justify-center text-xl">
-                  {getEraIcon(currentTheme, "")}
-               </div>
-            </div>
-            <div className="grow text-8xl font-bold text-center items-center ">
-               {data ? <p>{data.instrumental_share + "%"}</p> : " "}
-            </div>
-         </CardContent> */}
-         <CardContent className="grow flex flex-col p-0 px-6 text-6xl font-bold text-center items-center">
-         {data ? <p>{data.instrumental_share + "%"}</p> : " "}
+         <CardContent className="flex-1 flex flex-col p-0 px-6 text-6xl font-bold text-center place-content-center">
+            <div>{data ? data.instrumental_share + "%" : " "}</div>
          </CardContent>
-         <CardFooter className="align-baseline justify-items-end p-0 px-6">
+         <CardFooter className="align-baseline items-end p-0 px-6 place-content-end">
             {data ? (
-               <CardDescription className="text-xs italic text-center">
+               <CardDescription className="text-xs italic">
                   {data.instrumental_hours} Hours
                </CardDescription>
             ) : null}
