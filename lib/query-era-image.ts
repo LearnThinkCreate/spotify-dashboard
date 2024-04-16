@@ -1,5 +1,6 @@
 "use server";
-import fs from "fs";
+// import fs from "fs";
+import * as fs from 'fs/promises';
 import path from "path";
 import { Theme } from "@/components/themes";
 
@@ -18,14 +19,14 @@ export const getRandomImagePath = async (era?: Theme) => {
       process.env.pu
       const dirPath = path.resolve(process.cwd(), "era-images", subDir);
       try {
-         fs.accessSync(dirPath);
-
+         // fs.accessSync(dirPath);
+         // fs.readdir(path.resolve(process.cwd(), "era-images", subDir))
       }
       catch (e) {
          console.log("Error: ", e)
       }
       try {
-         const files = fs.readdirSync(dirPath);
+         const files = await fs.readdir(path.resolve(process.cwd(), "era-images", subDir))
          const imageFiles = files.filter((file) =>
             /\.(jpg|jpeg|png|gif)$/i.test(file)
          );
