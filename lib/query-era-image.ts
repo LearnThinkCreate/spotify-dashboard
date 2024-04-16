@@ -1,45 +1,15 @@
 "use server";
-// import fs from "fs";
-import * as fs from 'fs/promises';
+import fs from "fs";
 import path from "path";
 import { Theme } from "@/components/themes";
-import { createRequire } from 'module';
-// createRequire(import.meta.url)('@/era-images');
-// createRequire(import.meta.url)('../era-images');
+import { dir } from "console";
 
 export const getRandomImagePath = async (era?: Theme) => {
    // console.log("Server Action: getRandomImagePath")
    async function doStuff() {
       // const originalPath = path.join(process.cwd(), "public", "images").replace("./public", "")
       // const newPath = path.resolve(originalPath)
-      // const currentDir = path.join(process.cwd(), '.next/server/app')
-      const filesAndDirs = await fs.readdir(process.cwd());
 
-      for (const item of filesAndDirs) {
-         const fullPath = `${__dirname}/../../public/`;
-         const isDir = await fs.stat(fullPath).then(stat => stat.isDirectory());
-         if (isDir) {
-            console.log(item);  // This prints the directory name
-         }
-      }
-
-      console.log('------------------')
-      console.log('')
-
-      // const newFilesAndDirs = await fs.readdir(process.cwd());
-
-      // for (const item of newFilesAndDirs) {
-      //    const fullPath = path.join(process.cwd(), item);
-      //    const isDir = await fs.stat(fullPath).then(stat => stat.isDirectory());
-      //    if (isDir) {
-      //       console.log(item);  // This prints the directory name
-      //    }
-      // }
-
-
-
-      console.log('------------------')
-      console.log('')
 
       const subDirs = ["hs", "uni", "man"];
       const subDir =
@@ -47,32 +17,36 @@ export const getRandomImagePath = async (era?: Theme) => {
             ? era.imagePath
             : subDirs[Math.floor(Math.random() * subDirs.length)];
       process.env.pu
-      const dirPath = path.resolve(process.cwd(), "era-images", subDir);
-      try {
-         // fs.accessSync(dirPath);
-         // fs.readdir(path.resolve(process.cwd(), "era-images", subDir))
-      }
-      catch (e) {
-         console.log("Error: ", e)
-      }
-      try {
-         const files = await fs.readdir(path.resolve(process.cwd(), "era-images", subDir))
-         const imageFiles = files.filter((file) =>
-            /\.(jpg|jpeg|png|gif)$/i.test(file)
-         );
-         const randomImage =
-            imageFiles[Math.floor(Math.random() * imageFiles.length)];
-         const imagePath = `/images/${subDir}/${randomImage}`;
-         return imagePath;
-      }
-      catch (e) {
-         console.log("Error: ", e)
-         return "/images/hs/2E659CA0-9183-4D48-ACC5-1D51885CB809.jpeg"
-      }
-
+      const dirPath = path.join(process.cwd(), "public/images", subDir);
+      const originalPath = dirPath.replace("./public", "");
+      const newPath = path.resolve(originalPath);
+      const files = fs.readdirSync(__dirname + '/../');
+      const imageFiles = files.filter((file) =>
+         /\.(jpg|jpeg|png|gif)$/i.test(file)
+      );
+      const randomImage =
+         imageFiles[Math.floor(Math.random() * imageFiles.length)];
+      const imagePath = `/images/${subDir}/${randomImage}`;
+      return imagePath;
    }
 
    return {
       promise: doStuff(),
    };
 };
+
+
+const printDirectories = (dirPath) => {
+   console.log('-----------------------')
+   console.log('')
+
+   const filesAndDirs = fs.readdirSync(dirPath);
+ 
+   filesAndDirs.forEach(item => {
+     const fullPath = path.join(dirPath, item);
+     if (fs.statSync(fullPath).isDirectory()) {
+       console.log(item);  // This prints the directory name
+     }
+   });
+   console.log('')
+ };
