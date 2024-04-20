@@ -108,9 +108,7 @@ export const BarGraph = ({ initialData, className }: { initialData?, className?:
     let ignore = false;
     const updateData = async () => {
       const data = await fetch(
-         `/api/bar-data?category=${dropdownValue}&currentTheme=${JSON.stringify(
-            currentTheme
-         )}&mainGenre=${JSON.stringify(
+         `/api/bar-data?category=${dropdownValue}&era=${currentTheme.era}&mainGenre=${JSON.stringify(
             mainGenre
          )}&secondaryGenre=${JSON.stringify(secondaryGenre)}`
       ).then((res) => res.json());
