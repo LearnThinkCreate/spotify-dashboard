@@ -6,7 +6,6 @@ import prisma from "@/lib/db/prisma";
 
 
 export const getRandomImagePath = async (era?: Theme) => {
-   // console.log("Server Action: getRandomImagePath")
    const subDirs = ["hs", "uni", "man"];
    const subDir =
       era && era.imagePath

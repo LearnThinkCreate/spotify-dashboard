@@ -3,11 +3,6 @@ import 'server-only'
 import prisma from "@/lib/db/prisma";
 
 
-export const preloadGenreOptions = (genreQuery: string) => {
-    void prismaGenreOptions(genreQuery);
-}
-
-
 export const prismaGenreOptions = cache(async (genreQuery: string) => {
     const prismaQueryParams = (genre_type: 'main_genre' | 'secondary_genre' = 'main_genre', genreQuery: string) => ({
       where: genreQuery ? {

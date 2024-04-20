@@ -100,7 +100,6 @@ export const topCategory = cache(async ({
   offset = 0,
   take = 1,
 }: PrismaFuncParams & { category: customeCategory | string }) => {
-  // console.log(`Server Action: topCategory: ${category}`)
   const filter = { ts: prismaEraFilters( currentTheme )};
   if (Object.keys(CUSTOM_CATEGORIES).includes(category)) {
     return customTopCategory({ category: category as customeCategory, filter, offset, take });

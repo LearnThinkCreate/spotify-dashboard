@@ -1,6 +1,7 @@
 import { getInstrumentalData } from '@/lib/db/query-spotify-instrumental'
 import { Theme, themes } from '@/components/themes'
 import { NextResponse } from 'next/server'
+import { DEFAULT_REVALIDATE } from '@/lib/utils'
 
 export async function generateStaticParams() {
   return themes.map((theme) => ({
@@ -20,3 +21,5 @@ export async function GET(
 
   return NextResponse.json(data)
 }
+
+export const revalidate = DEFAULT_REVALIDATE;

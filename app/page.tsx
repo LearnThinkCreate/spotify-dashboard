@@ -6,6 +6,7 @@ import { preloadBarData } from "@/lib/db/query-bar-data";
 import { getDefaultTheme } from '@/components/themes'
 import { getDefaultBarGraphOption } from '@/components/graph-options'
 import { preloadTopCategory } from "@/lib/db/query-top-category";
+import { DEFAULT_REVALIDATE } from '@/lib/utils'
 
 export default async function Page({  }) {
   const defaultTheme = getDefaultTheme();
@@ -24,3 +25,5 @@ export default async function Page({  }) {
     <Dashboard />
   );
 }
+
+export const revalidate = DEFAULT_REVALIDATE;

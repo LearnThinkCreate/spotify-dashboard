@@ -10,7 +10,6 @@ export const preloadEnergyLevel = (era: Theme) => {
 }
 
 export const getEnergyLevel = cache(async (era: Theme) => {
-   // console.log("Server Action: getEnergyLevel")
    const filter = eraFilters(era);
    const eraFilter = filter ? `where ${filter.join(' AND ')}` : '';
    const sigma = 0.1;

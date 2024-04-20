@@ -34,7 +34,6 @@ export const getBarData = cache(async ({
     mainGenre,
     secondaryGenre,
 }: getBarDataProps) => {
-    // console.log("Server Action: sdoGroupBy")
     const getGenres = (genres) => genres ? genres.map((genre) => genre.genre) : [];
 
     const query: Prisma.spotify_data_overviewGroupByArgs = {

@@ -1,6 +1,7 @@
 import { getBarData } from '@/lib/db/query-bar-data'
 import { Theme, themes } from '@/components/themes'
 import { NextResponse } from 'next/server'
+import { DEFAULT_REVALIDATE } from '@/lib/utils'
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)

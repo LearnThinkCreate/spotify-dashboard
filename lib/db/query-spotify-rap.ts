@@ -13,7 +13,6 @@ export const preloadRapData = (era: Theme) => {
 
 
 export const getRapData = cache(async (era: Theme) => {
-    // console.log(`Server Action: getRapData`)
     return await prisma.spotify_data_overview
     .groupBy({
        by: ["genre_category"],
