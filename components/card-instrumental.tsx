@@ -16,17 +16,20 @@ import { PiMaskSadFill } from "react-icons/pi";
 import { MdAutoGraph } from "react-icons/md";
 import { FaDumbbell } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
+import { useMounted } from "@/hooks/use-mounted";
 
-export const InstrumentalCard = ({ className }: { className?: string }) => {
+export const InstrumentalCard = ({ className, initialData }: { className?: string, initialData }) => {
    const { currentTheme, themeCodes } = useThemeState();
-   const [data, setData] = React.useState<any>();
+   const [data, setData] = React.useState<any>(initialData);
+   const mounted = useMounted();
 
    React.useEffect(() => {
+      if (!mounted) {
+         return;
+      }
       let ignore = false;
       const updateData = async () => {
-         const data = await getInstrumentalData(currentTheme).then(
-            (r) => r.promise
-         );
+         const data = await fetch(`api/instrumental/${currentTheme.era}`).then((res) => res.json());
          if (!ignore) {
             setData(data);
          }
@@ -40,14 +43,6 @@ export const InstrumentalCard = ({ className }: { className?: string }) => {
    return (
       <Card className={cn(`${data ? "" : "animate-pulse"}`, className)}>
          <CardHeader>
-            {/* <div className="flex flex-row justify-between items-center gap-6">
-               <CardTitle className="text-xl">Share of Instrumental</CardTitle>
-               {data ? (
-                  <CardDescription className="text-xs italic">
-                     {data.instrumental_hours} Hours
-                  </CardDescription>
-               ) : null}
-            </div> */}
             <div className="flex flex-col justify-center gap-2">
                <CardTitle className="text-xl text-center">
                   Share of Instrumental

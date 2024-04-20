@@ -7,13 +7,9 @@ export function useThemeState() {
     const [config] = useConfig()
     let currentTheme = themes.find((theme) => theme.name === config.theme) as Theme
     let themeCodes = getHexCodes(currentTheme, mode as string)
-    
+    // console.log('THEME CODES', themeCodes)
     return {
         themeCodes,
         currentTheme
     }
-    // return {
-    //     themeCodes: getHexCodes(themes[0], 'dark'),
-    //     currentTheme: themes[0]
-    // }
 }

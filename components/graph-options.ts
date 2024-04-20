@@ -115,5 +115,7 @@ const getOptions = (paramValue: string) => {
     return BarGraphOptions;
 }
 
-export { LineGraphOptions, BarGraphOptions, getOptions };
+const getDefaultBarGraphOption = () => BarGraphOptions[0];
+
+export { LineGraphOptions, BarGraphOptions, getOptions, getDefaultBarGraphOption };
 export type { GraphOption };

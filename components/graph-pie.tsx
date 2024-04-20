@@ -32,7 +32,7 @@ export const PieGraph = ({
   });
 
   const secondaryColor =
-    currentTheme?.era !== ""
+    currentTheme?.era !== "all"
       ? themeCodes["accent-foreground"]
       : themeCodes["muted-foreground"];
 
@@ -41,7 +41,6 @@ export const PieGraph = ({
   if (!data) {
     return <div className={cn("", className)}></div>;
   }
-
   return (
     <ResponsiveContainer
       width="100%"

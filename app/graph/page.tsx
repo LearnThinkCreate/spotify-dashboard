@@ -7,9 +7,8 @@ export default async function Page({}) {
   return (
     <>
       <div className="flex flex-col h-full">
-        <div className="snap-y snap-mandatory overflow-scroll flex-1">
+        {/* <div className="snap-y snap-mandatory overflow-scroll flex-1">
           <div className="snap-center h-full flex p-4">
-            {/* <BarGraph className="grow flex flex-col" /> */}
             <EnergyCard />
           </div>
           <div className="snap-center h-full flex p-4">
@@ -18,7 +17,7 @@ export default async function Page({}) {
           <div className="snap-center h-full flex p-4">
           <PieGraph className="grow flex flex-col" />
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

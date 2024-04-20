@@ -10,22 +10,31 @@ import {
    CardFooter,
 } from "@/components/ui/card";
 import { useThemeState } from "@/hooks/theme-state";
-import { getEnergyLevel } from "@/lib/db/query-spotify-energy";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import clsx from "clsx";
 import { cn } from "@/lib/utils";
+import { useMounted } from "@/hooks/use-mounted";
 
-export const EnergyCard = ({ className }: { className?: string }) => {
+export const EnergyCard = ({
+   className,
+   initialData,
+}: {
+   className?: string;
+   initialData: any;
+}) => {
    const { currentTheme, themeCodes } = useThemeState();
 
-   const [data, setData] = React.useState<any>();
+   const [data, setData] = React.useState<any>(initialData);
+   const mounted = useMounted();
 
    React.useEffect(() => {
+      if (!mounted) {
+         return;
+      }
+      
       let ignore = false;
       const updateData = async () => {
-         const energyData = await getEnergyLevel(currentTheme).then(
-            (r) => r.promise
-         );
+         const energyData = await fetch(`api/energy/${currentTheme.era}`).then(res => res.json());
          if (!ignore) {
             setData(energyData);
          }
@@ -99,15 +108,15 @@ export const EnergyCard = ({ className }: { className?: string }) => {
                </ResponsiveContainer>
             )}
             {/* <div className=""> */}
-               <p
-                  className="text-muted-foreground"
-                  style={{
-                     fontSize: "8px",
-                  }}
-               >
-                  Energy is a measure from 0 to 100 that represents intensity
-                  and activity. Energetic tracks are fast, loud, and noisy.
-               </p>
+            <p
+               className="text-muted-foreground"
+               style={{
+                  fontSize: "8px",
+               }}
+            >
+               Energy is a measure from 0 to 100 that represents intensity and
+               activity. Energetic tracks are fast, loud, and noisy.
+            </p>
             {/* </div> */}
          </CardContent>
          {/* <CardFooter className="p-0 px-6">

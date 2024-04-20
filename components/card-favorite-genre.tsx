@@ -8,23 +8,24 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { getRapData } from "@/lib/db/query-spotify-utils";
 import { useThemeState } from "@/hooks/theme-state";
 import { PieGraph } from "@/components/graph-pie";
+import { useMounted } from "@/hooks/use-mounted";
 
-export const FavoriteGenre = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & {  }
->(({ className, ...props }, ref) => {
+export const FavoriteGenre = ({ className, initialData }) => {
 
-  const [data, setData] = React.useState() as any;
+  const [data, setData] = React.useState(initialData) as any;
   const { currentTheme } = useThemeState();
+  const mounted = useMounted();
 
 
   React.useEffect(() => {
+    if (!mounted) {
+      return;
+    }
     let ignore = false;
     const fetchData = async () => {
-      const data = await getRapData(currentTheme).then((r) => r.promise);
+      const data = await fetch(`/api/rap-data/${currentTheme.era}`).then((res) => res.json());
       if (!ignore) {
         setData(data);
       }
@@ -40,7 +41,7 @@ export const FavoriteGenre = React.forwardRef<
   }, [currentTheme]);
 
   return (
-    <Card ref={ref} className={cn(data ? '' : 'animate-pulse', className)}>
+    <Card className={cn(data ? '' : 'animate-pulse', className)}>
           <CardHeader>
             <CardTitle className="text-center">Rap vs Non-Rap</CardTitle>
           </CardHeader>
@@ -54,5 +55,5 @@ export const FavoriteGenre = React.forwardRef<
           </CardContent>
     </Card>
   );
-});
+};
 FavoriteGenre.displayName = "FavoriteGenre";

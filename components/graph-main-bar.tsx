@@ -30,16 +30,19 @@ import {
 import { useThemeState } from "@/hooks/theme-state";
 import { cn } from "@/lib/utils";
 import { sdoGroupBy } from "@/lib/db/query-spotify-utils";
-import { toTitleCase } from "@/lib/utils";
+import { useMounted } from "@/hooks/use-mounted";
+import { getDefaultBarGraphOption } from "@/components/graph-options";
+import { Theme } from "@/components/themes";
 
 export const BarGraph = ({ initialData, className }: { initialData?, className?: string }) => {
-  const [data, setData] = React.useState<any[]>();
+  const [data, setData] = React.useState<any[]>(initialData);
   const [dropdownValue, setDropdownValue] = React.useState(
-    BarGraphOptions[0].value
+    getDefaultBarGraphOption().value
   );
   const [mainGenre, setMainGenre] = React.useState<Genre[]>([]);
   const [secondaryGenre, setSecondaryGenre] = React.useState<Genre[]>([]);
   const { currentTheme, themeCodes } = useThemeState();
+  const mounted = useMounted();
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const isLargeDesktop = useMediaQuery("(min-width: 1024px)");
@@ -99,14 +102,18 @@ export const BarGraph = ({ initialData, className }: { initialData?, className?:
   }
 
   React.useEffect(() => {
+    if (!mounted) {
+      return;
+    }
     let ignore = false;
     const updateData = async () => {
-      const data = await fetchData(
-        dropdownValue,
-        mainGenre,
-        secondaryGenre,
-        currentTheme
-      ).then((r) => r.promise);
+      const data = await fetch(
+         `/api/bar-data?category=${dropdownValue}&currentTheme=${JSON.stringify(
+            currentTheme
+         )}&mainGenre=${JSON.stringify(
+            mainGenre
+         )}&secondaryGenre=${JSON.stringify(secondaryGenre)}`
+      ).then((res) => res.json());
       if (!ignore) {
         setData(data);
       }

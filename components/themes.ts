@@ -175,7 +175,7 @@ export const themes = [
     },
   },
   {
-    era: "",
+    era: "all",
     eraName: "",
     imagePath: undefined,
     instrumentalFooter: "Instrumental = Max Productivity", //FaDumbbell
@@ -261,3 +261,5 @@ export const getHexCodes = (theme: Theme, mode: string) => {
   }
   return hexCodes;
 };
+
+export const getDefaultTheme = () => themes.find((theme) => theme.name === "default") as Theme;

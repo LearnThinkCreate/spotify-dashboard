@@ -1,5 +1,5 @@
 import { useAtom } from "jotai"
-import { atomWithStorage } from "jotai/utils"
+import { atom } from "jotai"
 
 import { Theme } from "@/components/themes"
 
@@ -9,7 +9,7 @@ type Config = {
   era: string
 }
 
-const configAtom = atomWithStorage<Config>("config", {
+const configAtom = atom<Config>({
   theme: "default",
   radius: 0.5,
   era: ''

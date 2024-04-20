@@ -7,15 +7,20 @@ import {
     CardContent,
   } from "@/components/ui/card";
   import Image from 'next/image';
+import { useMounted } from "@/hooks/use-mounted";
 
-export const EraImage = () => {
+export const EraImage = ({ randomImagePath }) => {
     const { currentTheme, themeCodes } = useThemeState();
-    const [imagePath, setImagePath] = React.useState<string | null>();
+    const [imagePath, setImagePath] = React.useState<string>(randomImagePath);
+    const mounted = useMounted();
 
     React.useEffect(() => {
+        if (!mounted) {
+            return;
+          }
         let ignore = false;
         const fetchImage = async () => {
-            let path = await getRandomImagePath(currentTheme).then((r) => r.promise);
+            const path = await getRandomImagePath(currentTheme);
             if (!ignore) {
                 setImagePath(path);
             }

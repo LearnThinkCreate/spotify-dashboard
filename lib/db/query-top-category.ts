@@ -1,10 +1,14 @@
-"use server";
+import { cache } from 'react'
+import 'server-only'
 import prisma from "@/lib/db/prisma";
 import { Prisma } from "@prisma/client";
 import { getSpotifyImage } from "./query-spotify-image";
 import { getIdFromName } from "./query-spotify-utils";
+import { prismaEraFilters } from "@/lib/db/query-utils";
+import { Theme } from "@/components/themes";
 
 interface PrismaFuncParams {
+  currentTheme?: Theme;
   filter?: Prisma.spotify_data_overviewWhereInput;
   offset?: number;
   take?: number;
@@ -85,40 +89,40 @@ const customTopCategory = async ({
 
   return take && take === 1 ? formattedData[0] : formattedData;
 };
+
+export const preloadTopCategory = (category: string, era: Theme) => {
+  void topCategory({ category, currentTheme: era });
+}
  
-export const topCategory = async ({
+export const topCategory = cache(async ({
   category,
-  filter = {},
+  currentTheme,
   offset = 0,
   take = 1,
 }: PrismaFuncParams & { category: customeCategory | string }) => {
   // console.log(`Server Action: topCategory: ${category}`)
-  async function doStuff () {
-    if (Object.keys(CUSTOM_CATEGORIES).includes(category)) {
-      return customTopCategory({ category: category as customeCategory, filter, offset, take });
-    }
-    const data = await prisma.spotify_data_overview.groupBy({
-      by: [category] as Prisma.spotify_data_overviewGroupByArgs["by"],
+  const filter = { ts: prismaEraFilters( currentTheme )};
+  if (Object.keys(CUSTOM_CATEGORIES).includes(category)) {
+    return customTopCategory({ category: category as customeCategory, filter, offset, take });
+  }
+  const data = await prisma.spotify_data_overview.groupBy({
+    by: [category] as Prisma.spotify_data_overviewGroupByArgs["by"],
+    _sum: {
+      hours_played: true,
+    },
+    orderBy: {
       _sum: {
-        hours_played: true,
+        hours_played: "desc",
       },
-      orderBy: {
-        _sum: {
-          hours_played: "desc",
-        },
-      },
-      where: filter,
-      take: take,
-      skip: offset,
-    }).then((data) => data.map((record) => ({
-      category,
-      value: record[category],
-      hours_played: record._sum.hours_played,
-      })));
-  
-    return take && take === 1 ? data[0] : data;
-  }
-  return {
-    promise: doStuff(),
-  }
-}
+    },
+    where: filter,
+    take: take,
+    skip: offset,
+  }).then((data) => data.map((record) => ({
+    category,
+    value: record[category],
+    hours_played: record._sum.hours_played,
+    })));
+
+  return take && take === 1 ? data[0] : data;
+});
