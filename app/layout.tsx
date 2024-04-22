@@ -34,7 +34,7 @@ export default function RootLayout({
                 {/* <MenuBar /> */}
                 <EraFilter />
               </div>
-              <main className="flex-1 overflow-scroll">
+              <main className="flex-1">
                 {children}
               </main>
         </div>
