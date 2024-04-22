@@ -60,7 +60,8 @@ export default async function Dashboard({}) {
 
    return (
       <React.Suspense fallback={<div>Loading...</div>}>
-         <div className="flex-none block lg:flex-1 h-full  lg:flex lg:flex-col p-6 pb-0">
+         {/* <div className="flex-none block lg:flex-1 h-full  lg:flex lg:flex-col p-6 pb-2"> */}
+         <div className="flex flex-col h-full p-2 overflow-scroll">
             <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-4">
                <EraImage randomImagePath={randomImagePath} />
                <FavoriteCard
@@ -79,7 +80,7 @@ export default async function Dashboard({}) {
                   initialData={instrumental}
                />
             </div>
-            <BarGraph className="flex flex-col h-full mb-2" initialData={bar} />
+            <BarGraph className="flex flex-col h-auto min-h-full lg:min-h-0 lg:h-full" initialData={bar} />
          </div>
       </React.Suspense>
    );

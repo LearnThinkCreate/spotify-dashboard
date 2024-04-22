@@ -29,7 +29,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-        <div className="flex flex-col h-screen overflow-auto">
+        <div className="flex flex-col h-screen">
             <div className="sticky top-0 z-50 shadow px-4 py-2 w-full">
                 {/* <MenuBar /> */}
                 <EraFilter />
