@@ -161,7 +161,7 @@ export const MobileBarLabel = ({
          <text
             x={x + width / 2}
             y={y + 10}
-            fill={themeCodes["accent-foreground"]}
+            fill={themeCodes["primary-foreground"]}
             textAnchor="middle"
             dominantBaseline="middle"
             fontSize="9"
