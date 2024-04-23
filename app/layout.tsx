@@ -7,6 +7,7 @@ import { ThemeSwitcher } from "@/components/theme-switcher"
 import { cn } from "@/lib/utils";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { EraFilter } from "@/components/nav-era-filter";
+import { Analytics } from "@vercel/analytics/react"
 
 
 export default function RootLayout({
